@@ -51,7 +51,7 @@
             app:iconGravity="textStart"
             app:iconPadding="@dimen/icon_padding"
             app:cornerRadius="@dimen/corner_radius"
-            app:iconTint="#1A1B22"
+            app:iconTint="@color/black_text"
             />
 
         <Button
@@ -71,7 +71,5 @@
             app:iconTint="@color/black_text"
             />
     </LinearLayout>
-
-
 
 </LinearLayout>

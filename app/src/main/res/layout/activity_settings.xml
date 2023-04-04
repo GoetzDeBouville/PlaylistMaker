@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -19,7 +19,8 @@
             android:paddingEnd="@dimen/icon_padding"
             android:paddingTop="@dimen/layouts_padding_top"
             tools:ignore="RtlSymmetry"
-            android:layout_gravity="center_vertical" />
+            android:layout_gravity="center_vertical"
+            android:contentDescription="@string/arrow_back" />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -65,6 +66,7 @@
         tools:ignore="UseCompoundDrawables">
 
         <TextView
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="@string/share_app"
             android:paddingTop="@dimen/layouts_padding_top"
@@ -73,15 +75,15 @@
             android:layout_gravity="center_vertical"
             android:paddingBottom="14dp"
             android:layout_marginStart="0dp"
-            android:layout_weight="1"
-            />
+            android:layout_weight="1" />
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_marginEnd="10dp"
-            android:src="@drawable/share" />
+            android:src="@drawable/share"
+            android:contentDescription="@string/share_app" />
 
     </LinearLayout>
 
@@ -93,6 +95,7 @@
         tools:ignore="UseCompoundDrawables">
 
         <TextView
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="@string/text_to_support"
             android:paddingTop="@dimen/layouts_padding_top"
@@ -109,7 +112,8 @@
             android:layout_height="20dp"
             android:layout_gravity="center_vertical"
             android:layout_marginEnd="0dp"
-            android:src="@drawable/support" />
+            android:src="@drawable/support"
+            android:contentDescription="@string/text_to_support" />
 
     </LinearLayout>
 
@@ -138,7 +142,8 @@
             android:layout_gravity="center_vertical"
             android:paddingEnd="10dp"
             android:src="@drawable/arrow_forward"
-            tools:ignore="RtlSymmetry" />
+            tools:ignore="RtlSymmetry"
+            android:contentDescription="@string/user_agreement" />
     </LinearLayout>
 
 </LinearLayout>
