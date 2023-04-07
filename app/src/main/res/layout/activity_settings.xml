@@ -88,8 +88,7 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginEnd="10dp"
+            android:gravity="end"
             android:src="@drawable/share"
             android:contentDescription="@string/share_app"
             />
@@ -118,12 +117,11 @@
             />
 
         <ImageView
-            android:layout_width="20dp"
-            android:layout_height="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_marginEnd="0dp"
+            android:gravity="end"
             android:src="@drawable/support"
-            android:contentDescription="@string/text_to_support"
             />
 
     </LinearLayout>
@@ -152,9 +150,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:paddingEnd="10dp"
+            android:gravity="end"
             android:src="@drawable/arrow_forward"
-            tools:ignore="RtlSymmetry"
             android:contentDescription="@string/user_agreement"
             />
     </LinearLayout>
