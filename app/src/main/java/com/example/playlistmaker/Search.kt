@@ -14,6 +14,7 @@ class Search : AppCompatActivity() {
     companion object {
         const val SEARCH_KEY = "SEARCH_KEY"
     }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
@@ -51,7 +52,6 @@ class Search : AppCompatActivity() {
             }
         }
         inputEditText.addTextChangedListener(textWatcher)
-
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
