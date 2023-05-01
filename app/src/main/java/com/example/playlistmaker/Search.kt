@@ -7,7 +7,6 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import android.widget.EditText
-import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 
@@ -29,7 +28,6 @@ class Search : AppCompatActivity() {
             startActivity(settingsIntent)
         }
 
-        val linearLayout = findViewById<FrameLayout>(R.id.container)
         val inputEditText = findViewById<EditText>(R.id.input_edit_text)
         val clearButton = findViewById<ImageView>(R.id.clear_icon)
 
