@@ -16,7 +16,7 @@
             android:src="@drawable/arrow_back" />
 
         <TextView
-            style="@style/SettingsHeaderTextStyle"
+            style="@style/HeaderTextStyle"
             android:text="@string/settings"
             tools:ignore="RtlSymmetry" />
     </LinearLayout>
