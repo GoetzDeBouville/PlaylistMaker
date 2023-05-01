@@ -11,12 +11,17 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 
 class Search : AppCompatActivity() {
+    companion object {
+        const val SEARCH_KEY = "SEARCH_KEY"
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
 
         val mediaButton = findViewById<LinearLayout>(R.id.media_layout)
         val settingsButton = findViewById<LinearLayout>(R.id.settings_layout)
+        val inputEditText = findViewById<EditText>(R.id.input_edit_text)
+        val clearButton = findViewById<ImageView>(R.id.clear_icon)
 
         mediaButton.setOnClickListener {
             val mediaIntent = Intent(this, Media::class.java)
@@ -27,9 +32,6 @@ class Search : AppCompatActivity() {
             val settingsIntent = Intent(this, Settings::class.java)
             startActivity(settingsIntent)
         }
-
-        val inputEditText = findViewById<EditText>(R.id.input_edit_text)
-        val clearButton = findViewById<ImageView>(R.id.clear_icon)
 
         clearButton.setOnClickListener {
             inputEditText.setText("")
@@ -49,7 +51,20 @@ class Search : AppCompatActivity() {
             }
         }
         inputEditText.addTextChangedListener(textWatcher)
+
     }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        val inputEditText = findViewById<EditText>(R.id.input_edit_text)
+        outState.putString(SEARCH_KEY, inputEditText.text.toString())
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+        savedInstanceState.getString(SEARCH_KEY, "")
+    }
+
     private fun clearButtonVisibility(s: CharSequence?): Int {
         return if (s.isNullOrEmpty()) {
             View.GONE
