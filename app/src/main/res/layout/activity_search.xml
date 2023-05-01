@@ -5,13 +5,21 @@
 
     style="@style/SearchBackgroundStyle">
 
-    <TextView
-        android:id="@+id/search"
-        style="@style/HeaderTextStyle"
-        android:layout_marginStart="@dimen/common_padding"
-        android:paddingStart="0dp"
-        android:text="@string/search"
-        tools:ignore="RtlSymmetry" />
+    <LinearLayout
+        style="@style/SettingsHeaderStyle"
+        android:layout_marginLeft="@dimen/common_padding"
+        android:orientation="horizontal">
+
+        <ImageView
+            style="@style/SettingsHeaderIconStyle"
+            android:id="@+id/arrow_back"
+            android:src="@drawable/arrow_back" />
+
+        <TextView
+            style="@style/HeaderTextStyle"
+            android:text="@string/search"
+            tools:ignore="RtlSymmetry" />
+    </LinearLayout>
 
     <FrameLayout
         android:id="@+id/container"
@@ -59,60 +67,60 @@
             tools:ignore="ObsoleteLayoutParam,RtlSymmetry" />
     </FrameLayout>
 
-    <LinearLayout
-        android:id="@+id/empty_layout"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:orientation="vertical" />
+<!--    <LinearLayout-->
+<!--        android:id="@+id/empty_layout"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="0dp"-->
+<!--        android:layout_weight="1"-->
+<!--        android:orientation="vertical" />-->
 
-    <LinearLayout
-        android:id="@+id/bottom_linearlayout"
-        android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:layout_gravity="bottom"
-        android:gravity="bottom"
-        android:orientation="horizontal">
+<!--    <LinearLayout-->
+<!--        android:id="@+id/bottom_linearlayout"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="56dp"-->
+<!--        android:layout_gravity="bottom"-->
+<!--        android:gravity="bottom"-->
+<!--        android:orientation="horizontal">-->
 
-        <LinearLayout
-            style="@style/SearchBottomLayoutStyle"
-            android:clickable="false">
+<!--        <LinearLayout-->
+<!--            style="@style/SearchBottomLayoutStyle"-->
+<!--            android:clickable="false">-->
 
-            <ImageView
-                style="@style/SearchBottomIconsStyle"
-                android:src="@drawable/search"
-                app:tint="@color/blue_text" />
+<!--            <ImageView-->
+<!--                style="@style/SearchBottomIconsStyle"-->
+<!--                android:src="@drawable/search"-->
+<!--                app:tint="@color/blue_text" />-->
 
-            <TextView
-                style="@style/SearchBottomTextStyle"
-                android:text="@string/search"
-                android:textColor="@color/blue_text" />
-        </LinearLayout>
+<!--            <TextView-->
+<!--                style="@style/SearchBottomTextStyle"-->
+<!--                android:text="@string/search"-->
+<!--                android:textColor="@color/blue_text" />-->
+<!--        </LinearLayout>-->
 
-        <LinearLayout
-            android:id="@+id/media_layout"
-            style="@style/SearchBottomLayoutStyle">
+<!--        <LinearLayout-->
+<!--            android:id="@+id/media_layout"-->
+<!--            style="@style/SearchBottomLayoutStyle">-->
 
-            <ImageView
-                style="@style/SearchBottomIconsStyle"
-                android:src="@drawable/media"/>
+<!--            <ImageView-->
+<!--                style="@style/SearchBottomIconsStyle"-->
+<!--                android:src="@drawable/media"/>-->
 
-            <TextView
-                style="@style/SearchBottomTextStyle"
-                android:text="@string/media"/>
-        </LinearLayout>
+<!--            <TextView-->
+<!--                style="@style/SearchBottomTextStyle"-->
+<!--                android:text="@string/media"/>-->
+<!--        </LinearLayout>-->
 
-        <LinearLayout
-            android:id="@+id/settings_layout"
-            style="@style/SearchBottomLayoutStyle">
+<!--        <LinearLayout-->
+<!--            android:id="@+id/settings_layout"-->
+<!--            style="@style/SearchBottomLayoutStyle">-->
 
-            <ImageView
-                style="@style/SearchBottomIconsStyle"
-                android:src="@drawable/settings"/>
+<!--            <ImageView-->
+<!--                style="@style/SearchBottomIconsStyle"-->
+<!--                android:src="@drawable/settings"/>-->
 
-            <TextView
-                style="@style/SearchBottomTextStyle"
-                android:text="@string/settings" />
-        </LinearLayout>
-    </LinearLayout>
+<!--            <TextView-->
+<!--                style="@style/SearchBottomTextStyle"-->
+<!--                android:text="@string/settings" />-->
+<!--        </LinearLayout>-->
+<!--    </LinearLayout>-->
 </LinearLayout>

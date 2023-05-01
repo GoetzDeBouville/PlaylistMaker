@@ -102,28 +102,28 @@
         <item name="android:tint">@color/black_text</item>
     </style>
 
-    <style name="SearchBottomLayoutStyle">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">match_parent</item>
-        <item name="android:layout_weight">1</item>
-        <item name="android:clickable">true</item>
-        <item name="android:gravity">center</item>
-        <item name="android:orientation">vertical</item>
-    </style>
+<!--    <style name="SearchBottomLayoutStyle">-->
+<!--        <item name="android:layout_width">match_parent</item>-->
+<!--        <item name="android:layout_height">match_parent</item>-->
+<!--        <item name="android:layout_weight">1</item>-->
+<!--        <item name="android:clickable">true</item>-->
+<!--        <item name="android:gravity">center</item>-->
+<!--        <item name="android:orientation">vertical</item>-->
+<!--    </style>-->
 
-    <style name="SearchBottomIconsStyle">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:gravity">center</item>
-        <item name="android:layout_marginBottom">@dimen/dimen_2dp</item>
-        <item name="android:tint">@color/white</item>
-    </style>
-    <style name="SearchBottomTextStyle">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:gravity">center</item>
-        <item name="android:layout_marginBottom">@dimen/dimen_8dp</item>
-        <item name="android:textColor">@color/white</item>
-    </style>
+<!--    <style name="SearchBottomIconsStyle">-->
+<!--        <item name="android:layout_width">wrap_content</item>-->
+<!--        <item name="android:layout_height">wrap_content</item>-->
+<!--        <item name="android:gravity">center</item>-->
+<!--        <item name="android:layout_marginBottom">@dimen/dimen_2dp</item>-->
+<!--        <item name="android:tint">@color/white</item>-->
+<!--    </style>-->
+<!--    <style name="SearchBottomTextStyle">-->
+<!--        <item name="android:layout_width">wrap_content</item>-->
+<!--        <item name="android:layout_height">wrap_content</item>-->
+<!--        <item name="android:gravity">center</item>-->
+<!--        <item name="android:layout_marginBottom">@dimen/dimen_8dp</item>-->
+<!--        <item name="android:textColor">@color/white</item>-->
+<!--    </style>-->
 
 </resources>

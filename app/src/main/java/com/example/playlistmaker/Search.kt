@@ -19,20 +19,23 @@ class Search : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
 
-        val mediaButton = findViewById<LinearLayout>(R.id.media_layout)
-        val settingsButton = findViewById<LinearLayout>(R.id.settings_layout)
+        val arrowBackButton = findViewById<ImageView>(R.id.arrow_back)
+//        val mediaButton = findViewById<LinearLayout>(R.id.media_layout) // Домашнее задание на разных этапах спринта сильно отличается, поэтому был разработан footer и соответствующие обработчики
+//        val settingsButton = findViewById<LinearLayout>(R.id.settings_layout)
         val inputEditText = findViewById<EditText>(R.id.input_edit_text)
         val clearButton = findViewById<ImageView>(R.id.clear_icon)
 
-        mediaButton.setOnClickListener {
-            val mediaIntent = Intent(this, Media::class.java)
-            startActivity(mediaIntent)
-        }
+        arrowBackButton.setOnClickListener { finish() }
 
-        settingsButton.setOnClickListener {
-            val settingsIntent = Intent(this, Settings::class.java)
-            startActivity(settingsIntent)
-        }
+//        mediaButton.setOnClickListener {
+//            val mediaIntent = Intent(this, Media::class.java)
+//            startActivity(mediaIntent)
+//        }
+//
+//        settingsButton.setOnClickListener {
+//            val settingsIntent = Intent(this, Settings::class.java)
+//            startActivity(settingsIntent)
+//        }
 
         clearButton.setOnClickListener {
             inputEditText.setText("")
