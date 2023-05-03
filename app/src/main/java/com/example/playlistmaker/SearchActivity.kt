@@ -1,16 +1,20 @@
 package com.example.playlistmaker
 
-import android.content.Intent
+import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
+import android.view.inputmethod.InputMethodManager
+import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
-import android.widget.LinearLayout
 
-class Search : AppCompatActivity() {
+class SearchActivity : AppCompatActivity() {
+    private lateinit var inputEditText: EditText
+    private lateinit var clearButton: ImageView
+
     companion object {
         const val SEARCH_KEY = "SEARCH_KEY"
     }
@@ -20,25 +24,16 @@ class Search : AppCompatActivity() {
         setContentView(R.layout.activity_search)
 
         val arrowBackButton = findViewById<ImageView>(R.id.arrow_back)
-//        val mediaButton = findViewById<LinearLayout>(R.id.media_layout) // Домашнее задание на разных этапах спринта сильно отличается, поэтому был разработан footer и соответствующие обработчики
-//        val settingsButton = findViewById<LinearLayout>(R.id.settings_layout)
-        val inputEditText = findViewById<EditText>(R.id.input_edit_text)
-        val clearButton = findViewById<ImageView>(R.id.clear_icon)
+        inputEditText = findViewById(R.id.input_edit_text)
+        clearButton = findViewById(R.id.clear_icon)
 
         arrowBackButton.setOnClickListener { finish() }
 
-//        mediaButton.setOnClickListener {
-//            val mediaIntent = Intent(this, Media::class.java)
-//            startActivity(mediaIntent)
-//        }
-//
-//        settingsButton.setOnClickListener {
-//            val settingsIntent = Intent(this, Settings::class.java)
-//            startActivity(settingsIntent)
-//        }
-
         clearButton.setOnClickListener {
             inputEditText.setText("")
+            val keyboard = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            keyboard.hideSoftInputFromWindow(inputEditText.windowToken, 0) // скрыть клавиатуру
+            inputEditText.clearFocus()
         }
 
         val textWatcher = object : TextWatcher {
@@ -59,7 +54,7 @@ class Search : AppCompatActivity() {
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        val inputEditText = findViewById<EditText>(R.id.input_edit_text)
+        inputEditText = findViewById(R.id.input_edit_text)
         outState.putString(SEARCH_KEY, inputEditText.text.toString())
     }
 

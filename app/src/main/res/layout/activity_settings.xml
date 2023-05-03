@@ -3,20 +3,22 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/SettingsBackgroundStyle"
-    android:paddingHorizontal="@dimen/common_padding"
-    android:paddingTop="@dimen/layouts_padding">
+    android:paddingHorizontal="@dimen/dimen_16dp"
+    android:paddingTop="@dimen/dimen_16dp">
 
     <LinearLayout
-        style="@style/SettingsHeaderStyle"
+        style="@style/ActivityHeaderStyle"
         android:orientation="horizontal">
 
         <ImageView
-            style="@style/SettingsHeaderIconStyle"
             android:id="@+id/arrow_back"
+            style="@style/SettingsHeaderIconStyle"
+            android:layout_marginStart="@dimen/dimen_4dp"
             android:src="@drawable/arrow_back" />
 
         <TextView
-            style="@style/HeaderTextStyle"
+            style="@style/SettingsHeaderTextStyle"
+            android:paddingStart="@dimen/dimen_28dp"
             android:text="@string/settings"
             tools:ignore="RtlSymmetry" />
     </LinearLayout>
@@ -24,12 +26,12 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/layouts_paddingtop_large"
+        android:layout_marginTop="@dimen/dimen_40dp"
         android:orientation="horizontal">
 
         <TextView
             style="@style/SettingsTitle"
-            android:layout_marginVertical="21dp"
+            android:layout_marginVertical="@dimen/dimen_20dp"
             android:layout_weight="1"
             android:text="@string/dark_theme" />
 
@@ -37,12 +39,15 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="bottom"
-            android:minWidth="48dp"
+            android:minWidth="@dimen/dimen_48dp"
             tools:ignore="UseSwitchCompatOrMaterialXml" />
 
     </LinearLayout>
 
-    <LinearLayout style="@style/SettingsOptionContainer">
+    <LinearLayout
+        android:id="@+id/share_app"
+        style="@style/SettingsOptionContainer"
+        android:paddingVertical="@dimen/dimen_20dp">
 
         <TextView
             style="@style/SettingsTitle"
@@ -50,13 +55,15 @@
             android:text="@string/share_app" />
 
         <ImageView
-            android:id="@+id/share_app"
             style="@style/SettingsIcon"
             android:src="@drawable/share" />
 
     </LinearLayout>
 
-    <LinearLayout style="@style/SettingsOptionContainer">
+    <LinearLayout
+        android:id="@+id/text_to_support"
+        style="@style/SettingsOptionContainer"
+        android:paddingVertical="@dimen/dimen_20dp">
 
         <TextView
             style="@style/SettingsTitle"
@@ -64,13 +71,15 @@
             android:text="@string/text_to_support" />
 
         <ImageView
-            android:id="@+id/text_to_support"
             style="@style/SettingsIcon"
             android:src="@drawable/support" />
 
     </LinearLayout>
 
-    <LinearLayout style="@style/SettingsOptionContainer">
+    <LinearLayout
+        android:id="@+id/user_agreement"
+        style="@style/SettingsOptionContainer"
+        android:paddingVertical="@dimen/dimen_20dp">
 
         <TextView
             style="@style/SettingsTitle"
@@ -78,7 +87,6 @@
             android:text="@string/user_agreement" />
 
         <ImageView
-            android:id="@+id/user_agreement"
             style="@style/SettingsIcon"
             android:src="@drawable/arrow_forward" />
     </LinearLayout>

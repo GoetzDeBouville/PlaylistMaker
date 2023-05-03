@@ -10,4 +10,11 @@
     <string name="user_agreement">Пользовательское соглашение</string>
     <string name="arrow_back">arrow_back</string>
     <string name="media_screen">Media screen</string>
+    <string name="android_practicum_link">https://practicum.yandex.ru/android-developer/</string>
+    <string name="target_email">zinchencko.alexei2018@yandex.ru</string>
+    <string name="subject">Сообщение разработчикам и разработчицам приложения Playlist Maker</string>
+    <string name="text_message">Спасибо разработчикам и разработчицам за крутое приложение!</string>
+    <string name="text_email_app">Выберите приложение для отправления письма</string>
+    <string name="text_no_email_app">На устройстве не обнаружено ни одного почтового клиента</string>
+    <string name="practicum_offer_link">https://yandex.ru/legal/practicum_offer/</string>
 </resources>

@@ -2,41 +2,47 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     style="@style/MainActivityBackgroundStyle"
-    android:paddingHorizontal="@dimen/common_padding">
+    android:paddingHorizontal="@dimen/dimen_16dp">
 
     <TextView
         style="@style/MainTitle"
-        android:paddingTop="@dimen/layouts_padding"
+        android:paddingTop="@dimen/dimen_16dp"
         android:text="@string/playlist_maker" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:paddingTop="24dp"
-        android:paddingBottom="@dimen/vertical_padding">
+        android:paddingTop="@dimen/dimen_24dp"
+        android:paddingBottom="@dimen/dimen_28dp">
 
         <Button
             android:id="@+id/search"
             style="@style/MainButton"
             android:layout_weight="1"
+            android:insetTop="@dimen/dimen_16dp"
             android:text="@string/search"
-            app:icon="@drawable/search" />
+            app:icon="@drawable/search"
+            app:iconPadding="@dimen/dimen_8dp" />
 
         <Button
             android:id="@+id/media"
             style="@style/MainButton"
             android:layout_weight="1"
+            android:insetTop="@dimen/dimen_16dp"
             android:text="@string/media"
-            app:icon="@drawable/media" />
+            app:icon="@drawable/media"
+            app:iconPadding="@dimen/dimen_8dp" />
 
 
         <Button
             android:id="@+id/settings"
             style="@style/MainButton"
             android:layout_weight="1"
+            android:insetTop="@dimen/dimen_16dp"
             android:text="@string/settings"
-            app:icon="@drawable/settings" />
+            app:icon="@drawable/settings"
+            app:iconPadding="@dimen/dimen_8dp" />
     </LinearLayout>
 
 </LinearLayout>
