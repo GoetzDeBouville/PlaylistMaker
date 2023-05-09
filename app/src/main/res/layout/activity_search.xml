@@ -2,9 +2,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-
     style="@style/SearchBackgroundStyle"
-    android:paddingTop="@dimen/dimen_16dp">
+    android:paddingTop="@dimen/dimen_16dp"
+    android:paddingBottom="@dimen/dimen_56dp">
 
     <LinearLayout
         style="@style/ActivityHeaderStyle"
@@ -45,7 +45,7 @@
             android:paddingStart="@dimen/dimen_36dp"
             android:singleLine="true"
             android:textColor="@color/black_text"
-            tools:ignore="RtlSymmetry,TouchTargetSizeCheck" />
+            tools:ignore="Autofill,RtlSymmetry,TouchTargetSizeCheck" />
 
         <ImageView
             android:id="@+id/search_icon"
@@ -71,13 +71,23 @@
             tools:ignore="ContentDescription,ObsoleteLayoutParam,RtlSymmetry" />
     </FrameLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:paddingTop="@dimen/dimen_24dp"
-        android:paddingEnd="@dimen/dimen_24dp"
-        android:paddingStart="@dimen/dimen_16dp"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        tools:listitem="@layout/item_track" />
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:paddingStart="@dimen/dimen_16dp"
+        android:paddingEnd="@dimen/dimen_24dp"
+        android:paddingTop="@dimen/dimen_24dp"
+        tools:ignore="RtlSymmetry">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/tracklist_recycler"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clipToPadding="false"
+            tools:itemCount="12"
+            tools:listitem="@layout/item_track" />
+    </LinearLayout>
+
 
 </LinearLayout>

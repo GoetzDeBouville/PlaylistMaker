@@ -102,7 +102,7 @@
         <item name="android:textSize">@dimen/extra_small_text</item>
     </style>
 
-    <style name="DotIconStyle">
+    <style name="EllipseIconStyle">
         <item name="tint">@color/text_gray</item>
     </style>
 </resources>
