@@ -1,18 +1,128 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/white"
-    android:orientation="vertical"
-    android:paddingHorizontal="@dimen/common_padding">
+    xmlns:tools="http://schemas.android.com/tools"
 
-    <TextView
+    style="@style/SearchBackgroundStyle"
+    android:paddingTop="@dimen/dimen_16dp">
+
+    <LinearLayout
+        style="@style/ActivityHeaderStyle"
+        android:layout_marginLeft="@dimen/dimen_16dp"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/arrow_back"
+            style="@style/SettingsHeaderIconStyle"
+            android:src="@drawable/arrow_back" />
+
+        <TextView
+            style="@style/SettingsHeaderTextStyle"
+            android:paddingStart="@dimen/dimen_28dp"
+            android:text="@string/search"
+            tools:ignore="RtlSymmetry" />
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:text="@string/search_screen"
-        android:textColor="@color/black_text"
-        android:textSize="@dimen/large_text"
-        android:textStyle="bold" />
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/dimen_16dp"
+        android:layout_marginTop="@dimen/dimen_24dp"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/input_edit_text"
+            style="@style/SearchEditextStyle"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dimen_36dp"
+            android:drawablePadding="@dimen/dimen_8dp"
+            android:hint="@string/search"
+            android:inputType="text"
+            android:maxLines="1"
+            android:paddingStart="@dimen/dimen_36dp"
+            android:singleLine="true"
+            android:textColor="@color/black_text"
+            tools:ignore="RtlSymmetry" />
+
+        <ImageView
+            android:id="@+id/search_icon"
+            style="@style/SearchEditextIconStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentEnd="true"
+            android:layout_gravity="start"
+            android:paddingStart="13dp"
+            android:src="@drawable/search"
+            tools:ignore="ObsoleteLayoutParam,RtlSymmetry" />
+
+        <ImageView
+            android:id="@+id/clear_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="end"
+            android:clickable="true"
+            android:paddingEnd="@dimen/dimen_12dp"
+            android:src="@drawable/ic_baseline_clear"
+            android:visibility="gone"
+            app:tint="@color/black_text"
+            tools:ignore="ObsoleteLayoutParam,RtlSymmetry" />
+    </FrameLayout>
+
+    <!--    <LinearLayout-->
+    <!--        android:id="@+id/empty_layout"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="0dp"-->
+    <!--        android:layout_weight="1"-->
+    <!--        android:orientation="vertical" />-->
+
+    <!--    <LinearLayout-->
+    <!--        android:id="@+id/bottom_linearlayout"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="56dp"-->
+    <!--        android:layout_gravity="bottom"-->
+    <!--        android:gravity="bottom"-->
+    <!--        android:orientation="horizontal">-->
+
+    <!--        <LinearLayout-->
+    <!--            style="@style/SearchBottomLayoutStyle"-->
+    <!--            android:clickable="false">-->
+
+    <!--            <ImageView-->
+    <!--                style="@style/SearchBottomIconsStyle"-->
+    <!--                android:src="@drawable/search"-->
+    <!--                app:tint="@color/blue_text" />-->
+
+    <!--            <TextView-->
+    <!--                style="@style/SearchBottomTextStyle"-->
+    <!--                android:text="@string/search"-->
+    <!--                android:textColor="@color/blue_text" />-->
+    <!--        </LinearLayout>-->
+
+    <!--        <LinearLayout-->
+    <!--            android:id="@+id/media_layout"-->
+    <!--            style="@style/SearchBottomLayoutStyle">-->
+
+    <!--            <ImageView-->
+    <!--                style="@style/SearchBottomIconsStyle"-->
+    <!--                android:src="@drawable/media"/>-->
+
+    <!--            <TextView-->
+    <!--                style="@style/SearchBottomTextStyle"-->
+    <!--                android:text="@string/media"/>-->
+    <!--        </LinearLayout>-->
+
+    <!--        <LinearLayout-->
+    <!--            android:id="@+id/settings_layout"-->
+    <!--            style="@style/SearchBottomLayoutStyle">-->
+
+    <!--            <ImageView-->
+    <!--                style="@style/SearchBottomIconsStyle"-->
+    <!--                android:src="@drawable/settings"/>-->
+
+    <!--            <TextView-->
+    <!--                style="@style/SearchBottomTextStyle"-->
+    <!--                android:text="@string/settings" />-->
+    <!--        </LinearLayout>-->
+    <!--    </LinearLayout>-->
 </LinearLayout>
