@@ -17,4 +17,8 @@
     <string name="text_email_app">Выберите приложение для отправления письма</string>
     <string name="text_no_email_app">На устройстве не обнаружено ни одного почтового клиента</string>
     <string name="practicum_offer_link">https://yandex.ru/legal/practicum_offer/</string>
+    <string name="artwork_url_100">url</string>
+    <string name="track_name">Название композиции</string>
+    <string name="artist_name">Имя исполнителя</string>
+    <string name="track_time">Продолжительность</string>
 </resources>
