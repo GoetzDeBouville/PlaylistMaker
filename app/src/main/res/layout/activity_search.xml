@@ -7,15 +7,13 @@
 
     <LinearLayout
         style="@style/ActivityHeaderStyle"
-        android:layout_marginStart="@dimen/dimen_16dp"
-        android:orientation="horizontal"
-        tools:ignore="UseCompoundDrawables">
+        android:layout_marginLeft="@dimen/dimen_16dp"
+        android:orientation="horizontal">
 
         <ImageView
             android:id="@+id/arrow_back"
             style="@style/SettingsHeaderIconStyle"
-            android:src="@drawable/arrow_back"
-            tools:ignore="ContentDescription" />
+            android:src="@drawable/arrow_back" />
 
         <TextView
             style="@style/SettingsHeaderTextStyle"
@@ -44,7 +42,11 @@
             android:paddingStart="@dimen/dimen_36dp"
             android:singleLine="true"
             android:textColor="@color/black_text"
+<<<<<<< HEAD
             tools:ignore="Autofill,RtlSymmetry,TouchTargetSizeCheck" />
+=======
+            tools:ignore="RtlSymmetry" />
+>>>>>>> parent of eb9be77 (Импортирован Glide. Подготовлена тема для SearchActivity)
 
         <ImageView
             android:id="@+id/search_icon"
@@ -55,7 +57,7 @@
             android:layout_gravity="start"
             android:paddingStart="13dp"
             android:src="@drawable/search"
-            tools:ignore="ContentDescription,ObsoleteLayoutParam,RtlSymmetry" />
+            tools:ignore="ObsoleteLayoutParam,RtlSymmetry" />
 
         <ImageView
             android:id="@+id/clear_icon"
@@ -67,9 +69,10 @@
             android:src="@drawable/ic_baseline_clear"
             android:visibility="gone"
             app:tint="@color/black_text"
-            tools:ignore="ContentDescription,ObsoleteLayoutParam,RtlSymmetry" />
+            tools:ignore="ObsoleteLayoutParam,RtlSymmetry" />
     </FrameLayout>
 
+<<<<<<< HEAD
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -88,5 +91,62 @@
             tools:listitem="@layout/item_track" />
     </LinearLayout>
 
+=======
+    <!--    <LinearLayout-->
+    <!--        android:id="@+id/empty_layout"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="0dp"-->
+    <!--        android:layout_weight="1"-->
+    <!--        android:orientation="vertical" />-->
+>>>>>>> parent of eb9be77 (Импортирован Glide. Подготовлена тема для SearchActivity)
 
+    <!--    <LinearLayout-->
+    <!--        android:id="@+id/bottom_linearlayout"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="56dp"-->
+    <!--        android:layout_gravity="bottom"-->
+    <!--        android:gravity="bottom"-->
+    <!--        android:orientation="horizontal">-->
+
+    <!--        <LinearLayout-->
+    <!--            style="@style/SearchBottomLayoutStyle"-->
+    <!--            android:clickable="false">-->
+
+    <!--            <ImageView-->
+    <!--                style="@style/SearchBottomIconsStyle"-->
+    <!--                android:src="@drawable/search"-->
+    <!--                app:tint="@color/blue_text" />-->
+
+    <!--            <TextView-->
+    <!--                style="@style/SearchBottomTextStyle"-->
+    <!--                android:text="@string/search"-->
+    <!--                android:textColor="@color/blue_text" />-->
+    <!--        </LinearLayout>-->
+
+    <!--        <LinearLayout-->
+    <!--            android:id="@+id/media_layout"-->
+    <!--            style="@style/SearchBottomLayoutStyle">-->
+
+    <!--            <ImageView-->
+    <!--                style="@style/SearchBottomIconsStyle"-->
+    <!--                android:src="@drawable/media"/>-->
+
+    <!--            <TextView-->
+    <!--                style="@style/SearchBottomTextStyle"-->
+    <!--                android:text="@string/media"/>-->
+    <!--        </LinearLayout>-->
+
+    <!--        <LinearLayout-->
+    <!--            android:id="@+id/settings_layout"-->
+    <!--            style="@style/SearchBottomLayoutStyle">-->
+
+    <!--            <ImageView-->
+    <!--                style="@style/SearchBottomIconsStyle"-->
+    <!--                android:src="@drawable/settings"/>-->
+
+    <!--            <TextView-->
+    <!--                style="@style/SearchBottomTextStyle"-->
+    <!--                android:text="@string/settings" />-->
+    <!--        </LinearLayout>-->
+    <!--    </LinearLayout>-->
 </LinearLayout>
