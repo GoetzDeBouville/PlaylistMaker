@@ -9,6 +9,10 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.example.playlistmaker.track.TrackAdapter
+import com.example.playlistmaker.track.tracklistCreator
 
 class SearchActivity : AppCompatActivity() {
     private lateinit var inputEditText: EditText
@@ -49,6 +53,16 @@ class SearchActivity : AppCompatActivity() {
             }
         }
         inputEditText.addTextChangedListener(textWatcher)
+
+        //! Mock-object:
+        val trackList = tracklistCreator()
+
+        val recyclerView = findViewById<RecyclerView>(R.id.tracklist_recycler)
+        recyclerView.layoutManager = LinearLayoutManager(this)
+        recyclerView.invalidate()
+
+        val trackAdapter = TrackAdapter(trackList)
+        recyclerView.adapter = trackAdapter
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -59,7 +73,7 @@ class SearchActivity : AppCompatActivity() {
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
-        savedInstanceState.getString(SEARCH_KEY, "")
+        inputEditText.setText(savedInstanceState.getString(SEARCH_KEY, ""))
     }
 
     private fun clearButtonVisibility(s: CharSequence?): Int {
