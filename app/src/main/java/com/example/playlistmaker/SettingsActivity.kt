@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.Toast
+import com.google.android.material.switchmaterial.SwitchMaterial
 
 class SettingsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -18,11 +19,15 @@ class SettingsActivity : AppCompatActivity() {
         val shareAppButton = findViewById<LinearLayout>(R.id.share_app)
         val sendEmailButton = findViewById<LinearLayout>(R.id.text_to_support)
         val readOfferLink = findViewById<LinearLayout>(R.id.user_agreement)
+        val themeSwitcher = findViewById<SwitchMaterial>(R.id.themeSwitcher)
 
         arrowBackButton.setOnClickListener { finish() }
         shareAppButton.setOnClickListener { shareApp() }
         sendEmailButton.setOnClickListener { sendEmail() }
         readOfferLink.setOnClickListener { readOffer() }
+        themeSwitcher.setOnCheckedChangeListener { switcher, checked ->
+            (applicationContext as App).switchTheme(checked)
+        }
     }
 
     private fun shareApp() {
