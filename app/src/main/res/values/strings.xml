@@ -21,4 +21,7 @@
     <string name="track_name">Название композиции</string>
     <string name="artist_name">Имя исполнителя</string>
     <string name="track_time">Продолжительность</string>
+    <string name="refresh">Обновить</string>
+    <string name="check_connection">Проблемы со связью\n\nЗагрузка не удалась. Проверьте подключение к интернету</string>
+    <string name="nothing_found">Ничего не нашлось</string>
 </resources>
