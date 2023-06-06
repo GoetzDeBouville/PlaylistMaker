@@ -8,11 +8,9 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import android.widget.EditText
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.playlistmaker.databinding.ActivitySearchBinding
 import com.example.playlistmaker.itunesApi.ItunesResponce
@@ -23,8 +21,6 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-const val SEARCH_KEY = "search_key"
-const val SHARED_PREFERERNCES = "playlist_maker_preferences"
 
 @Suppress("UNUSED_EXPRESSION")
 class SearchActivity : AppCompatActivity() {
@@ -46,7 +42,11 @@ class SearchActivity : AppCompatActivity() {
         NO_INTERNET
     }
 
-    @SuppressLint("NotifyDataSetChanged")
+    companion object {
+        const val SEARCH_KEY = "search_key"
+        const val SHARED_PREFERERNCES = "playlist_maker_preferences"
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySearchBinding.inflate(layoutInflater)
@@ -58,61 +58,9 @@ class SearchActivity : AppCompatActivity() {
 
         buildRecyclerView()
         buildHIstoryRecyclerView()
-
-        binding.inputEditText.setText(savedSearchRequest)
-
-        binding.inputEditText.setOnFocusChangeListener { view, hasFocus ->
-            binding.historyLayout.visibility =
-                if (hasFocus && binding.inputEditText.text.isEmpty() && historyTracklist.isNotEmpty())
-                    View.VISIBLE
-                else
-                    View.GONE
-        }
-
-        binding.inputEditText.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                //empty
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                binding.buttonClearHistory.visibility = clearButtonVisibility(s)
-                if (s != null) {
-                    binding.historyLayout.visibility =
-                        if (binding.inputEditText.hasFocus() && s.isEmpty() && historyTracklist.isNotEmpty())
-                            View.VISIBLE
-                        else
-                            View.GONE
-                }
-            }
-
-            override fun afterTextChanged(s: Editable?) {
-                savedSearchRequest = s.toString()
-            }
-        })
-
-        binding.inputEditText.setOnEditorActionListener { _, actionId, _ ->
-            if (actionId == EditorInfo.IME_ACTION_DONE) {
-                search()
-                true
-            }
-            false
-        }
-
-        binding.clearIcon.setOnClickListener {
-            binding.inputEditText.setText("")
-            savedSearchRequest = ""
-
-            val keyboard = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-            keyboard.hideSoftInputFromWindow(
-                binding.inputEditText.windowToken,
-                0
-            )
-            binding.inputEditText.clearFocus()
-
-            tracksList.clear()
-            trackAdapter.notifyDataSetChanged()
-            binding.placeholderError.visibility = View.GONE
-        }
+        clearUserInput()
+        clearHistory()
+        procesUserInputListener()
 
         binding.refreshButton.setOnClickListener {
             search()
@@ -137,16 +85,76 @@ class SearchActivity : AppCompatActivity() {
                     }
                 }
             }
-
-
-
+        
         sharedPreferences.registerOnSharedPreferenceChangeListener(observer)
+    }
 
+
+    private fun clearHistory() {
         binding.buttonClearHistory.setOnClickListener {
             historyTrackList.clearHistory()
             historyTracklist.clear()
             binding.historyLayout.visibility = View.GONE
             trackHistoryAdapter.notifyDataSetChanged()
+        }
+    }
+
+    private fun clearUserInput() {
+        binding.clearIcon.setOnClickListener {
+            binding.inputEditText.setText("")
+            savedSearchRequest = ""
+
+            val keyboard = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            keyboard.hideSoftInputFromWindow(
+                binding.inputEditText.windowToken,
+                0
+            )
+            binding.inputEditText.clearFocus()
+
+            tracksList.clear()
+            trackAdapter.notifyDataSetChanged()
+            binding.placeholderError.visibility = View.GONE
+        }
+    }
+
+    private fun procesUserInputListener() {
+        binding.inputEditText.setText(savedSearchRequest)
+
+        binding.inputEditText.setOnFocusChangeListener { view, hasFocus ->
+            binding.historyLayout.visibility =
+                if (hasFocus && binding.inputEditText.text.isEmpty() && historyTracklist.isNotEmpty())
+                    View.VISIBLE
+                else
+                    View.GONE
+        }
+
+        binding.inputEditText.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                binding.clearIcon.visibility = if (s.isNullOrEmpty()) View.GONE else View.VISIBLE
+                binding.buttonClearHistory.visibility = clearButtonVisibility(s)
+                if (s != null) {
+                    binding.historyLayout.visibility =
+                        if (binding.inputEditText.hasFocus() && s.isEmpty() && historyTracklist.isNotEmpty())
+                            View.VISIBLE
+                        else
+                            View.GONE
+                }
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+                savedSearchRequest = s.toString()
+            }
+        })
+
+        binding.inputEditText.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                search()
+                true
+            }
+            false
         }
     }
 

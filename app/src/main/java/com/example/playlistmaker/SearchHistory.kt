@@ -2,15 +2,13 @@ package com.example.playlistmaker
 
 import android.annotation.SuppressLint
 import android.content.SharedPreferences
-import android.util.Log
 import com.example.playlistmaker.track.Track
 import com.google.gson.Gson
-import java.util.LinkedList
 
 const val HISTORY_TRACKLIST = "history_tracklist"
 
 class SearchHistory(private val sharedPreferences: SharedPreferences) {
-    val historyTrackList = LinkedList<Track>()
+    val historyTrackList = mutableListOf<Track>()
     private val gson = Gson()
 
     init {
@@ -28,11 +26,12 @@ class SearchHistory(private val sharedPreferences: SharedPreferences) {
 
     @SuppressLint("CommitPrefEdits")
     fun addTrack(track: Track) {
-        if (historyTrackList.size == 10) {
+        if(track in historyTrackList) {
+            historyTrackList.remove(track)
+        } else if (historyTrackList.size == 10) {
             historyTrackList.removeLast()
         }
-        historyTrackList.addFirst(track)
-        Log.e("SearchHistory.add", historyTrackList.toString())
+        historyTrackList.add(0, track)
         sharedPreferences.edit()
             .putString(HISTORY_TRACKLIST, historyTrackList.toTypedArray().fromTracklistToJson())
             .apply()
