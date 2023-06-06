@@ -2,6 +2,7 @@ package com.example.playlistmaker
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.content.SharedPreferences
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -10,7 +11,11 @@ import android.widget.LinearLayout
 import android.widget.Toast
 import com.google.android.material.switchmaterial.SwitchMaterial
 
+private val SHARED_PREFERENCES_NAME = "app_preferences"
+private val THEME_KEY = "theme_key"
+private lateinit var sharedPreferences: SharedPreferences
 class SettingsActivity : AppCompatActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
@@ -21,13 +26,21 @@ class SettingsActivity : AppCompatActivity() {
         val readOfferLink = findViewById<LinearLayout>(R.id.user_agreement)
         val themeSwitcher = findViewById<SwitchMaterial>(R.id.themeSwitcher)
 
+        sharedPreferences = getSharedPreferences(SHARED_PREFERENCES_NAME, MODE_PRIVATE)
+        themeSwitcher.isChecked = sharedPreferences.getBoolean(THEME_KEY, false)
+
         arrowBackButton.setOnClickListener { finish() }
         shareAppButton.setOnClickListener { shareApp() }
         sendEmailButton.setOnClickListener { sendEmail() }
         readOfferLink.setOnClickListener { readOffer() }
-        themeSwitcher.setOnCheckedChangeListener { switcher, checked ->
-            (applicationContext as App).switchTheme(checked)
+        themeSwitcher.setOnCheckedChangeListener { switcher, isChecked ->
+            (applicationContext as App).switchTheme(isChecked)
+            saveTheme(isChecked)
         }
+    }
+
+    private fun saveTheme(isDarkTheme: Boolean) {
+        sharedPreferences.edit().putBoolean(THEME_KEY, isDarkTheme).apply()
     }
 
     private fun shareApp() {
