@@ -2,14 +2,17 @@ package com.example.playlistmaker
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.SharedPreferences
 import android.content.res.Configuration
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.playlistmaker.databinding.ActivitySearchBinding
 import com.example.playlistmaker.itunesApi.ItunesResponce
@@ -20,23 +23,27 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
+const val SEARCH_KEY = "search_key"
+const val SHARED_PREFERERNCES = "playlist_maker_preferences"
+
 @Suppress("UNUSED_EXPRESSION")
 class SearchActivity : AppCompatActivity() {
     private val itunesService = ItunesService.itunesService
     private val tracksList = ArrayList<Track>()
     private val trackAdapter = TrackAdapter()
+    private val trackHistoryAdapter = TrackAdapter()
+    private val historyTracklist = ArrayList<Track>()
     private var savedSearchRequest = ""
 
     private lateinit var binding: ActivitySearchBinding
+    private lateinit var sharedPreferences: SharedPreferences
+    private lateinit var observer: SharedPreferences.OnSharedPreferenceChangeListener
+    private lateinit var historyTrackList: SearchHistory
 
     enum class LoadingStatus {
         FAILED_SEARCH,
         SUCCESS,
         NO_INTERNET
-    }
-
-    companion object {
-        const val SEARCH_KEY = "SEARCH_KEY"
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -45,9 +52,22 @@ class SearchActivity : AppCompatActivity() {
         binding = ActivitySearchBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        sharedPreferences = getSharedPreferences(SHARED_PREFERERNCES, MODE_PRIVATE)
+        historyTrackList = SearchHistory(sharedPreferences)
+        historyTracklist.addAll(historyTrackList.historyTrackList)
+
         buildRecyclerView()
+        buildHIstoryRecyclerView()
 
         binding.inputEditText.setText(savedSearchRequest)
+
+        binding.inputEditText.setOnFocusChangeListener { view, hasFocus ->
+            binding.historyLayout.visibility =
+                if (hasFocus && binding.inputEditText.text.isEmpty() && historyTracklist.isNotEmpty())
+                    View.VISIBLE
+                else
+                    View.GONE
+        }
 
         binding.inputEditText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -55,7 +75,14 @@ class SearchActivity : AppCompatActivity() {
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                binding.clearIcon.visibility = clearButtonVisibility(s)
+                binding.buttonClearHistory.visibility = clearButtonVisibility(s)
+                if (s != null) {
+                    binding.historyLayout.visibility =
+                        if (binding.inputEditText.hasFocus() && s.isEmpty() && historyTracklist.isNotEmpty())
+                            View.VISIBLE
+                        else
+                            View.GONE
+                }
             }
 
             override fun afterTextChanged(s: Editable?) {
@@ -79,7 +106,7 @@ class SearchActivity : AppCompatActivity() {
             keyboard.hideSoftInputFromWindow(
                 binding.inputEditText.windowToken,
                 0
-            ) // скрыть клавиатуру
+            )
             binding.inputEditText.clearFocus()
 
             tracksList.clear()
@@ -94,12 +121,46 @@ class SearchActivity : AppCompatActivity() {
         binding.arrowBack.setOnClickListener {
             finish()
         }
+
+        if (historyTracklist.isNotEmpty()) {
+            binding.historyLayout.visibility = View.VISIBLE
+        }
+
+        observer =
+            SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, key ->
+                if (key == HISTORY_TRACKLIST) {
+                    val history = sharedPreferences?.getString(HISTORY_TRACKLIST, null)
+                    if (history != null) {
+                        historyTracklist.clear()
+                        historyTracklist.addAll(historyTrackList.fromJsonToTracklist(history))
+                        trackHistoryAdapter.notifyDataSetChanged()
+                    }
+                }
+            }
+
+
+
+        sharedPreferences.registerOnSharedPreferenceChangeListener(observer)
+
+        binding.buttonClearHistory.setOnClickListener {
+            historyTrackList.clearHistory()
+            historyTracklist.clear()
+            binding.historyLayout.visibility = View.GONE
+            trackHistoryAdapter.notifyDataSetChanged()
+        }
     }
 
     private fun buildRecyclerView() {
         binding.tracklistRecycler.layoutManager = LinearLayoutManager(this)
-        trackAdapter.tracksList = tracksList
+        trackAdapter.trackList = tracksList
+        trackAdapter.onClickedTrack = { track: Track -> historyTrackList.addTrack(track) }
         binding.tracklistRecycler.adapter = trackAdapter
+    }
+
+    private fun buildHIstoryRecyclerView() {
+        binding.historyRecyclerView.layoutManager = LinearLayoutManager(this)
+        trackHistoryAdapter.trackList = historyTracklist
+        binding.historyRecyclerView.adapter = trackHistoryAdapter
     }
 
     private fun search() {
