@@ -23,7 +23,8 @@ class TrackAdapter : RecyclerView.Adapter<TrackAdapter.TrackViewHolder>() {
         fun bind(model: Track) {
             songTitle.text = model.trackName
             artist.text = model.artistName
-            duration.text = SimpleDateFormat("mm:ss", Locale.getDefault()).format(model.trackTimeMillis)
+            duration.text =
+                SimpleDateFormat("mm:ss", Locale.getDefault()).format(model.trackTimeMillis)
             Glide.with(itemView)
                 .load(model.artworkUrl100)
                 .placeholder(R.drawable.empty_poster)
@@ -32,15 +33,20 @@ class TrackAdapter : RecyclerView.Adapter<TrackAdapter.TrackViewHolder>() {
         }
     }
 
-    var tracksList = ArrayList<Track>()
+    var trackList = ArrayList<Track>()
+    var onClickedTrack: ((Track) -> Unit)? = null
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrackViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_track, parent, false)
         return TrackViewHolder(view)
     }
 
-    override fun getItemCount() = tracksList.size
+    override fun getItemCount() = trackList.size
 
     override fun onBindViewHolder(holder: TrackViewHolder, position: Int) {
-        holder.bind(tracksList[position])
+        holder.bind(trackList[position])
+
+        holder.itemView.setOnClickListener {
+            onClickedTrack?.invoke(trackList[position])
+        }
     }
 }
