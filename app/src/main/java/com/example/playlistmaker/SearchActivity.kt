@@ -42,11 +42,6 @@ class SearchActivity : AppCompatActivity() {
         NO_INTERNET
     }
 
-    companion object {
-        const val SEARCH_KEY = "search_key"
-        const val SHARED_PREFERERNCES = "playlist_maker_preferences"
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySearchBinding.inflate(layoutInflater)
@@ -255,5 +250,10 @@ class SearchActivity : AppCompatActivity() {
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putString(SEARCH_KEY, savedSearchRequest)
+    }
+
+    companion object {
+        const val SEARCH_KEY = "search_key"
+        const val SHARED_PREFERERNCES = "playlist_maker_preferences"
     }
 }
