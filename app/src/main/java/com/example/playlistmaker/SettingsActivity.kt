@@ -9,6 +9,8 @@ import android.os.Bundle
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.Toast
+import com.bitvale.switcher.Switcher
+import com.bitvale.switcher.SwitcherX
 import com.google.android.material.switchmaterial.SwitchMaterial
 
 private val SHARED_PREFERENCES_NAME = "app_preferences"
@@ -24,16 +26,17 @@ class SettingsActivity : AppCompatActivity() {
         val shareAppButton = findViewById<LinearLayout>(R.id.share_app)
         val sendEmailButton = findViewById<LinearLayout>(R.id.text_to_support)
         val readOfferLink = findViewById<LinearLayout>(R.id.user_agreement)
-        val themeSwitcher = findViewById<SwitchMaterial>(R.id.themeSwitcher)
+        val themeSwitcher = findViewById<SwitcherX>(R.id.themeSwitcher)
 
         sharedPreferences = getSharedPreferences(SHARED_PREFERENCES_NAME, MODE_PRIVATE)
-        themeSwitcher.isChecked = sharedPreferences.getBoolean(THEME_KEY, false)
+
+        themeSwitcher.setChecked(sharedPreferences.getBoolean(THEME_KEY, false))
 
         arrowBackButton.setOnClickListener { finish() }
         shareAppButton.setOnClickListener { shareApp() }
         sendEmailButton.setOnClickListener { sendEmail() }
         readOfferLink.setOnClickListener { readOffer() }
-        themeSwitcher.setOnCheckedChangeListener { switcher, isChecked ->
+        themeSwitcher.setOnCheckedChangeListener { isChecked ->
             (applicationContext as App).switchTheme(isChecked)
             saveTheme(isChecked)
         }

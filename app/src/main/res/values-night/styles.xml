@@ -80,6 +80,14 @@
         <item name="android:fontFamily">@font/ys_display_regular</item>
     </style>
 
+    <style name="SettingsThemeSwitcher">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="switcher_on_color">@color/switcher_on_color</item>
+        <item name="switcher_off_color">@color/icon_color</item>
+        <item name="switcher_icon_color">@color/white</item>
+    </style>
+
     <style name="SearchBackgroundStyle">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">match_parent</item>
