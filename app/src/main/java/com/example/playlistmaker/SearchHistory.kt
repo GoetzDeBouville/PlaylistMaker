@@ -8,12 +8,12 @@ import com.google.gson.Gson
 const val HISTORY_TRACKLIST = "history_tracklist"
 
 class SearchHistory(private val sharedPreferences: SharedPreferences) {
-    val historyTrackList = mutableListOf<Track>()
+    val savedInHistoryTracks = mutableListOf<Track>()
     private val gson = Gson()
 
     init {
         sharedPreferences.getString(HISTORY_TRACKLIST, "")?.let {
-            if (it.isNotEmpty()) historyTrackList.addAll(fromJsonToTracklist(it))
+            if (it.isNotEmpty()) savedInHistoryTracks.addAll(fromJsonToTracklist(it))
         }
     }
 
@@ -26,19 +26,19 @@ class SearchHistory(private val sharedPreferences: SharedPreferences) {
 
     @SuppressLint("CommitPrefEdits")
     fun addTrack(track: Track) {
-        if(track in historyTrackList) {
-            historyTrackList.remove(track)
-        } else if (historyTrackList.size == 10) {
-            historyTrackList.removeLast()
+        if (track in savedInHistoryTracks) {
+            savedInHistoryTracks.remove(track)
+        } else if (savedInHistoryTracks.size == 10) {
+            savedInHistoryTracks.removeLast()
         }
-        historyTrackList.add(0, track)
+        savedInHistoryTracks.add(0, track)
         sharedPreferences.edit()
-            .putString(HISTORY_TRACKLIST, historyTrackList.toTypedArray().fromTracklistToJson())
+            .putString(HISTORY_TRACKLIST, savedInHistoryTracks.toTypedArray().fromTracklistToJson())
             .apply()
     }
 
     fun clearHistory() {
-        historyTrackList.clear()
+        savedInHistoryTracks.clear()
         sharedPreferences.edit()
             .remove(HISTORY_TRACKLIST)
             .apply()

@@ -1,6 +1,5 @@
 package com.example.playlistmaker
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
 import android.content.res.Configuration
@@ -22,7 +21,6 @@ import retrofit2.Callback
 import retrofit2.Response
 
 
-@Suppress("UNUSED_EXPRESSION")
 class SearchActivity : AppCompatActivity() {
     private val itunesService = ItunesService.itunesService
     private val tracksList = ArrayList<Track>()
@@ -47,95 +45,82 @@ class SearchActivity : AppCompatActivity() {
         binding = ActivitySearchBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        sharedPreferences = getSharedPreferences(SHARED_PREFERERNCES, MODE_PRIVATE)
+        sharedPreferences = getSharedPreferences(SHARED_PREFERERNCES, Context.MODE_PRIVATE)
         historyTrackList = SearchHistory(sharedPreferences)
-        historyTracklist.addAll(historyTrackList.historyTrackList)
 
-        buildRecyclerView()
-        buildHIstoryRecyclerView()
-        clearUserInput()
-        clearHistory()
-        procesUserInputListener()
+        setupHistoryTrackList()
+        setupRecyclerViews()
+        setSearchInputText()
+        setupBackButton()
+        setTextChangedListener()
+        setupRefreshButton()
+        setupTrackClickListener()
+        setupSearchListeners()
+        sharedPrefsChangeListener()
+        setupHistoryClickListener()
+        clearHistoryClickListener()
+        updateTrackListFromSharedPreferences()
+        setClearIconButton()
+    }
 
-        binding.refreshButton.setOnClickListener {
-            search()
-        }
+    private fun updateTrackListFromSharedPreferences() {
+        historyTracklist.clear()
+        historyTracklist.addAll(historyTrackList.savedInHistoryTracks.take(10))
+    }
 
-        binding.arrowBack.setOnClickListener {
-            finish()
-        }
 
+    private fun setupHistoryTrackList() {
+        historyTracklist.addAll(historyTrackList.savedInHistoryTracks)
         if (historyTracklist.isNotEmpty()) {
             binding.historyLayout.visibility = View.VISIBLE
         }
-
-        observer =
-            SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, key ->
-                if (key == HISTORY_TRACKLIST) {
-                    val history = sharedPreferences?.getString(HISTORY_TRACKLIST, null)
-                    if (history != null) {
-                        historyTracklist.clear()
-                        historyTracklist.addAll(historyTrackList.fromJsonToTracklist(history))
-                        trackHistoryAdapter.notifyDataSetChanged()
-                    }
-                }
-            }
-        
-        sharedPreferences.registerOnSharedPreferenceChangeListener(observer)
     }
 
-
-    private fun clearHistory() {
-        binding.buttonClearHistory.setOnClickListener {
-            historyTrackList.clearHistory()
-            historyTracklist.clear()
-            binding.historyLayout.visibility = View.GONE
-            trackHistoryAdapter.notifyDataSetChanged()
-        }
+    private fun setupRecyclerViews() {
+        setupTracklistRecycler()
+        setupHistoryRecycler()
     }
 
-    private fun clearUserInput() {
-        binding.clearIcon.setOnClickListener {
-            binding.inputEditText.setText("")
-            savedSearchRequest = ""
-
-            val keyboard = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-            keyboard.hideSoftInputFromWindow(
-                binding.inputEditText.windowToken,
-                0
-            )
-            binding.inputEditText.clearFocus()
-
-            tracksList.clear()
-            trackAdapter.notifyDataSetChanged()
-            binding.placeholderError.visibility = View.GONE
-        }
+    private fun setupTracklistRecycler() {
+        binding.tracklistRecycler.layoutManager = LinearLayoutManager(this)
+        trackAdapter.trackList = tracksList
+        binding.tracklistRecycler.adapter = trackAdapter
     }
 
-    private fun procesUserInputListener() {
+    private fun setupHistoryRecycler() {
+        binding.historyRecyclerView.layoutManager = LinearLayoutManager(this)
+        trackHistoryAdapter.trackList = historyTracklist
+        binding.historyRecyclerView.adapter = trackHistoryAdapter
+    }
+
+    private fun setSearchInputText() {
         binding.inputEditText.setText(savedSearchRequest)
+    }
 
-        binding.inputEditText.setOnFocusChangeListener { view, hasFocus ->
-            binding.historyLayout.visibility =
-                if (hasFocus && binding.inputEditText.text.isEmpty() && historyTracklist.isNotEmpty())
-                    View.VISIBLE
-                else
-                    View.GONE
+    private fun setupBackButton() {
+        binding.arrowBack.setOnClickListener {
+            finish()
         }
+    }
 
+    private fun setupHistoryClickListener() {
+        trackHistoryAdapter.onClickedTrack = { track: Track ->
+            historyTrackList.addTrack(track)
+            startActivity(MediaActivity.newIntent(this, track))
+        }
+    }
+
+    private fun setTextChangedListener() {
         binding.inputEditText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                binding.clearIcon.visibility = if (s.isNullOrEmpty()) View.GONE else View.VISIBLE
-                binding.buttonClearHistory.visibility = clearButtonVisibility(s)
+                binding.clearIcon.visibility = clearButtonVisibility(s)
                 if (s != null) {
-                    binding.historyLayout.visibility =
-                        if (binding.inputEditText.hasFocus() && s.isEmpty() && historyTracklist.isNotEmpty())
-                            View.VISIBLE
-                        else
-                            View.GONE
+                    binding.searchHistory.visibility =
+                        if (binding.inputEditText.hasFocus() && s.isEmpty() && historyTracklist.isNotEmpty()) View.VISIBLE
+                        else View.GONE
                 }
             }
 
@@ -143,27 +128,123 @@ class SearchActivity : AppCompatActivity() {
                 savedSearchRequest = s.toString()
             }
         })
+    }
 
-        binding.inputEditText.setOnEditorActionListener { _, actionId, _ ->
-            if (actionId == EditorInfo.IME_ACTION_DONE) {
-                search()
-                true
-            }
-            false
+    private fun setupRefreshButton() {
+        binding.refreshButton.setOnClickListener {
+            search()
         }
     }
 
-    private fun buildRecyclerView() {
-        binding.tracklistRecycler.layoutManager = LinearLayoutManager(this)
-        trackAdapter.trackList = tracksList
-        trackAdapter.onClickedTrack = { track: Track -> historyTrackList.addTrack(track) }
-        binding.tracklistRecycler.adapter = trackAdapter
+    private fun setClearIconButton() {
+        binding.clearIcon.setOnClickListener {
+            clearUserInput()
+//            if (historyTracklist.isNotEmpty()) {
+//                binding.historyLayout.visibility = View.VISIBLE
+//            }
+        }
     }
 
-    private fun buildHIstoryRecyclerView() {
-        binding.historyRecyclerView.layoutManager = LinearLayoutManager(this)
-        trackHistoryAdapter.trackList = historyTracklist
-        binding.historyRecyclerView.adapter = trackHistoryAdapter
+
+    private fun setupTrackClickListener() {
+        trackAdapter.onClickedTrack = { track: Track ->
+            historyTrackList.addTrack(track)
+            startActivity(MediaActivity.newIntent(this, track))
+        }
+    }
+
+    private fun setupSearchListeners() {
+        setSearchFocusChangeListener()
+        setSearchTextChangedListener()
+        setSearchEditorActionListener()
+    }
+
+    private fun setSearchFocusChangeListener() {
+        binding.inputEditText.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus && binding.inputEditText.text.isEmpty() && historyTracklist.isNotEmpty()) {
+                binding.historyLayout.visibility = View.VISIBLE
+            } else {
+                binding.historyLayout.visibility = View.GONE
+            }
+        }
+    }
+
+    private fun setSearchTextChangedListener() {
+        binding.inputEditText.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                handleTextChanged(s)
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+                savedSearchRequest = s.toString()
+            }
+        })
+    }
+
+    private fun sharedPrefsChangeListener() {
+        observer = SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, key ->
+            if (key == HISTORY_LIST_KEY) {
+                val history = sharedPreferences?.getString(HISTORY_LIST_KEY, null)
+                if (history != null) {
+                    historyTracklist.clear()
+                    historyTracklist.addAll(historyTrackList.fromJsonToTracklist(history))
+                    trackHistoryAdapter.notifyDataSetChanged()
+                }
+            }
+        }
+        sharedPreferences.registerOnSharedPreferenceChangeListener(observer)
+    }
+
+    private fun handleTextChanged(s: CharSequence?) {
+        binding.clearIcon.visibility = if (s.isNullOrEmpty()) View.GONE else View.VISIBLE
+        binding.buttonClearHistory.visibility = clearButtonVisibility(s)
+        if (s != null) {
+            binding.historyLayout.visibility =
+                if (binding.inputEditText.hasFocus() && s.isEmpty() && historyTracklist.isNotEmpty())
+                    View.VISIBLE
+                else
+                    View.GONE
+        }
+    }
+
+    private fun setSearchEditorActionListener() {
+        binding.inputEditText.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                search()
+                return@setOnEditorActionListener true
+            }
+            return@setOnEditorActionListener false
+        }
+    }
+
+    private fun clearUserInput() {
+        binding.inputEditText.setText("")
+        savedSearchRequest = ""
+        val keyboard = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        keyboard.hideSoftInputFromWindow(
+            binding.inputEditText.windowToken,
+            0
+        )
+        binding.inputEditText.clearFocus()
+    }
+
+    private fun clearButtonVisibility(s: CharSequence?): Int {
+        return if (s.isNullOrEmpty()) {
+            View.GONE
+        } else {
+            View.VISIBLE
+        }
+    }
+
+    private fun showPlaceholderError(show: Boolean) {
+        binding.placeholderError.visibility = if (show) View.VISIBLE else View.GONE
+    }
+
+    private fun showSearchHistory() {
+        if (historyTracklist.isNotEmpty()) {
+            binding.searchHistory.visibility = View.VISIBLE
+        }
     }
 
     private fun search() {
@@ -193,7 +274,6 @@ class SearchActivity : AppCompatActivity() {
             })
     }
 
-    @SuppressLint("NotifyDataSetChanged")
     private fun showResult(state: LoadingStatus) {
         if (state == LoadingStatus.SUCCESS) {
             trackAdapter.notifyDataSetChanged()
@@ -210,11 +290,6 @@ class SearchActivity : AppCompatActivity() {
             trackAdapter.notifyDataSetChanged()
             setPlaceHolderImage(state)
         }
-    }
-
-    private fun isNightMode(): Boolean {
-        val currentNightMode = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
-        return currentNightMode == Configuration.UI_MODE_NIGHT_YES
     }
 
     private fun setPlaceHolderImage(state: LoadingStatus) {
@@ -234,11 +309,17 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
-    private fun clearButtonVisibility(s: CharSequence?): Int {
-        return if (s.isNullOrEmpty()) {
-            View.GONE
-        } else {
-            View.VISIBLE
+    private fun isNightMode(): Boolean {
+        val currentNightMode = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
+        return currentNightMode == Configuration.UI_MODE_NIGHT_YES
+    }
+
+    private fun clearHistoryClickListener() {
+        binding.buttonClearHistory.setOnClickListener {
+            historyTrackList.clearHistory()
+            historyTracklist.clear()
+            binding.searchHistory.visibility = View.GONE
+            trackHistoryAdapter.notifyDataSetChanged()
         }
     }
 
@@ -255,5 +336,6 @@ class SearchActivity : AppCompatActivity() {
     companion object {
         const val SEARCH_KEY = "search_key"
         const val SHARED_PREFERERNCES = "playlist_maker_preferences"
+        const val HISTORY_LIST_KEY = "history_list_key"
     }
 }
