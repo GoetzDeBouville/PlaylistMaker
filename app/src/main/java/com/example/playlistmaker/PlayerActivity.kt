@@ -7,17 +7,17 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import com.example.playlistmaker.databinding.ActivityMediaBinding
+import com.example.playlistmaker.databinding.ActivityAudioPlayerBinding
 import com.example.playlistmaker.track.Track
 
-class MediaActivity : AppCompatActivity() {
+class PlayerActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivityMediaBinding
+    private lateinit var binding: ActivityAudioPlayerBinding
     private lateinit var track: Track
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityMediaBinding.inflate(layoutInflater)
+        binding = ActivityAudioPlayerBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         track = intent.extras?.get(ADDITIONAL_KEY_TRACK) as Track
@@ -28,7 +28,7 @@ class MediaActivity : AppCompatActivity() {
 
     private fun setTrackInfoToViews() {
         with(binding) {
-            Glide.with(this@MediaActivity)
+            Glide.with(this@PlayerActivity)
                 .load(track.getArtwork512())
                 .placeholder(R.drawable.poster_placeholder)
                 .transform(RoundedCorners(10))
@@ -53,7 +53,7 @@ class MediaActivity : AppCompatActivity() {
         private const val ADDITIONAL_KEY_TRACK = "add_key_track"
 
         fun newIntent(context: Context, track: Track): Intent {
-            return Intent(context, MediaActivity::class.java).apply {
+            return Intent(context, PlayerActivity::class.java).apply {
                 putExtra(ADDITIONAL_KEY_TRACK, track)
             }
         }

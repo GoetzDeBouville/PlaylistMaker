@@ -24,7 +24,6 @@ class SearchHistory(private val sharedPreferences: SharedPreferences) {
     private fun Array<Track>.fromTracklistToJson(): String =
         gson.toJson(this)
 
-    @SuppressLint("CommitPrefEdits")
     fun addTrack(track: Track) {
         if (track in savedInHistoryTracks) {
             savedInHistoryTracks.remove(track)

@@ -8,9 +8,11 @@ import androidx.appcompat.app.AppCompatActivity
 
 class MainActivity : AppCompatActivity() {
 
-    private val SHARED_PREFERENCES_NAME = "app_preferences"
-    private val THEME_KEY = "theme_key"
     private lateinit var sharedPreferences: SharedPreferences
+    companion object {
+        private const val SHARED_PREFERENCES_NAME = "app_preferences"
+        private const val THEME_KEY = "theme_key"
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,7 +32,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         mediaButton.setOnClickListener {
-            val mediaIntent = Intent(this, MediaActivity::class.java)
+            val mediaIntent = Intent(this, PlayerActivity::class.java)
             startActivity(mediaIntent)
         }
 

@@ -20,7 +20,6 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-
 class SearchActivity : AppCompatActivity() {
     private val itunesService = ItunesService.itunesService
     private val tracksList = ArrayList<Track>()
@@ -106,7 +105,7 @@ class SearchActivity : AppCompatActivity() {
     private fun setupHistoryClickListener() {
         trackHistoryAdapter.onClickedTrack = { track: Track ->
             historyTrackList.addTrack(track)
-            startActivity(MediaActivity.newIntent(this, track))
+            startActivity(PlayerActivity.newIntent(this, track))
         }
     }
 
@@ -149,7 +148,7 @@ class SearchActivity : AppCompatActivity() {
     private fun setupTrackClickListener() {
         trackAdapter.onClickedTrack = { track: Track ->
             historyTrackList.addTrack(track)
-            startActivity(MediaActivity.newIntent(this, track))
+            startActivity(PlayerActivity.newIntent(this, track))
         }
     }
 

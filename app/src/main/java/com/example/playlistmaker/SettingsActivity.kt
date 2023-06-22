@@ -13,22 +13,25 @@ import com.bitvale.switcher.Switcher
 import com.bitvale.switcher.SwitcherX
 import com.google.android.material.switchmaterial.SwitchMaterial
 
-private val SHARED_PREFERENCES_NAME = "app_preferences"
-private val THEME_KEY = "theme_key"
-private lateinit var sharedPreferences: SharedPreferences
 class SettingsActivity : AppCompatActivity() {
+
+    private lateinit var sharedPreferences: SharedPreferences
+    companion object {
+        private const val SHARED_PREFERENCES_NAME = "app_preferences"
+        private const val THEME_KEY = "theme_key"
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
+
+        sharedPreferences = getSharedPreferences(SHARED_PREFERENCES_NAME, MODE_PRIVATE)
 
         val arrowBackButton = findViewById<ImageView>(R.id.arrow_back)
         val shareAppButton = findViewById<LinearLayout>(R.id.share_app)
         val sendEmailButton = findViewById<LinearLayout>(R.id.text_to_support)
         val readOfferLink = findViewById<LinearLayout>(R.id.user_agreement)
         val themeSwitcher = findViewById<SwitcherX>(R.id.themeSwitcher)
-
-        sharedPreferences = getSharedPreferences(SHARED_PREFERENCES_NAME, MODE_PRIVATE)
 
         themeSwitcher.setChecked(sharedPreferences.getBoolean(THEME_KEY, false))
 
