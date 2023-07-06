@@ -1,4 +1,4 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.activities
 
 import android.annotation.SuppressLint
 import android.content.Intent
@@ -9,9 +9,9 @@ import android.os.Bundle
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.Toast
-import com.bitvale.switcher.Switcher
 import com.bitvale.switcher.SwitcherX
-import com.google.android.material.switchmaterial.SwitchMaterial
+import com.example.playlistmaker.App
+import com.example.playlistmaker.R
 
 class SettingsActivity : AppCompatActivity() {
 

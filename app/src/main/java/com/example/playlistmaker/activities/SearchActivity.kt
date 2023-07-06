@@ -1,4 +1,4 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.activities
 
 import android.content.Context
 import android.content.SharedPreferences
@@ -10,10 +10,14 @@ import android.text.TextWatcher
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
+import androidx.core.content.withStyledAttributes
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.playlistmaker.R
+import com.example.playlistmaker.SearchHistory
 import com.example.playlistmaker.databinding.ActivitySearchBinding
 import com.example.playlistmaker.itunesApi.ItunesResponce
 import com.example.playlistmaker.itunesApi.ItunesService
+import com.example.playlistmaker.threadExample.Example
 import com.example.playlistmaker.track.Track
 import com.example.playlistmaker.track.TrackAdapter
 import retrofit2.Call
@@ -105,6 +109,8 @@ class SearchActivity : AppCompatActivity() {
     private fun setupHistoryClickListener() {
         trackHistoryAdapter.onClickedTrack = { track: Track ->
             historyTrackList.addTrack(track)
+//            val example = Example(3, this)
+//            example.doWork()
             startActivity(PlayerActivity.newIntent(this, track))
         }
     }
