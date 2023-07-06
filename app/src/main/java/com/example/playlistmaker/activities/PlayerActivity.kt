@@ -4,7 +4,8 @@ import android.content.Context
 import android.content.Intent
 import android.media.MediaPlayer
 import android.os.Bundle
-import android.util.Log
+import android.os.Handler
+import android.os.Looper
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
@@ -12,16 +13,25 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ActivityAudioPlayerBinding
 import com.example.playlistmaker.track.Track
+import java.util.Locale
+import java.util.concurrent.TimeUnit
 
 class PlayerActivity : AppCompatActivity() {
+
+    private lateinit var handler: Handler
 
     private lateinit var binding: ActivityAudioPlayerBinding
     private lateinit var track: Track
     private var playerState = STATE_DEFAULT
 
     private var mediaPlayer = MediaPlayer()
+    private var currentTrackTime: Long = 0L
+    private var startTime: Long = 0L
+    private var timerIsRunning = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        handler = Handler(Looper.getMainLooper())
+
         super.onCreate(savedInstanceState)
         binding = ActivityAudioPlayerBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -29,7 +39,6 @@ class PlayerActivity : AppCompatActivity() {
         track = intent.extras?.get(ADDITIONAL_KEY_TRACK) as Track
         setTrackInfoToViews()
         preparePlayer()
-        Log.e("TRACK URL", track.previewUrl)
 
         binding.arrowBack.setOnClickListener { finish() }
         binding.playButton.setOnClickListener { playbackControl() }
@@ -71,12 +80,14 @@ class PlayerActivity : AppCompatActivity() {
     private fun preparePlayer() {
         mediaPlayer.setDataSource(track.previewUrl)
         mediaPlayer.prepareAsync()
-        mediaPlayer.setOnCompletionListener {
-            binding.playButton.isEnabled = true
+        mediaPlayer.setOnPreparedListener {
             playerState = STATE_PREPARED
         }
-        mediaPlayer.setOnPreparedListener {
-            binding.playButton.visibility = View.VISIBLE
+        mediaPlayer.setOnCompletionListener {
+            binding.playButton.setImageResource(R.drawable.play_button)
+            stopTrackTimer()
+            currentTrackTime = 0L
+            binding.textTrackTimeValue.setText(R.string.current_time)
             playerState = STATE_PREPARED
         }
     }
@@ -85,6 +96,10 @@ class PlayerActivity : AppCompatActivity() {
         mediaPlayer.start()
         binding.playButton.setImageResource(R.drawable.pause_button)
         playerState = STATE_PLAYING
+        if (!timerIsRunning) {
+            startTime = System.currentTimeMillis() - currentTrackTime
+            startTrackTimer()
+        }
     }
 
     private fun pausePlayer() {
@@ -92,6 +107,7 @@ class PlayerActivity : AppCompatActivity() {
             mediaPlayer.pause()
             binding.playButton.setImageResource(R.drawable.play_button)
             playerState = STATE_PAUSED
+            stopTrackTimer()
         }
     }
 
@@ -100,11 +116,35 @@ class PlayerActivity : AppCompatActivity() {
             STATE_PLAYING -> {
                 pausePlayer()
             }
-
             STATE_PREPARED, STATE_PAUSED -> {
                 startPlayer()
             }
         }
+    }
+
+    private val updateTrackTimeRunnable = object : Runnable {
+        override fun run() {
+            currentTrackTime = System.currentTimeMillis() - startTime
+            binding.textTrackTimeValue.text = formatTrackTime(currentTrackTime)
+            handler.postDelayed(this, DELAY)
+        }
+    }
+
+    private fun formatTrackTime(trackTime: Long): String {
+        val minutes = TimeUnit.MILLISECONDS.toMinutes(trackTime)
+        val seconds = TimeUnit.MILLISECONDS.toSeconds(trackTime) % 60
+        return String.format(Locale.getDefault(), "%02d:%02d", minutes, seconds)
+    }
+
+    private fun startTrackTimer() {
+        handler.removeCallbacks(updateTrackTimeRunnable)
+        handler.postDelayed(updateTrackTimeRunnable, DELAY)
+        timerIsRunning = true
+    }
+
+    private fun stopTrackTimer() {
+        handler.removeCallbacks(updateTrackTimeRunnable)
+        timerIsRunning = false
     }
 
     companion object {
@@ -113,6 +153,7 @@ class PlayerActivity : AppCompatActivity() {
         private const val STATE_PREPARED = 1
         private const val STATE_PLAYING = 2
         private const val STATE_PAUSED = 3
+        private const val DELAY = 10L
 
         fun newIntent(context: Context, track: Track): Intent {
             return Intent(context, PlayerActivity::class.java).apply {

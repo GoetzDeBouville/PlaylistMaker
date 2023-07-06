@@ -1,7 +1,6 @@
 # Gradle files
 .gradle/
 build/
-threadExample/
 constants.kt
 # Local configuration file (sdk path, etc)
 local.properties
