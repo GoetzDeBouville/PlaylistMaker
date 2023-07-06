@@ -9,6 +9,7 @@ import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
@@ -24,6 +25,7 @@ import com.example.playlistmaker.track.TrackAdapter
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+
 
 class SearchActivity : AppCompatActivity() {
     private val itunesService = ItunesService.itunesService
@@ -113,13 +115,10 @@ class SearchActivity : AppCompatActivity() {
     private fun setupHistoryClickListener() {
         trackHistoryAdapter.onClickedTrack = { track: Track ->
             historyTrackList.addTrack(track)
-//            val example = Example(3, this)
-//            example.doWork()
             if (clickDebounce()) startActivity(PlayerActivity.newIntent(this, track))
         }
     }
 
-    //TODO Испроавить баг вызова поиска для пустого поля input
     private fun setTextChangedListener() {
         binding.inputEditText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -152,9 +151,6 @@ class SearchActivity : AppCompatActivity() {
     private fun setClearIconButton() {
         binding.clearIcon.setOnClickListener {
             clearUserInput()
-//            if (historyTracklist.isNotEmpty()) {
-//                binding.historyLayout.visibility = View.VISIBLE
-//            }
         }
     }
 
@@ -168,7 +164,6 @@ class SearchActivity : AppCompatActivity() {
 
     private fun setupSearchListeners() {
         setSearchFocusChangeListener()
-//        setSearchTextChangedListener()
         setSearchEditorActionListener()
     }
 
@@ -181,20 +176,6 @@ class SearchActivity : AppCompatActivity() {
             }
         }
     }
-
-//    private fun setSearchTextChangedListener() {
-//        binding.inputEditText.addTextChangedListener(object : TextWatcher {
-//            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-//            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-//                handleTextChanged(s)
-//                searchDebounce()
-//            }
-//
-//            override fun afterTextChanged(s: Editable?) {
-//                savedSearchRequest = s.toString()
-//            }
-//        })
-//    }
 
     private fun sharedPrefsChangeListener() {
         observer = SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, key ->
@@ -251,17 +232,12 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
-    private fun showPlaceholderError(show: Boolean) {
-        binding.placeholderError.visibility = if (show) View.VISIBLE else View.GONE
-    }
-
-    private fun showSearchHistory() {
-        if (historyTracklist.isNotEmpty()) {
-            binding.searchHistory.visibility = View.VISIBLE
-        }
-    }
-
     private fun search() {
+        binding.progressBar.visibility = View.VISIBLE
+        binding.tracklistRecycler.visibility = View.GONE
+        binding.placeholderError.visibility = View.GONE
+        binding.placeholderMessage.visibility = View.GONE
+
         itunesService.search(binding.inputEditText.text.toString())
             .enqueue(object : Callback<ItunesResponce> {
                 override fun onResponse(
@@ -271,26 +247,45 @@ class SearchActivity : AppCompatActivity() {
                     if (response.code() == 200) {
                         tracksList.clear()
                         if (response.body()?.tracks?.isNotEmpty() == true) {
+                            Log.e("VISIBILITY CHECK", "showResult(LoadingStatus.SUCCESS)\n")
                             tracksList.addAll(response.body()?.tracks!!)
                             showResult(LoadingStatus.SUCCESS)
                         }
                         if (tracksList.isEmpty()) {
+                            Log.e("VISIBILITY CHECK", "showResult(LoadingStatus.FAILED_SEARCH)")
                             showResult(LoadingStatus.FAILED_SEARCH)
+                            binding.placeholderError.visibility = View.VISIBLE
+                            binding.placeholderMessage.visibility = View.VISIBLE
+                            binding.historyRecyclerView.visibility = View.VISIBLE
                         }
                     } else {
+                        Log.e("VISIBILITY CHECK", "showResult(LoadingStatus.NO_INTERNET)")
                         showResult(LoadingStatus.NO_INTERNET)
+                        binding.placeholderError.visibility = View.VISIBLE
+                        binding.placeholderMessage.visibility = View.VISIBLE
+                        binding.historyRecyclerView.visibility = View.VISIBLE
                     }
+                    Log.e("VISIBILITY CHECK", "search method finished")
+                    binding.progressBar.visibility = View.GONE
                 }
 
                 override fun onFailure(call: Call<ItunesResponce>, t: Throwable) {
                     showResult(LoadingStatus.NO_INTERNET)
+                    Log.e("VISIBILITY CHECK", "onFailure method lounched")
+                    binding.placeholderError.visibility = View.VISIBLE
+                    binding.placeholderMessage.visibility = View.VISIBLE
+                    binding.historyRecyclerView.visibility = View.VISIBLE
+
+                    binding.progressBar.visibility = View.GONE
                 }
             })
     }
 
+
     private fun showResult(state: LoadingStatus) {
         if (state == LoadingStatus.SUCCESS) {
             trackAdapter.notifyDataSetChanged()
+            binding.tracklistRecycler.visibility = View.VISIBLE
             binding.placeholderError.visibility = View.GONE
         } else {
             binding.placeholderError.visibility = View.VISIBLE
@@ -365,7 +360,7 @@ class SearchActivity : AppCompatActivity() {
         const val SEARCH_KEY = "search_key"
         const val SHARED_PREFERERNCES = "playlist_maker_preferences"
         const val HISTORY_LIST_KEY = "history_list_key"
-        private const val SEARCH_DEBOUNCE_DELAY = 900L
+        private const val SEARCH_DEBOUNCE_DELAY = 2000L
         private const val CLICK_DEBOUNCE_DELAY = 500L
     }
 }

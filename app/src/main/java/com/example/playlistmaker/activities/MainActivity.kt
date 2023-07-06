@@ -55,6 +55,6 @@ class MainActivity : AppCompatActivity() {
     companion object {
         private const val SHARED_PREFERENCES_NAME = "app_preferences"
         private const val THEME_KEY = "theme_key"
-        private const val CLICK_DEBOUNCE_DELAY = 1000L
+        private const val CLICK_DEBOUNCE_DELAY = 500L
     }
 }

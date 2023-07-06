@@ -2,6 +2,7 @@ package com.example.playlistmaker.activities
 
 import android.content.Context
 import android.content.Intent
+import android.media.MediaPlayer
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
@@ -15,6 +16,9 @@ class PlayerActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityAudioPlayerBinding
     private lateinit var track: Track
+    private var playerState = STATE_DEFAULT
+
+    private var mediaPlayer = MediaPlayer()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,8 +54,21 @@ class PlayerActivity : AppCompatActivity() {
         }
     }
 
+    fun onPlayButton(){
+        binding.playButton.setOnClickListener {
+            mediaPlayer.setDataSource(track.previewUrl)
+            mediaPlayer.prepareAsync()
+            mediaPlayer.setOnCompletionListener {
+
+            }
+        }
+    }
     companion object {
         private const val ADDITIONAL_KEY_TRACK = "add_key_track"
+        private const val STATE_DEFAULT = 0
+        private const val STATE_PREPARED = 1
+        private const val STATE_PLAYING = 2
+        private const val STATE_PAUSED = 3
 
         fun newIntent(context: Context, track: Track): Intent {
             return Intent(context, PlayerActivity::class.java).apply {
