@@ -5,19 +5,20 @@ import android.content.SharedPreferences
 import android.content.res.Configuration
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import androidx.core.content.withStyledAttributes
+import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.playlistmaker.R
 import com.example.playlistmaker.SearchHistory
 import com.example.playlistmaker.databinding.ActivitySearchBinding
 import com.example.playlistmaker.itunesApi.ItunesResponce
 import com.example.playlistmaker.itunesApi.ItunesService
-import com.example.playlistmaker.threadExample.Example
 import com.example.playlistmaker.track.Track
 import com.example.playlistmaker.track.TrackAdapter
 import retrofit2.Call
@@ -31,6 +32,9 @@ class SearchActivity : AppCompatActivity() {
     private val trackHistoryAdapter = TrackAdapter()
     private val historyTracklist = ArrayList<Track>()
     private var savedSearchRequest = ""
+    private var isClickAllowed = true
+    private val searchRunnable = Runnable { search() }
+    private val handler = Handler(Looper.getMainLooper())
 
     private lateinit var binding: ActivitySearchBinding
     private lateinit var sharedPreferences: SharedPreferences
@@ -111,10 +115,11 @@ class SearchActivity : AppCompatActivity() {
             historyTrackList.addTrack(track)
 //            val example = Example(3, this)
 //            example.doWork()
-            startActivity(PlayerActivity.newIntent(this, track))
+            if (clickDebounce()) startActivity(PlayerActivity.newIntent(this, track))
         }
     }
 
+    //TODO Испроавить баг вызова поиска для пустого поля input
     private fun setTextChangedListener() {
         binding.inputEditText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -127,6 +132,8 @@ class SearchActivity : AppCompatActivity() {
                         if (binding.inputEditText.hasFocus() && s.isEmpty() && historyTracklist.isNotEmpty()) View.VISIBLE
                         else View.GONE
                 }
+                handleTextChanged(s)
+                if (!s.isNullOrEmpty()) searchDebounce()
             }
 
             override fun afterTextChanged(s: Editable?) {
@@ -134,6 +141,7 @@ class SearchActivity : AppCompatActivity() {
             }
         })
     }
+
 
     private fun setupRefreshButton() {
         binding.refreshButton.setOnClickListener {
@@ -160,7 +168,7 @@ class SearchActivity : AppCompatActivity() {
 
     private fun setupSearchListeners() {
         setSearchFocusChangeListener()
-        setSearchTextChangedListener()
+//        setSearchTextChangedListener()
         setSearchEditorActionListener()
     }
 
@@ -174,18 +182,19 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
-    private fun setSearchTextChangedListener() {
-        binding.inputEditText.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                handleTextChanged(s)
-            }
-
-            override fun afterTextChanged(s: Editable?) {
-                savedSearchRequest = s.toString()
-            }
-        })
-    }
+//    private fun setSearchTextChangedListener() {
+//        binding.inputEditText.addTextChangedListener(object : TextWatcher {
+//            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+//            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+//                handleTextChanged(s)
+//                searchDebounce()
+//            }
+//
+//            override fun afterTextChanged(s: Editable?) {
+//                savedSearchRequest = s.toString()
+//            }
+//        })
+//    }
 
     private fun sharedPrefsChangeListener() {
         observer = SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, key ->
@@ -338,9 +347,25 @@ class SearchActivity : AppCompatActivity() {
         outState.putString(SEARCH_KEY, savedSearchRequest)
     }
 
+    private fun searchDebounce() {
+        handler.removeCallbacks(searchRunnable)
+        handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY)
+    }
+
+    private fun clickDebounce(): Boolean {
+        val current = isClickAllowed
+        if (isClickAllowed) {
+            isClickAllowed = false
+            handler.postDelayed({ isClickAllowed = true }, CLICK_DEBOUNCE_DELAY)
+        }
+        return current
+    }
+
     companion object {
         const val SEARCH_KEY = "search_key"
         const val SHARED_PREFERERNCES = "playlist_maker_preferences"
         const val HISTORY_LIST_KEY = "history_list_key"
+        private const val SEARCH_DEBOUNCE_DELAY = 900L
+        private const val CLICK_DEBOUNCE_DELAY = 500L
     }
 }
