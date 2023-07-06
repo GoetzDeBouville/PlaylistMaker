@@ -126,6 +126,7 @@
         </LinearLayout>
 
         <androidx.core.widget.NestedScrollView
+            android:id="@+id/searchHistory"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fillViewport="true">
@@ -153,8 +154,8 @@
                     android:id="@+id/history_recycler_view"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    android:layout_weight="1"
                     android:layout_marginBottom="@dimen/dimen_24dp"
+                    android:layout_weight="1"
                     tools:itemCount="1"
                     tools:listitem="@layout/item_track" />
 

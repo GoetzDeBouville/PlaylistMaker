@@ -1,4 +1,4 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.activities
 
 import android.annotation.SuppressLint
 import android.content.Intent
@@ -9,31 +9,37 @@ import android.os.Bundle
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.Toast
-import com.google.android.material.switchmaterial.SwitchMaterial
+import com.bitvale.switcher.SwitcherX
+import com.example.playlistmaker.App
+import com.example.playlistmaker.R
 
-private val SHARED_PREFERENCES_NAME = "app_preferences"
-private val THEME_KEY = "theme_key"
-private lateinit var sharedPreferences: SharedPreferences
 class SettingsActivity : AppCompatActivity() {
+
+    private lateinit var sharedPreferences: SharedPreferences
+    companion object {
+        private const val SHARED_PREFERENCES_NAME = "app_preferences"
+        private const val THEME_KEY = "theme_key"
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
 
+        sharedPreferences = getSharedPreferences(SHARED_PREFERENCES_NAME, MODE_PRIVATE)
+
         val arrowBackButton = findViewById<ImageView>(R.id.arrow_back)
         val shareAppButton = findViewById<LinearLayout>(R.id.share_app)
         val sendEmailButton = findViewById<LinearLayout>(R.id.text_to_support)
         val readOfferLink = findViewById<LinearLayout>(R.id.user_agreement)
-        val themeSwitcher = findViewById<SwitchMaterial>(R.id.themeSwitcher)
+        val themeSwitcher = findViewById<SwitcherX>(R.id.themeSwitcher)
 
-        sharedPreferences = getSharedPreferences(SHARED_PREFERENCES_NAME, MODE_PRIVATE)
-        themeSwitcher.isChecked = sharedPreferences.getBoolean(THEME_KEY, false)
+        themeSwitcher.setChecked(sharedPreferences.getBoolean(THEME_KEY, false))
 
         arrowBackButton.setOnClickListener { finish() }
         shareAppButton.setOnClickListener { shareApp() }
         sendEmailButton.setOnClickListener { sendEmail() }
         readOfferLink.setOnClickListener { readOffer() }
-        themeSwitcher.setOnCheckedChangeListener { switcher, isChecked ->
+        themeSwitcher.setOnCheckedChangeListener { isChecked ->
             (applicationContext as App).switchTheme(isChecked)
             saveTheme(isChecked)
         }

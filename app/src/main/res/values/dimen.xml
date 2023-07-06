@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="small_text">16sp</dimen>
-    <dimen name="extra_small_text">11sp</dimen>
+    <dimen name="text_11sp">11sp</dimen>
+    <dimen name="text_13sp">13sp</dimen>
     <dimen name="text_14sp">14sp</dimen>
-    <dimen name="main_text_size">22sp</dimen>
+    <dimen name="text_15sp">15sp</dimen>
+    <dimen name="text_16sp">16sp</dimen>
     <dimen name="text_19sp">19sp</dimen>
-    <dimen name="large_text">32sp</dimen>
+    <dimen name="text_22sp">22sp</dimen>
+    <dimen name="text_26sp">26sp</dimen>
+    <dimen name="text_32sp">32sp</dimen>
 
     <dimen name="dimen_2dp">2dp</dimen>
     <dimen name="dimen_4dp">4dp</dimen>

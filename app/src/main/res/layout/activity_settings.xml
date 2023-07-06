@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+
     style="@style/SettingsBackgroundStyle"
     android:paddingHorizontal="@dimen/dimen_16dp"
     android:paddingTop="@dimen/dimen_16dp">
@@ -25,18 +27,19 @@
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dimen_40dp"
-        android:orientation="horizontal">
+        style="@style/SettingsOptionContainer"
+        android:paddingVertical="@dimen/dimen_20dp"
+        tools:ignore="UseCompoundDrawables">
 
-        <com.google.android.material.switchmaterial.SwitchMaterial
-            android:id="@+id/themeSwitcher"
+        <TextView
             style="@style/SettingsTitle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="start"
+            android:layout_weight="1"
             android:text="@string/dark_theme" />
+
+        <com.bitvale.switcher.SwitcherX
+            style="@style/SettingsThemeSwitcher"
+            android:id="@+id/themeSwitcher"
+/>
 
     </LinearLayout>
 
