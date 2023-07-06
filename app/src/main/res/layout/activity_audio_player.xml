@@ -100,17 +100,6 @@
         app:layout_constraintStart_toEndOf="@id/add_to_playlist_button"
         app:layout_constraintTop_toBottomOf="@+id/track_artist" />
 
-<!--    <ImageView-->
-<!--        android:id="@+id/pauseButton"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:src="@drawable/play_button"-->
-<!--        android:visibility="gone"-->
-<!--        app:layout_constraintBottom_toTopOf="@+id/playButton"-->
-<!--        app:layout_constraintEnd_toStartOf="@+id/playButton"-->
-<!--        app:layout_constraintStart_toEndOf="@id/playButton"-->
-<!--        app:layout_constraintTop_toBottomOf="@+id/playButton" />-->
-
     <ImageView
         android:id="@+id/add_to_playlist_button"
         android:layout_width="51dp"
@@ -120,7 +109,7 @@
         app:layout_constraintBottom_toBottomOf="@id/playButton"
         app:layout_constraintEnd_toStartOf="@+id/playButton"
         app:layout_constraintStart_toEndOf="@id/left_guideline"
-        app:layout_constraintTop_toTopOf="@id/playButton"/>
+        app:layout_constraintTop_toTopOf="@id/playButton" />
 
     <ImageView
         android:layout_width="23dp"

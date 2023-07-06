@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.media.MediaPlayer
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
@@ -27,8 +28,21 @@ class PlayerActivity : AppCompatActivity() {
 
         track = intent.extras?.get(ADDITIONAL_KEY_TRACK) as Track
         setTrackInfoToViews()
+        preparePlayer()
+        Log.e("TRACK URL", track.previewUrl)
 
         binding.arrowBack.setOnClickListener { finish() }
+        binding.playButton.setOnClickListener { playbackControl() }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        pausePlayer()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mediaPlayer.release()
     }
 
     private fun setTrackInfoToViews() {
@@ -54,15 +68,45 @@ class PlayerActivity : AppCompatActivity() {
         }
     }
 
-    fun onPlayButton(){
-        binding.playButton.setOnClickListener {
-            mediaPlayer.setDataSource(track.previewUrl)
-            mediaPlayer.prepareAsync()
-            mediaPlayer.setOnCompletionListener {
+    private fun preparePlayer() {
+        mediaPlayer.setDataSource(track.previewUrl)
+        mediaPlayer.prepareAsync()
+        mediaPlayer.setOnCompletionListener {
+            binding.playButton.isEnabled = true
+            playerState = STATE_PREPARED
+        }
+        mediaPlayer.setOnPreparedListener {
+            binding.playButton.visibility = View.VISIBLE
+            playerState = STATE_PREPARED
+        }
+    }
 
+    private fun startPlayer() {
+        mediaPlayer.start()
+        binding.playButton.setImageResource(R.drawable.pause_button)
+        playerState = STATE_PLAYING
+    }
+
+    private fun pausePlayer() {
+        if (playerState == STATE_PLAYING) {
+            mediaPlayer.pause()
+            binding.playButton.setImageResource(R.drawable.play_button)
+            playerState = STATE_PAUSED
+        }
+    }
+
+    private fun playbackControl() {
+        when (playerState) {
+            STATE_PLAYING -> {
+                pausePlayer()
+            }
+
+            STATE_PREPARED, STATE_PAUSED -> {
+                startPlayer()
             }
         }
     }
+
     companion object {
         private const val ADDITIONAL_KEY_TRACK = "add_key_track"
         private const val STATE_DEFAULT = 0
