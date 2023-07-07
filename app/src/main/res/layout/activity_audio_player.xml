@@ -85,15 +85,16 @@
         android:maxLines="1"
         android:singleLine="true"
         android:text="@string/artist_name"
-        app:layout_constraintBottom_toTopOf="@+id/play_button"
+        app:layout_constraintBottom_toTopOf="@+id/playButton"
         app:layout_constraintEnd_toStartOf="@+id/right_guideline"
         app:layout_constraintStart_toEndOf="@id/left_guideline"
         app:layout_constraintTop_toBottomOf="@+id/track_name" />
 
     <ImageView
-        android:id="@+id/play_button"
+        android:id="@+id/playButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:clickable="true"
         android:src="@drawable/play_button"
         app:layout_constraintBottom_toTopOf="@+id/text_track_time_value"
         app:layout_constraintEnd_toStartOf="@+id/like_button"
@@ -105,11 +106,12 @@
         android:layout_width="51dp"
         android:layout_height="51dp"
         android:layout_marginEnd="@dimen/dimen_16dp"
+        android:clickable="true"
         android:src="@drawable/background_round_button"
-        app:layout_constraintBottom_toBottomOf="@id/play_button"
-        app:layout_constraintEnd_toStartOf="@+id/play_button"
+        app:layout_constraintBottom_toBottomOf="@id/playButton"
+        app:layout_constraintEnd_toStartOf="@+id/playButton"
         app:layout_constraintStart_toEndOf="@id/left_guideline"
-        app:layout_constraintTop_toTopOf="@id/play_button"/>
+        app:layout_constraintTop_toTopOf="@id/playButton" />
 
     <ImageView
         android:layout_width="23dp"
@@ -125,11 +127,12 @@
         android:layout_width="51dp"
         android:layout_height="51dp"
         android:layout_marginStart="@dimen/dimen_16dp"
+        android:clickable="true"
         android:src="@drawable/background_round_button"
-        app:layout_constraintBottom_toBottomOf="@id/play_button"
+        app:layout_constraintBottom_toBottomOf="@id/playButton"
         app:layout_constraintEnd_toStartOf="@id/right_guideline"
-        app:layout_constraintStart_toEndOf="@id/play_button"
-        app:layout_constraintTop_toTopOf="@id/play_button" />
+        app:layout_constraintStart_toEndOf="@id/playButton"
+        app:layout_constraintTop_toTopOf="@id/playButton" />
 
     <ImageView
         android:layout_width="23dp"
@@ -294,6 +297,6 @@
         app:layout_constraintBottom_toTopOf="@+id/text_duration"
         app:layout_constraintEnd_toStartOf="@id/right_guideline"
         app:layout_constraintStart_toEndOf="@id/left_guideline"
-        app:layout_constraintTop_toBottomOf="@+id/play_button" />
+        app:layout_constraintTop_toBottomOf="@+id/playButton" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

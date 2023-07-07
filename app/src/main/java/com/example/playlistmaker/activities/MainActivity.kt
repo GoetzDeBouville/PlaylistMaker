@@ -5,11 +5,8 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.view.LayoutInflater
-import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import com.example.playlistmaker.App
-import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
@@ -19,12 +16,6 @@ class MainActivity : AppCompatActivity() {
 
     private var isClickedAllowed = true
     private val handler = Handler(Looper.getMainLooper())
-
-    companion object {
-        private const val SHARED_PREFERENCES_NAME = "app_preferences"
-        private const val THEME_KEY = "theme_key"
-        private const val CLICK_DEBOUNCE_DELAY = 1000L
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,5 +47,11 @@ class MainActivity : AppCompatActivity() {
             handler.postDelayed({ isClickedAllowed = true }, CLICK_DEBOUNCE_DELAY)
         }
         return current
+    }
+
+    companion object {
+        private const val SHARED_PREFERENCES_NAME = "app_preferences"
+        private const val THEME_KEY = "theme_key"
+        private const val CLICK_DEBOUNCE_DELAY = 500L
     }
 }
