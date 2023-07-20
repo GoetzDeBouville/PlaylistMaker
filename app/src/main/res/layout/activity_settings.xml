@@ -2,19 +2,22 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+
     style="@style/SettingsBackgroundStyle"
     android:paddingHorizontal="@dimen/dimen_16dp"
     android:paddingTop="@dimen/dimen_16dp">
 
     <LinearLayout
         style="@style/ActivityHeaderStyle"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        tools:ignore="UseCompoundDrawables">
 
         <ImageView
             android:id="@+id/arrow_back"
             style="@style/SettingsHeaderIconStyle"
             android:layout_marginStart="@dimen/dimen_4dp"
-            android:src="@drawable/arrow_back" />
+            android:src="@drawable/arrow_back"
+            tools:ignore="ContentDescription" />
 
         <TextView
             style="@style/SettingsHeaderTextStyle"
@@ -24,30 +27,27 @@
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dimen_40dp"
-        android:orientation="horizontal">
+        style="@style/SettingsOptionContainer"
+        android:paddingVertical="@dimen/dimen_20dp"
+        tools:ignore="UseCompoundDrawables">
 
         <TextView
             style="@style/SettingsTitle"
-            android:layout_marginVertical="@dimen/dimen_20dp"
             android:layout_weight="1"
             android:text="@string/dark_theme" />
 
-        <Switch
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_gravity="bottom"
-            android:minWidth="@dimen/dimen_48dp"
-            tools:ignore="UseSwitchCompatOrMaterialXml" />
+        <com.bitvale.switcher.SwitcherX
+            style="@style/SettingsThemeSwitcher"
+            android:id="@+id/themeSwitcher"
+/>
 
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/share_app"
         style="@style/SettingsOptionContainer"
-        android:paddingVertical="@dimen/dimen_20dp">
+        android:paddingVertical="@dimen/dimen_20dp"
+        tools:ignore="UseCompoundDrawables">
 
         <TextView
             style="@style/SettingsTitle"
@@ -56,14 +56,16 @@
 
         <ImageView
             style="@style/SettingsIcon"
-            android:src="@drawable/share" />
+            android:src="@drawable/share"
+            tools:ignore="ContentDescription" />
 
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/text_to_support"
         style="@style/SettingsOptionContainer"
-        android:paddingVertical="@dimen/dimen_20dp">
+        android:paddingVertical="@dimen/dimen_20dp"
+        tools:ignore="UseCompoundDrawables">
 
         <TextView
             style="@style/SettingsTitle"
@@ -72,14 +74,16 @@
 
         <ImageView
             style="@style/SettingsIcon"
-            android:src="@drawable/support" />
+            android:src="@drawable/support"
+            tools:ignore="ContentDescription" />
 
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/user_agreement"
         style="@style/SettingsOptionContainer"
-        android:paddingVertical="@dimen/dimen_20dp">
+        android:paddingVertical="@dimen/dimen_20dp"
+        tools:ignore="UseCompoundDrawables">
 
         <TextView
             style="@style/SettingsTitle"
@@ -88,7 +92,8 @@
 
         <ImageView
             style="@style/SettingsIcon"
-            android:src="@drawable/arrow_forward" />
+            android:src="@drawable/arrow_forward"
+            tools:ignore="ContentDescription" />
     </LinearLayout>
 
 </LinearLayout>

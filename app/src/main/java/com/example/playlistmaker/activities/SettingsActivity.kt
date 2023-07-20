@@ -1,28 +1,52 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.activities
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.content.SharedPreferences
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.Toast
+import com.bitvale.switcher.SwitcherX
+import com.example.playlistmaker.App
+import com.example.playlistmaker.R
 
 class SettingsActivity : AppCompatActivity() {
+
+    private lateinit var sharedPreferences: SharedPreferences
+    companion object {
+        private const val SHARED_PREFERENCES_NAME = "app_preferences"
+        private const val THEME_KEY = "theme_key"
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
+
+        sharedPreferences = getSharedPreferences(SHARED_PREFERENCES_NAME, MODE_PRIVATE)
 
         val arrowBackButton = findViewById<ImageView>(R.id.arrow_back)
         val shareAppButton = findViewById<LinearLayout>(R.id.share_app)
         val sendEmailButton = findViewById<LinearLayout>(R.id.text_to_support)
         val readOfferLink = findViewById<LinearLayout>(R.id.user_agreement)
+        val themeSwitcher = findViewById<SwitcherX>(R.id.themeSwitcher)
+
+        themeSwitcher.setChecked(sharedPreferences.getBoolean(THEME_KEY, false))
 
         arrowBackButton.setOnClickListener { finish() }
         shareAppButton.setOnClickListener { shareApp() }
         sendEmailButton.setOnClickListener { sendEmail() }
         readOfferLink.setOnClickListener { readOffer() }
+        themeSwitcher.setOnCheckedChangeListener { isChecked ->
+            (applicationContext as App).switchTheme(isChecked)
+            saveTheme(isChecked)
+        }
+    }
+
+    private fun saveTheme(isDarkTheme: Boolean) {
+        sharedPreferences.edit().putBoolean(THEME_KEY, isDarkTheme).apply()
     }
 
     private fun shareApp() {
