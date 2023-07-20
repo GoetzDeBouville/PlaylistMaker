@@ -1,7 +1,6 @@
 package com.example.playlistmaker
 
 import android.content.SharedPreferences
-import com.example.playlistmaker.track.Track
 import com.google.gson.Gson
 
 const val HISTORY_TRACKLIST = "history_tracklist"

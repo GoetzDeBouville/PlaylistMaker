@@ -1,4 +1,4 @@
-package com.example.playlistmaker.track
+package com.example.playlistmaker
 
 import android.os.Parcel
 import android.os.Parcelable
@@ -9,13 +9,13 @@ data class Track(
     val trackId: Int,
     val trackName: String,
     val artistName: String,
-    val trackTimeMillis: Long,
-    val artworkUrl100: String,
+    val trackTimeMillis: Long?,
+    val artworkUrl100: String?,
     val collectionName: String?,
-    val releaseDate: String,
-    val primaryGenreName: String,
-    val country: String,
-    val previewUrl: String
+    val releaseDate: String?,
+    val primaryGenreName: String?,
+    val country: String?,
+    val previewUrl: String?
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readInt(),
@@ -30,17 +30,17 @@ data class Track(
         parcel.readString().toString()
     )
 
-    fun getArtwork512() = artworkUrl100.replaceAfterLast('/', "512x512bb.jpg")
+    fun getArtwork512() = artworkUrl100?.replaceAfterLast('/', "512x512bb.jpg")
 
     fun timeFormater(): String =
         SimpleDateFormat("mm:ss", Locale.getDefault()).format(trackTimeMillis)
 
-    fun yearFormater() = releaseDate.substringBefore("-")
+    fun yearFormater() = releaseDate?.substringBefore("-")
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeInt(trackId)
         parcel.writeString(trackName)
         parcel.writeString(artistName)
-        parcel.writeLong(trackTimeMillis)
+        parcel.writeLong(trackTimeMillis!!)
         parcel.writeString(artworkUrl100)
         parcel.writeString(collectionName)
         parcel.writeString(releaseDate)

@@ -1,33 +1,43 @@
-package com.example.playlistmaker.activities
+package com.example.playlistmaker.player.presentation
 
 import android.content.Context
 import android.content.Intent
-import android.media.MediaPlayer
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ActivityAudioPlayerBinding
-import com.example.playlistmaker.track.Track
+import com.example.playlistmaker.Track
+import com.example.playlistmaker.player.data.PlayerRepository
+import com.example.playlistmaker.player.data.PlayerRepositoryImpl
 import java.util.Locale
 import java.util.concurrent.TimeUnit
 
 class PlayerActivity : AppCompatActivity() {
 
     private lateinit var handler: Handler
+    private lateinit var playerRepository: PlayerRepository
 
     private lateinit var binding: ActivityAudioPlayerBinding
     private lateinit var track: Track
-    private var playerState = STATE_DEFAULT
 
-    private var mediaPlayer = MediaPlayer()
     private var currentTrackTime: Long = 0L
     private var startTime: Long = 0L
     private var timerIsRunning = false
+
+    private val STATE_DEFAULT = 0
+    private val STATE_PREPARED = 1
+    private val STATE_PLAYING = 2
+    private val STATE_PAUSED = 3
+    private val DELAY = 10L
+
+    private var playerState = STATE_DEFAULT
 
     override fun onCreate(savedInstanceState: Bundle?) {
         handler = Handler(Looper.getMainLooper())
@@ -36,7 +46,10 @@ class PlayerActivity : AppCompatActivity() {
         binding = ActivityAudioPlayerBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        playerRepository = PlayerRepositoryImpl()
+
         track = intent.extras?.get(ADDITIONAL_KEY_TRACK) as Track
+        Log.e("TRACK INFO", track.toString())
         setTrackInfoToViews()
         preparePlayer()
 
@@ -51,7 +64,7 @@ class PlayerActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        mediaPlayer.release()
+        playerRepository.releasePlayer()
     }
 
     private fun setTrackInfoToViews() {
@@ -78,44 +91,41 @@ class PlayerActivity : AppCompatActivity() {
     }
 
     private fun preparePlayer() {
-        mediaPlayer.setDataSource(track.previewUrl)
-        mediaPlayer.prepareAsync()
-        mediaPlayer.setOnPreparedListener {
-            playerState = STATE_PREPARED
-        }
-        mediaPlayer.setOnCompletionListener {
-            binding.playButton.setImageResource(R.drawable.play_button)
-            stopTrackTimer()
-            currentTrackTime = 0L
-            binding.textTrackTimeValue.setText(R.string.current_time)
-            playerState = STATE_PREPARED
+        playerRepository.preparePlayer(track) { prepared ->
+            if (prepared) {
+                playerState = STATE_PREPARED
+            } else {
+                Toast.makeText(this, "Cannot load media", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
     private fun startPlayer() {
-        mediaPlayer.start()
-        binding.playButton.setImageResource(R.drawable.pause_button)
-        playerState = STATE_PLAYING
-        if (!timerIsRunning) {
-            startTime = System.currentTimeMillis() - currentTrackTime
-            startTrackTimer()
+        playerRepository.startPlayer {
+            binding.playButton.setImageResource(R.drawable.pause_button)
+            if (!timerIsRunning) {
+                startTime = System.currentTimeMillis() - playerRepository.getCurrentTrackTime()
+                startTrackTimer()
+            }
+            playerState = playerRepository.getPlayerState()
         }
     }
 
     private fun pausePlayer() {
         if (playerState == STATE_PLAYING) {
-            mediaPlayer.pause()
+            playerRepository.pausePlayer()
             binding.playButton.setImageResource(R.drawable.play_button)
-            playerState = STATE_PAUSED
             stopTrackTimer()
+            playerState = playerRepository.getPlayerState()
         }
     }
 
     private fun playbackControl() {
-        when (playerState) {
+        when (playerRepository.getPlayerState()) {
             STATE_PLAYING -> {
                 pausePlayer()
             }
+
             STATE_PREPARED, STATE_PAUSED -> {
                 startPlayer()
             }
@@ -149,11 +159,6 @@ class PlayerActivity : AppCompatActivity() {
 
     companion object {
         private const val ADDITIONAL_KEY_TRACK = "add_key_track"
-        private const val STATE_DEFAULT = 0
-        private const val STATE_PREPARED = 1
-        private const val STATE_PLAYING = 2
-        private const val STATE_PAUSED = 3
-        private const val DELAY = 10L
 
         fun newIntent(context: Context, track: Track): Intent {
             return Intent(context, PlayerActivity::class.java).apply {
