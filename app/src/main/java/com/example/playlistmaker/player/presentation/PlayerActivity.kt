@@ -12,16 +12,16 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ActivityAudioPlayerBinding
-import com.example.playlistmaker.Track
-import com.example.playlistmaker.player.data.PlayerRepository
-import com.example.playlistmaker.player.data.PlayerRepositoryImpl
+import com.example.playlistmaker.player.domain.models.Track
+import com.example.playlistmaker.player.domain.Player
+import com.example.playlistmaker.Creator
 import java.util.Locale
 import java.util.concurrent.TimeUnit
 
 class PlayerActivity : AppCompatActivity() {
 
     private lateinit var handler: Handler
-    private lateinit var playerRepository: PlayerRepository
+    private lateinit var player: Player
 
     private lateinit var binding: ActivityAudioPlayerBinding
     private lateinit var track: Track
@@ -29,7 +29,6 @@ class PlayerActivity : AppCompatActivity() {
     private var currentTrackTime: Long = 0L
     private var startTime: Long = 0L
     private var timerIsRunning = false
-
 
 
     private var playerState = STATE_DEFAULT
@@ -41,7 +40,7 @@ class PlayerActivity : AppCompatActivity() {
         binding = ActivityAudioPlayerBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        playerRepository = PlayerRepositoryImpl()
+        player = Creator.providePlayerInteractor()
 
         track = intent.extras?.get(ADDITIONAL_KEY_TRACK) as Track
         setTrackInfoToViews()
@@ -58,7 +57,7 @@ class PlayerActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        playerRepository.releasePlayer()
+        player.releasePlayer()
     }
 
     private fun setTrackInfoToViews() {
@@ -66,7 +65,11 @@ class PlayerActivity : AppCompatActivity() {
             Glide.with(this@PlayerActivity)
                 .load(track.getArtwork512())
                 .placeholder(R.drawable.poster_placeholder)
-                .transform(RoundedCorners(10))
+                .transform(
+                    RoundedCorners(
+                        resources.getDimensionPixelSize(R.dimen.album_cover_corner_radius)
+                    )
+                )
                 .into(albumPosterImage)
             trackName.text = track.trackName
             trackArtist.text = track.artistName
@@ -85,7 +88,7 @@ class PlayerActivity : AppCompatActivity() {
     }
 
     private fun preparePlayer() {
-        playerRepository.preparePlayer(track) { prepared ->
+        player.preparePlayer(track) { prepared ->
             if (prepared) {
                 playerState = STATE_PREPARED
             } else {
@@ -95,27 +98,27 @@ class PlayerActivity : AppCompatActivity() {
     }
 
     private fun startPlayer() {
-        playerRepository.startPlayer {
+        player.startPlayer {
             binding.playButton.setImageResource(R.drawable.pause_button)
             if (!timerIsRunning) {
-                startTime = System.currentTimeMillis() - playerRepository.getCurrentTrackTime()
+                startTime = System.currentTimeMillis() - player.getCurrentTrackTime()
                 startTrackTimer()
             }
-            playerState = playerRepository.getPlayerState()
+            playerState = player.getPlayerState()
         }
     }
 
     private fun pausePlayer() {
         if (playerState == STATE_PLAYING) {
-            playerRepository.pausePlayer()
+            player.pausePlayer()
             binding.playButton.setImageResource(R.drawable.play_button)
             stopTrackTimer()
-            playerState = playerRepository.getPlayerState()
+            playerState = player.getPlayerState()
         }
     }
 
     private fun playbackControl() {
-        when (playerRepository.getPlayerState()) {
+        when (player.getPlayerState()) {
             STATE_PLAYING -> {
                 pausePlayer()
             }

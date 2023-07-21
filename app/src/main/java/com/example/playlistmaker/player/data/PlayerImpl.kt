@@ -1,10 +1,11 @@
 package com.example.playlistmaker.player.data
 
 import android.media.MediaPlayer
-import com.example.playlistmaker.Track
+import com.example.playlistmaker.player.domain.Player
+import com.example.playlistmaker.player.domain.models.Track
 import java.io.IOException
 
-class PlayerRepositoryImpl : PlayerRepository {
+class PlayerImpl : Player {
 
     private lateinit var mediaPlayer: MediaPlayer
     private var currentTrackTime: Long = 0L

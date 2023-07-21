@@ -19,7 +19,7 @@ import com.example.playlistmaker.SearchHistory
 import com.example.playlistmaker.databinding.ActivitySearchBinding
 import com.example.playlistmaker.itunesApi.ItunesResponce
 import com.example.playlistmaker.itunesApi.ItunesService
-import com.example.playlistmaker.Track
+import com.example.playlistmaker.player.domain.models.Track
 import com.example.playlistmaker.player.presentation.PlayerActivity
 import com.example.playlistmaker.player.presentation.TrackAdapter
 import retrofit2.Call

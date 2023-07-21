@@ -1,8 +1,8 @@
-package com.example.playlistmaker.player.data
+package com.example.playlistmaker.player.domain
 
-import com.example.playlistmaker.Track
+import com.example.playlistmaker.player.domain.models.Track
 
-interface PlayerRepository {
+interface Player {
     fun preparePlayer(track: Track, callback: (Boolean) -> Unit)
     fun startPlayer(callback: () -> Unit)
     fun pausePlayer()
