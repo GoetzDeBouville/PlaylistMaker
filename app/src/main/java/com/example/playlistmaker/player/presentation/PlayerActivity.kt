@@ -5,7 +5,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -31,11 +30,7 @@ class PlayerActivity : AppCompatActivity() {
     private var startTime: Long = 0L
     private var timerIsRunning = false
 
-    private val STATE_DEFAULT = 0
-    private val STATE_PREPARED = 1
-    private val STATE_PLAYING = 2
-    private val STATE_PAUSED = 3
-    private val DELAY = 10L
+
 
     private var playerState = STATE_DEFAULT
 
@@ -49,7 +44,6 @@ class PlayerActivity : AppCompatActivity() {
         playerRepository = PlayerRepositoryImpl()
 
         track = intent.extras?.get(ADDITIONAL_KEY_TRACK) as Track
-        Log.e("TRACK INFO", track.toString())
         setTrackInfoToViews()
         preparePlayer()
 
@@ -159,7 +153,11 @@ class PlayerActivity : AppCompatActivity() {
 
     companion object {
         private const val ADDITIONAL_KEY_TRACK = "add_key_track"
-
+        private const val STATE_DEFAULT = 0
+        private const val STATE_PREPARED = 1
+        private const val STATE_PLAYING = 2
+        private const val STATE_PAUSED = 3
+        private const val DELAY = 10L
         fun newIntent(context: Context, track: Track): Intent {
             return Intent(context, PlayerActivity::class.java).apply {
                 putExtra(ADDITIONAL_KEY_TRACK, track)
