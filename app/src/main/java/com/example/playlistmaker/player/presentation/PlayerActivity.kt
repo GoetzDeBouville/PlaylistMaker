@@ -13,15 +13,15 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ActivityAudioPlayerBinding
 import com.example.playlistmaker.player.domain.models.Track
-import com.example.playlistmaker.player.domain.Player
 import com.example.playlistmaker.Creator
+import com.example.playlistmaker.player.domain.PlayerInteractor
 import java.util.Locale
 import java.util.concurrent.TimeUnit
 
 class PlayerActivity : AppCompatActivity() {
 
     private lateinit var handler: Handler
-    private lateinit var player: Player
+    private lateinit var playerInteractor: PlayerInteractor
 
     private lateinit var binding: ActivityAudioPlayerBinding
     private lateinit var track: Track
@@ -40,7 +40,7 @@ class PlayerActivity : AppCompatActivity() {
         binding = ActivityAudioPlayerBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        player = Creator.providePlayerInteractor()
+        playerInteractor = Creator.providePlayerInteractor()
 
         track = intent.extras?.get(ADDITIONAL_KEY_TRACK) as Track
         setTrackInfoToViews()
@@ -57,7 +57,7 @@ class PlayerActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        player.releasePlayer()
+        playerInteractor.releasePlayer()
     }
 
     private fun setTrackInfoToViews() {
@@ -88,7 +88,7 @@ class PlayerActivity : AppCompatActivity() {
     }
 
     private fun preparePlayer() {
-        player.preparePlayer(track) { prepared ->
+        playerInteractor.preparePlayer(track) { prepared ->
             if (prepared) {
                 playerState = STATE_PREPARED
             } else {
@@ -98,27 +98,27 @@ class PlayerActivity : AppCompatActivity() {
     }
 
     private fun startPlayer() {
-        player.startPlayer {
+        playerInteractor.startPlayer {
             binding.playButton.setImageResource(R.drawable.pause_button)
             if (!timerIsRunning) {
-                startTime = System.currentTimeMillis() - player.getCurrentTrackTime()
+                startTime = System.currentTimeMillis() - playerInteractor.getCurrentTrackTime()
                 startTrackTimer()
             }
-            playerState = player.getPlayerState()
+            playerState = playerInteractor.getPlayerState()
         }
     }
 
     private fun pausePlayer() {
         if (playerState == STATE_PLAYING) {
-            player.pausePlayer()
+            playerInteractor.pausePlayer()
             binding.playButton.setImageResource(R.drawable.play_button)
             stopTrackTimer()
-            playerState = player.getPlayerState()
+            playerState = playerInteractor.getPlayerState()
         }
     }
 
     private fun playbackControl() {
-        when (player.getPlayerState()) {
+        when (playerInteractor.getPlayerState()) {
             STATE_PLAYING -> {
                 pausePlayer()
             }

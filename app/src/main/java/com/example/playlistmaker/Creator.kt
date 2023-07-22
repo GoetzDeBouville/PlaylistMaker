@@ -6,11 +6,11 @@ import com.example.playlistmaker.player.domain.PlayerInteractor
 import com.example.playlistmaker.player.domain.PlayerInteractorImpl
 
 object Creator {
-    private fun getPlayerRepository(): Player {
+    private fun getPlayer(): Player {
         return PlayerImpl()
     }
 
     fun providePlayerInteractor(): PlayerInteractor {
-        return PlayerInteractorImpl(getPlayerRepository())
+        return PlayerInteractorImpl(getPlayer())
     }
 }
