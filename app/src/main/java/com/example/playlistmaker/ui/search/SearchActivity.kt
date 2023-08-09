@@ -1,4 +1,4 @@
-package com.example.playlistmaker.activities
+package com.example.playlistmaker.ui.search
 
 import android.content.Context
 import android.content.SharedPreferences
@@ -18,7 +18,7 @@ import com.example.playlistmaker.R
 import com.example.playlistmaker.SearchHistory
 import com.example.playlistmaker.databinding.ActivitySearchBinding
 import com.example.playlistmaker.itunesApi.ItunesResponce
-import com.example.playlistmaker.itunesApi.ItunesService
+import com.example.playlistmaker.itunesApi.RetrofitNetworkClient
 import com.example.playlistmaker.player.domain.models.Track
 import com.example.playlistmaker.player.presentation.PlayerActivity
 import com.example.playlistmaker.player.presentation.TrackAdapter
@@ -28,7 +28,7 @@ import retrofit2.Response
 
 
 class SearchActivity : AppCompatActivity() {
-    private val itunesService = ItunesService.itunesService
+    private val itunesService = RetrofitNetworkClient.itunesService
     private val tracksList = ArrayList<Track>()
     private val trackAdapter = TrackAdapter()
     private val trackHistoryAdapter = TrackAdapter()
