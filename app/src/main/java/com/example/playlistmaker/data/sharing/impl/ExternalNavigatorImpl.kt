@@ -5,10 +5,11 @@ import android.content.Intent
 import android.net.Uri
 import android.util.Log
 import android.widget.Toast
+import com.example.playlistmaker.domain.sharing.ExternalNavigator
 import com.example.playlistmaker.domain.sharing.model.EmailData
 
-class ExternalNavigator(private val context: Context) {
-    fun shareApp(link: String, title: String) {
+class ExternalNavigatorImpl(private val context: Context) : ExternalNavigator {
+    override fun shareApp(link: String, title: String) {
         Intent().apply {
             action = Intent.ACTION_SEND
             type = "text/plain"
@@ -21,7 +22,7 @@ class ExternalNavigator(private val context: Context) {
         }
     }
 
-    fun openEmail(emailData: EmailData, chooserTitle: String, noEmailAppMessage: String) {
+    override fun openEmail(emailData: EmailData, chooserTitle: String, noEmailAppMessage: String) {
         val intentSend = Intent(Intent.ACTION_SEND).apply {
             type = "message/rfc822"
             putExtra(Intent.EXTRA_EMAIL, emailData.email)
@@ -38,7 +39,7 @@ class ExternalNavigator(private val context: Context) {
         }
     }
 
-    fun openTerms(termsLink: String) {
+    override fun openTerms(termsLink: String) {
         val intentOffer = Intent(Intent.ACTION_VIEW).apply {
             data = Uri.parse(termsLink)
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)

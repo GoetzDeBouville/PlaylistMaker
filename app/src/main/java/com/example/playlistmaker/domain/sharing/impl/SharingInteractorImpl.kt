@@ -2,7 +2,7 @@ package com.example.playlistmaker.domain.sharing.impl
 
 import android.content.Context
 import com.example.playlistmaker.R
-import com.example.playlistmaker.data.sharing.impl.ExternalNavigator
+import com.example.playlistmaker.domain.sharing.ExternalNavigator
 import com.example.playlistmaker.domain.sharing.SharingInteractor
 import com.example.playlistmaker.domain.sharing.model.EmailData
 
@@ -42,27 +42,11 @@ class SharingInteractorImpl(
         )
     }
 
-    private fun getTextChosingApp() : String {
+    private fun getTextChosingApp(): String {
         return context.getString(R.string.text_email_app)
     }
 
-    private fun getNoAppText() : String {
+    private fun getNoAppText(): String {
         return context.getString(R.string.text_no_email_app)
     }
 }
-
-//    fun shareApp(link: String, chooserTitle: String) {
-//        externalNavigator.shareApp(link, chooserTitle)
-//    }
-//
-//    fun openTerms(link: String) {
-//        externalNavigator.openTerms(link)
-//    }
-//
-//    fun openSupport(
-//        emailData: EmailData,
-//        chooserTitle: String,
-//        noEmailAppMessage: String
-//    ) {
-//        externalNavigator.openEmail(emailData, chooserTitle, noEmailAppMessage)
-//    }
