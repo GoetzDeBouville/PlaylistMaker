@@ -3,7 +3,7 @@ package com.example.playlistmaker.ui.settings.view_model
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.playlistmaker.domain.settings.SettingsInteractor
-import com.example.playlistmaker.domain.settings.model.ThemeSettings
+import com.example.playlistmaker.domain.settings.models.ThemeSettings
 import com.example.playlistmaker.domain.sharing.SharingInteractor
 
 class SettingsViewModel(

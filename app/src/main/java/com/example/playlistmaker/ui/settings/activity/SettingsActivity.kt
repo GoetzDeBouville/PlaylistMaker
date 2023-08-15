@@ -3,7 +3,7 @@ package com.example.playlistmaker.ui.settings.activity
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.lifecycle.ViewModelProvider
-import com.example.playlistmaker.creator.Creator
+import com.example.playlistmaker.util.Creator
 import com.example.playlistmaker.databinding.ActivitySettingsBinding
 import com.example.playlistmaker.ui.settings.view_model.SettingsViewModel
 import com.example.playlistmaker.ui.settings.view_model.SettingsViewModelFactory
@@ -29,7 +29,7 @@ class SettingsActivity : AppCompatActivity() {
             binding.themeSwitcher.setChecked(isDarkTheme)
         }
 
-        binding.arrowBack.setOnClickListener { finish() }
+        binding.llArrowBack.setOnClickListener { finish() }
 
         binding.shareApp.setOnClickListener {
             viewModel.shareApp()

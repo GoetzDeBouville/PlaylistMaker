@@ -8,6 +8,7 @@
     android:paddingTop="@dimen/dimen_16dp">
 
     <LinearLayout
+        android:id="@+id/ll_arrow_back"
         style="@style/ActivityHeaderStyle"
         android:orientation="horizontal"
         tools:ignore="UseCompoundDrawables">
