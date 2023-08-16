@@ -21,24 +21,30 @@ import com.example.playlistmaker.domain.sharing.SharingInteractor
 import com.example.playlistmaker.domain.sharing.impl.SharingInteractorImpl
 import com.example.playlistmaker.domain.player.Player
 import com.example.playlistmaker.data.player.PlayerImpl
+import com.example.playlistmaker.data.search.impl.ErrorMessageProviderImpl
+import com.example.playlistmaker.data.sharing.impl.ContentProviderImpl
 import com.example.playlistmaker.domain.player.PlayerInteractor
 import com.example.playlistmaker.domain.player.impl.PlayerInteractorImpl
+import com.example.playlistmaker.domain.search.models.Track
 
 object Creator {
-    private fun getPlayer(): Player {
-        return PlayerImpl()
+    private fun getPlayer(track: Track): Player {
+        return PlayerImpl(track)
     }
 
-    fun providePlayerInteractor(): PlayerInteractor {
-        return PlayerInteractorImpl(getPlayer())
+    fun providePlayerInteractor(track: Track): PlayerInteractor {
+        return PlayerInteractorImpl(getPlayer(track))
     }
 
-    fun provideExternalNavigator(context: Context): ExternalNavigator {
+    private fun provideExternalNavigator(context: Context): ExternalNavigator {
         return ExternalNavigatorImpl(context)
     }
 
     fun provideSharingInteractor(context: Context): SharingInteractor {
-        return SharingInteractorImpl(provideExternalNavigator(context), context)
+        return SharingInteractorImpl(
+            provideExternalNavigator(context),
+            ContentProviderImpl(context)
+        )
     }
 
     fun provideSettingsInteractor(context: Context): SettingsInteractor {
@@ -56,10 +62,10 @@ object Creator {
         )
     }
 
-
     fun provideSearchInteractor(context: Context): SearchInteractor {
         return SearchInteractorImpl(
-            provideSearchRepository(context), context
+            provideSearchRepository(context),
+            ErrorMessageProviderImpl(context)
         )
     }
 

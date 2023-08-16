@@ -14,7 +14,7 @@ import com.example.playlistmaker.util.LoadingStatus
 class SearchViewModel(
     private val searchInteractor: SearchInteractor,
     private val historyInteractor: HistoryInteractor
-) : ViewModel(){
+) : ViewModel() {
 
     private val handler = Handler(Looper.getMainLooper())
     private val searchRunnable = Runnable { searchRequest(latestSearchText) }
@@ -28,7 +28,11 @@ class SearchViewModel(
     val state: LiveData<SearchActivityState>
         get() = _state
 
-    fun searchDebounce(searchText: String) { //* FIN
+    private val _tracks = MutableLiveData<List<Track>>()
+    val tracks: LiveData<List<Track>>
+        get() = _tracks
+
+    fun searchDebounce(searchText: String) {
         if (searchText.isBlank()) {
             _state.value = SearchActivityState.SearchHistory(getHistory())
         } else {
@@ -100,6 +104,9 @@ class SearchViewModel(
     fun saveTrack(track: Track) {
         historyInteractor.saveTrack(track)
     }
+    fun saveTrackList(foundTracks: List<Track>) {
+        _tracks.value = foundTracks
+    }
 
     fun clearHistory() {
         historyInteractor.clearHistory()
@@ -113,6 +120,12 @@ class SearchViewModel(
             getHistory()
         )
     }
+
+    fun stopSearch() {
+        handler.removeCallbacks(searchRunnable)
+        showHistory()
+    }
+
     companion object {
         private const val SEARCH_DEBOUNCE_DELAY = 2000L
         private const val CLICK_DEBOUNCE_DELAY = 500L

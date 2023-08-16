@@ -1,16 +1,14 @@
 package com.example.playlistmaker.domain.search.impl
 
-import android.content.Context
-import com.example.playlistmaker.R
+import com.example.playlistmaker.domain.search.ErrorMessageProvider
 import com.example.playlistmaker.domain.search.api.SearchInteractor
 import com.example.playlistmaker.domain.search.api.SearchRepository
 import com.example.playlistmaker.util.Resource
 import java.util.concurrent.Executors
 
-
 class SearchInteractorImpl(
     private val repository: SearchRepository,
-    private val context: Context
+    private val errorMessageProvider: ErrorMessageProvider
 ) : SearchInteractor {
     private val executor = Executors.newCachedThreadPool()
     override fun searchTracks(expression: String, consumer: SearchInteractor.TracksConsumer) {
@@ -28,10 +26,10 @@ class SearchInteractorImpl(
     }
 
     override fun getConnectionErrorMessage() : String {
-        return context.getString(R.string.check_connection)
+        return errorMessageProvider.getConnectionErrorMessage()
     }
 
     override fun getEmptyListMessage() : String {
-        return context.getString(R.string.nothing_found)
+        return errorMessageProvider.getEmptyListMessage()
     }
 }

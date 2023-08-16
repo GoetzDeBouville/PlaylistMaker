@@ -3,64 +3,87 @@ package com.example.playlistmaker.ui.player.activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ActivityAudioPlayerBinding
 import com.example.playlistmaker.domain.search.models.Track
-import com.example.playlistmaker.util.Creator
-import com.example.playlistmaker.domain.player.PlayerInteractor
-import java.util.Locale
-import java.util.concurrent.TimeUnit
+import com.example.playlistmaker.domain.player.models.PlayerState
+import com.example.playlistmaker.ui.player.view_model.PlayerViewModel
 
 class PlayerActivity : AppCompatActivity() {
 
-    private lateinit var handler: Handler
-    private lateinit var playerInteractor: PlayerInteractor
-
     private lateinit var binding: ActivityAudioPlayerBinding
     private lateinit var track: Track
-
-    private var currentTrackTime: Long = 0L
-    private var startTime: Long = 0L
-    private var timerIsRunning = false
-
-
-    private var playerState = STATE_DEFAULT
+    private lateinit var viewModel: PlayerViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        handler = Handler(Looper.getMainLooper())
 
         super.onCreate(savedInstanceState)
         binding = ActivityAudioPlayerBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        playerInteractor = Creator.providePlayerInteractor()
-
         track = intent.extras?.get(ADDITIONAL_KEY_TRACK) as Track
-        setTrackInfoToViews()
-        preparePlayer()
 
+        viewModel = ViewModelProvider(
+            this,
+            PlayerViewModel.getViewModelFactory(track)
+        )[PlayerViewModel::class.java]
+
+        fetchPlayer()
+        observeViewModel()
         binding.arrowBack.setOnClickListener { finish() }
-        binding.playButton.setOnClickListener { playbackControl() }
+        binding.playButton.setOnClickListener { viewModel.playbackControl() }
+    }
+
+    private fun observeViewModel() {
+        viewModel.playerState.observe(this) {
+            renderState(it)
+        }
+        viewModel.timeProgress.observe(this) {
+            binding.textTrackTimeValue.text = it
+        }
     }
 
     override fun onPause() {
         super.onPause()
-        pausePlayer()
+        viewModel.pausePlayer()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        playerInteractor.releasePlayer()
+    private fun renderState(state: PlayerState) {
+        when (state) {
+            PlayerState.STATE_PLAYING -> showPauseBtn()
+            PlayerState.STATE_PAUSED, PlayerState.STATE_PREPARED -> showPlayBtn()
+            PlayerState.STATE_DEFAULT -> shoOnPrepareMessage()
+        }
     }
 
-    private fun setTrackInfoToViews() {
+    private fun showPauseBtn() {
+        binding.playButton.setOnClickListener {
+            viewModel.playbackControl()
+        }
+        binding.playButton.setImageResource(R.drawable.pause_button)
+    }
+
+    private fun showPlayBtn() {
+        binding.playButton.setOnClickListener {
+            viewModel.playbackControl()
+        }
+        binding.playButton.setImageResource(R.drawable.play_button)
+    }
+
+    private fun shoOnPrepareMessage() {
+        binding.playButton.setOnClickListener {
+            showToast(getString(R.string.player_in_progress))
+        }
+        binding.playButton.setImageResource(R.drawable.play_button)
+    }
+
+    private fun fetchPlayer() {
         with(binding) {
             Glide.with(this@PlayerActivity)
                 .load(track.getArtwork512())
@@ -87,80 +110,16 @@ class PlayerActivity : AppCompatActivity() {
         }
     }
 
-    private fun preparePlayer() {
-        playerInteractor.preparePlayer(track) { prepared ->
-            if (prepared) {
-                playerState = STATE_PREPARED
-            } else {
-                Toast.makeText(this, "Cannot load media", Toast.LENGTH_SHORT).show()
-            }
-        }
-    }
-
-    private fun startPlayer() {
-        playerInteractor.startPlayer {
-            binding.playButton.setImageResource(R.drawable.pause_button)
-            if (!timerIsRunning) {
-                startTime = System.currentTimeMillis() - playerInteractor.getCurrentTrackTime()
-                startTrackTimer()
-            }
-            playerState = playerInteractor.getPlayerState()
-        }
-    }
-
-    private fun pausePlayer() {
-        if (playerState == STATE_PLAYING) {
-            playerInteractor.pausePlayer()
-            binding.playButton.setImageResource(R.drawable.play_button)
-            stopTrackTimer()
-            playerState = playerInteractor.getPlayerState()
-        }
-    }
-
-    private fun playbackControl() {
-        when (playerInteractor.getPlayerState()) {
-            STATE_PLAYING -> {
-                pausePlayer()
-            }
-
-            STATE_PREPARED, STATE_PAUSED -> {
-                startPlayer()
-            }
-        }
-    }
-
-    private val updateTrackTimeRunnable = object : Runnable {
-        override fun run() {
-            currentTrackTime = System.currentTimeMillis() - startTime
-            binding.textTrackTimeValue.text = formatTrackTime(currentTrackTime)
-            handler.postDelayed(this, DELAY)
-        }
-    }
-
-    private fun formatTrackTime(trackTime: Long): String {
-        val minutes = TimeUnit.MILLISECONDS.toMinutes(trackTime)
-        val seconds = TimeUnit.MILLISECONDS.toSeconds(trackTime) % 60
-        return String.format(Locale.getDefault(), "%02d:%02d", minutes, seconds)
-    }
-
-    private fun startTrackTimer() {
-        handler.removeCallbacks(updateTrackTimeRunnable)
-        handler.postDelayed(updateTrackTimeRunnable, DELAY)
-        timerIsRunning = true
-    }
-
-    private fun stopTrackTimer() {
-        handler.removeCallbacks(updateTrackTimeRunnable)
-        timerIsRunning = false
+    private fun showToast(message: String) {
+        Toast.makeText(
+            this,
+            message,
+            Toast.LENGTH_SHORT
+        ).show()
     }
 
     companion object {
         private const val ADDITIONAL_KEY_TRACK = "add_key_track"
-        private const val STATE_DEFAULT = 0
-        private const val STATE_PREPARED = 1
-        private const val STATE_PLAYING = 2
-        private const val STATE_PAUSED = 3
-        private const val DELAY = 10L
         fun newIntent(context: Context, track: Track): Intent {
             return Intent(context, PlayerActivity::class.java).apply {
                 putExtra(ADDITIONAL_KEY_TRACK, track)

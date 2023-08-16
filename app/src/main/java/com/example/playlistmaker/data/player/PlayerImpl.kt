@@ -1,16 +1,23 @@
 package com.example.playlistmaker.data.player
 
 import android.media.MediaPlayer
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.example.playlistmaker.domain.player.Player
+import com.example.playlistmaker.domain.player.models.PlayerState
 import com.example.playlistmaker.domain.search.models.Track
 import java.io.IOException
 
-class PlayerImpl : Player {
+class PlayerImpl(track: Track) : Player {
 
     private lateinit var mediaPlayer: MediaPlayer
     private var currentTrackTime: Long = 0L
     private var startTime: Long = 0L
-    private var playerState = STATE_DEFAULT
+    private var playerState = MutableLiveData<PlayerState>(PlayerState.STATE_DEFAULT)
+
+    init {
+        preparePlayer(track) {}
+    }
 
     override fun preparePlayer(track: Track, callback: (Boolean) -> Unit) {
         if (track.previewUrl != null) {
@@ -19,11 +26,13 @@ class PlayerImpl : Player {
                 mediaPlayer.setDataSource(track.previewUrl)
                 mediaPlayer.prepareAsync()
                 mediaPlayer.setOnPreparedListener {
-                    playerState = STATE_PREPARED
+                    playerState.value = PlayerState.STATE_PREPARED
                     callback(true)
                 }
                 mediaPlayer.setOnCompletionListener {
-                    playerState = STATE_PREPARED
+                    currentTrackTime = 0L
+                    startTime = 0L
+                    playerState.value = PlayerState.STATE_PREPARED
                     callback(false)
                 }
             } catch (e: IOException) {
@@ -36,23 +45,27 @@ class PlayerImpl : Player {
 
     override fun startPlayer(callback: () -> Unit) {
         mediaPlayer.start()
-        playerState = STATE_PLAYING
+        playerState.value = PlayerState.STATE_PLAYING
         startTime = System.currentTimeMillis() - currentTrackTime
         callback()
     }
 
     override fun pausePlayer() {
-        if (playerState == STATE_PLAYING) {
+        if (playerState.value == PlayerState.STATE_PLAYING) {
+            currentTrackTime = System.currentTimeMillis() - startTime
             mediaPlayer.pause()
-            playerState = STATE_PAUSED
+            playerState.value = PlayerState.STATE_PAUSED
         }
     }
 
-    override fun getPlayerState(): Int {
+    override fun getPlayerState(): LiveData<PlayerState> {
         return playerState
     }
 
     override fun getCurrentTrackTime(): Long {
+        if (playerState.value == PlayerState.STATE_PLAYING) {
+            currentTrackTime = System.currentTimeMillis() - startTime
+        }
         return currentTrackTime
     }
 
@@ -62,12 +75,5 @@ class PlayerImpl : Player {
 
     override fun releasePlayer() {
         mediaPlayer.release()
-    }
-
-    companion object {
-        private const val STATE_DEFAULT = 0
-        private const val STATE_PREPARED = 1
-        private const val STATE_PLAYING = 2
-        private const val STATE_PAUSED = 3
     }
 }
