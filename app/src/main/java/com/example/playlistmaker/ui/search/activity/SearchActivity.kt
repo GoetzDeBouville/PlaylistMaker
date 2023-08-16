@@ -235,7 +235,11 @@ class SearchActivity : AppCompatActivity() {
     private fun search() {
         val searchText = binding.inputEditText.text.toString()
         Log.d("SearchActivity", "Searching for: $searchText")
-        viewModel.searchDebounce(binding.inputEditText.text.toString())
+        if (searchText.isNotBlank()) {
+            viewModel.searchDebounce(binding.inputEditText.text.toString())
+        } else {
+            viewModel.stopSearch()
+        }
     }
 
     private fun clearButtonVisibility(s: CharSequence?): Int {
