@@ -22,7 +22,7 @@ class TrackAdapter(private var onClickedTrack: ((Track) -> Unit)? = null) :
                 Glide.with(itemView)
                     .load(model.artworkUrl100)
                     .placeholder(R.drawable.empty_poster)
-                    .transform(RoundedCorners(10))
+                    .transform(RoundedCorners(itemView.resources.getDimensionPixelSize(R.dimen.dimen_8dp)))
                     .into(albumPosterImage)
             }
         }

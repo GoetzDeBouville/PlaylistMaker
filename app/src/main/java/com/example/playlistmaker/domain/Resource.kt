@@ -1,4 +1,4 @@
-package com.example.playlistmaker.util
+package com.example.playlistmaker.domain
 
 sealed class Resource<T>(val data: T? = null, val errorType: LoadingStatus? = null) {
     class Success<T>(data: T) : Resource<T>(data)

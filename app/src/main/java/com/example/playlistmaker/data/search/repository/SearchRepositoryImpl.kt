@@ -6,8 +6,8 @@ import com.example.playlistmaker.data.search.mappers.TrackMapper
 import com.example.playlistmaker.data.search.network.NetworkClient
 import com.example.playlistmaker.domain.search.api.SearchRepository
 import com.example.playlistmaker.domain.search.models.Track
-import com.example.playlistmaker.util.LoadingStatus
-import com.example.playlistmaker.util.Resource
+import com.example.playlistmaker.domain.LoadingStatus
+import com.example.playlistmaker.domain.Resource
 
 
 class SearchRepositoryImpl(
@@ -17,11 +17,16 @@ class SearchRepositoryImpl(
     override fun searchTracks(expression: String): Resource<List<Track>> {
         val response = networkClient.doRequest(TracksSearchRequest(expression))
         return when (response.resultCode) {
-            -1 -> Resource.Error(LoadingStatus.NO_INTERNET)
-            200 -> Resource.Success((response as TracksSearchResponse).tracks.map {
+            NO_INTERNET_CODE -> Resource.Error(LoadingStatus.NO_INTERNET)
+            SUCCESS_CODE -> Resource.Success((response as TracksSearchResponse).tracks.map {
                 mapper.mapDtoToEntity(it)
             })
             else -> Resource.Error(LoadingStatus.SERVER_ERROR)
         }
+    }
+
+    companion object {
+        const val NO_INTERNET_CODE = -1
+        const val SUCCESS_CODE = 200
     }
 }

@@ -16,7 +16,7 @@ class SharedPreferencesHistoryStorage(context: Context) : History {
         if (savedTracks.contains(track)) {
             savedTracks.remove(track)
         }
-        if (savedTracks.size == 10) {
+        if (savedTracks.size == TRACKLIST_SIZE) {
             savedTracks.removeLast()
         }
         savedTracks.add(0, track)
@@ -48,5 +48,6 @@ class SharedPreferencesHistoryStorage(context: Context) : History {
     companion object {
         const val SHARED_PREFERERNCES = "playlist_maker_preferences"
         const val SEARCH_KEY = "search_key"
+        const val TRACKLIST_SIZE = 10
     }
 }

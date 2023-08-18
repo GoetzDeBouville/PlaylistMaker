@@ -1,9 +1,9 @@
 package com.example.playlistmaker.data.player
 
 import android.media.MediaPlayer
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.playlistmaker.domain.player.Player
+import com.example.playlistmaker.domain.player.PlayerStateObserver
 import com.example.playlistmaker.domain.player.models.PlayerState
 import com.example.playlistmaker.domain.search.models.Track
 import java.io.IOException
@@ -14,7 +14,7 @@ class PlayerImpl(track: Track) : Player {
     private var currentTrackTime: Long = 0L
     private var startTime: Long = 0L
     private var playerState = MutableLiveData<PlayerState>(PlayerState.STATE_DEFAULT)
-
+    private val observers = mutableListOf<PlayerStateObserver>()
     init {
         preparePlayer(track) {}
     }
@@ -58,8 +58,11 @@ class PlayerImpl(track: Track) : Player {
         }
     }
 
-    override fun getPlayerState(): LiveData<PlayerState> {
-        return playerState
+    override fun getPlayerState(observer: PlayerStateObserver) {
+        observers.add(observer)
+        playerState.observeForever { state ->
+            observers.forEach { it.onPlayerStateChanged(state) }
+        }
     }
 
     override fun getCurrentTrackTime(): Long {

@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
@@ -43,7 +42,10 @@ class SearchActivity : AppCompatActivity() {
         setupSearchEditText()
         setupBtnClearSearchClickListener()
         binding.refreshButton.setOnClickListener {
-            search()
+            val searchRequest = binding.inputEditText.text.toString()
+            if(searchRequest.isNotBlank()) {
+                viewModel.searchRequest(searchRequest)
+            }
         }
         binding.llArrowBack.setOnClickListener {
             finish()
@@ -79,25 +81,20 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun updateUI(
-        method: String,
-        searchHistoryVisible: Int,
         placeholderErrorVisible: Int,
         progressBarVisible: Int,
         tracklistRecyclerVisible: Int
     ) {
-        Log.e(
-            "SearchActivity",
-            "updateUI $method, $searchHistoryVisible, $placeholderErrorVisible, $progressBarVisible, $tracklistRecyclerVisible"
-        )
-        binding.searchHistory.visibility = searchHistoryVisible
+        binding.searchHistory.visibility = View.GONE
         binding.placeholderError.visibility = placeholderErrorVisible
         binding.progressBar.visibility = progressBarVisible
         binding.tracklistRecycler.visibility = tracklistRecyclerVisible
     }
 
     private fun showEmpty(message: String) {
-        updateUI("showEmpty", View.GONE, View.VISIBLE, View.GONE, View.GONE)
+        updateUI(View.VISIBLE, View.GONE, View.GONE)
         binding.placeholderMessage.text = message
+        binding.refreshButton.visibility = View.GONE
         binding.placeholderImage.setImageResource(
             if (isNightMode()) R.drawable.emtpty_dark
             else R.drawable.empty_light
@@ -105,20 +102,20 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun showFoundTracks(foundTracks: List<Track>) {
-        Log.e("SearchActivity", "foundTracks $foundTracks")
-        updateUI("showFoundTracks", View.GONE, View.GONE, View.GONE, View.VISIBLE)
+        updateUI(View.GONE, View.GONE, View.VISIBLE)
         tracksList.clear()
         tracksList.addAll(foundTracks)
         trackAdapter.notifyDataSetChanged()
     }
 
     private fun showLoading() {
-        updateUI("showLoading", View.GONE, View.GONE, View.VISIBLE, View.GONE)
+        updateUI(View.GONE, View.VISIBLE, View.GONE)
     }
 
     private fun showError(errorMessage: String) {
-        updateUI("showError", View.GONE, View.VISIBLE, View.GONE, View.GONE)
+        updateUI(View.VISIBLE, View.GONE, View.GONE)
         binding.placeholderMessage.text = errorMessage
+        binding.refreshButton.visibility = View.VISIBLE
         binding.placeholderImage.setImageResource(
             if (isNightMode()) R.drawable.no_internet_dark
             else R.drawable.no_internet_light
@@ -126,7 +123,6 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun showHistory(tracks: List<Track>) {
-        Log.e("SearchActivity", "History tracks: $tracks")
         historyTracklist.clear()
         historyTracklist.addAll(tracks)
         binding.placeholderError.visibility = View.GONE
@@ -144,8 +140,8 @@ class SearchActivity : AppCompatActivity() {
             is SearchActivityState.SearchHistory -> showHistory(state.trackList)
             is SearchActivityState.Content -> showFoundTracks(state.trackList)
             is SearchActivityState.Loading -> showLoading()
-            is SearchActivityState.Empty -> showEmpty(state.emptyMessage)
-            is SearchActivityState.Error -> showError(state.errorMessage)
+            is SearchActivityState.Empty -> showEmpty(getString(R.string.nothing_found))
+            is SearchActivityState.ConnectionError -> showError(getString(R.string.check_connection))
         }
     }
 
@@ -177,15 +173,19 @@ class SearchActivity : AppCompatActivity() {
         binding.inputEditText.setText(viewModel.savedSearchRequest)
         setupFocusChangeListener()
         setupTextChangedListener()
-        setupEditorActionListener()
+        setSearchEditorActionListener()
     }
 
-    private fun setupEditorActionListener() {
+    private fun setSearchEditorActionListener() {
         binding.inputEditText.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
-                search()
+                val searchRequest = binding.inputEditText.text.toString()
+                if(searchRequest.isNotBlank()) {
+                    viewModel.searchRequest(searchRequest)
+                }
+                return@setOnEditorActionListener true
             }
-            false
+            return@setOnEditorActionListener false
         }
     }
 
@@ -234,7 +234,6 @@ class SearchActivity : AppCompatActivity() {
 
     private fun search() {
         val searchText = binding.inputEditText.text.toString()
-        Log.d("SearchActivity", "Searching for: $searchText")
         if (searchText.isNotBlank()) {
             viewModel.searchDebounce(binding.inputEditText.text.toString())
         } else {

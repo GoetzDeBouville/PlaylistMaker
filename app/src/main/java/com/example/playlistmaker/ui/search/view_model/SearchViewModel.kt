@@ -2,7 +2,6 @@ package com.example.playlistmaker.ui.search.view_model
 
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -10,7 +9,8 @@ import com.example.playlistmaker.domain.search.api.HistoryInteractor
 import com.example.playlistmaker.domain.search.api.SearchInteractor
 import com.example.playlistmaker.domain.search.models.SearchActivityState
 import com.example.playlistmaker.domain.search.models.Track
-import com.example.playlistmaker.util.LoadingStatus
+import com.example.playlistmaker.domain.LoadingStatus
+
 class SearchViewModel(
     private val searchInteractor: SearchInteractor,
     private val historyInteractor: HistoryInteractor
@@ -20,7 +20,6 @@ class SearchViewModel(
     private val searchRunnable = Runnable { searchRequest(latestSearchText) }
 
     private var latestSearchText: String = ""
-    var savedSearchRequest: String = ""
 
     private var isClickAllowed = true
 
@@ -28,9 +27,7 @@ class SearchViewModel(
     val state: LiveData<SearchActivityState>
         get() = _state
 
-    private val _tracks = MutableLiveData<List<Track>>()
-    val tracks: LiveData<List<Track>>
-        get() = _tracks
+    var savedSearchRequest = ""
 
     fun searchDebounce(searchText: String) {
         if (searchText.isBlank()) {
@@ -42,13 +39,12 @@ class SearchViewModel(
         }
     }
 
-    private fun searchRequest(newSearchText: String) {
+    fun searchRequest(newSearchText: String) {
         if (newSearchText.isNotEmpty()) {
             renderState(SearchActivityState.Loading)
 
             searchInteractor.searchTracks(newSearchText, object : SearchInteractor.TracksConsumer {
                 override fun consume(foundTracks: List<Track>?, errorType: LoadingStatus?) {
-                    Log.e("SearchViewModel", "foundTracks: $foundTracks, errorType: $errorType")
                     val tracks = mutableListOf<Track>()
                     if (foundTracks != null) {
                         tracks.addAll(foundTracks)
@@ -56,37 +52,23 @@ class SearchViewModel(
 
                     when {
                         errorType != null -> {
-                            renderState(
-                                SearchActivityState.Error(
-                                    errorMessage = searchInteractor.getConnectionErrorMessage()
-                                )
-                            )
+                            renderState(SearchActivityState.ConnectionError)
                         }
 
                         tracks.isEmpty() -> {
-                            renderState(
-                                SearchActivityState.Empty(
-                                    emptyMessage = searchInteractor.getEmptyListMessage()
-                                )
-                            )
+                            renderState(SearchActivityState.Empty)
                         }
 
                         else -> {
-                            renderState(
-                                SearchActivityState.Content(
-                                    trackList = tracks
-                                )
-                            )
+                            renderState(SearchActivityState.Content(trackList = tracks))
                         }
                     }
-
                 }
             })
         }
     }
 
     private fun renderState(state: SearchActivityState) {
-        Log.e("SearchViewModel", "Render state: $state")
         _state.postValue(state)
     }
     private fun getHistory() = historyInteractor.getAllTracks()
@@ -103,9 +85,6 @@ class SearchViewModel(
 
     fun saveTrack(track: Track) {
         historyInteractor.saveTrack(track)
-    }
-    fun saveTrackList(foundTracks: List<Track>) {
-        _tracks.value = foundTracks
     }
 
     fun clearHistory() {

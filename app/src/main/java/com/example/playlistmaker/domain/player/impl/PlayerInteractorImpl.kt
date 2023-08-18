@@ -1,9 +1,8 @@
 package com.example.playlistmaker.domain.player.impl
 
-import androidx.lifecycle.LiveData
 import com.example.playlistmaker.domain.player.Player
 import com.example.playlistmaker.domain.player.PlayerInteractor
-import com.example.playlistmaker.domain.player.models.PlayerState
+import com.example.playlistmaker.domain.player.PlayerStateObserver
 import com.example.playlistmaker.domain.search.models.Track
 
 class PlayerInteractorImpl(private val player: Player) : PlayerInteractor {
@@ -15,8 +14,8 @@ class PlayerInteractorImpl(private val player: Player) : PlayerInteractor {
         player.startPlayer(callback)
     }
 
-    override fun getPlayerState(): LiveData<PlayerState> {
-        return player.getPlayerState()
+    override fun getPlayerState(observer: PlayerStateObserver){
+        return player.getPlayerState(observer)
     }
 
     override fun pausePlayer() {

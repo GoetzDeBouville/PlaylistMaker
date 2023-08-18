@@ -21,7 +21,6 @@ import com.example.playlistmaker.domain.sharing.SharingInteractor
 import com.example.playlistmaker.domain.sharing.impl.SharingInteractorImpl
 import com.example.playlistmaker.domain.player.Player
 import com.example.playlistmaker.data.player.PlayerImpl
-import com.example.playlistmaker.data.search.impl.ErrorMessageProviderImpl
 import com.example.playlistmaker.data.sharing.impl.ContentProviderImpl
 import com.example.playlistmaker.domain.player.PlayerInteractor
 import com.example.playlistmaker.domain.player.impl.PlayerInteractorImpl
@@ -64,8 +63,7 @@ object Creator {
 
     fun provideSearchInteractor(context: Context): SearchInteractor {
         return SearchInteractorImpl(
-            provideSearchRepository(context),
-            ErrorMessageProviderImpl(context)
+            provideSearchRepository(context)
         )
     }
 

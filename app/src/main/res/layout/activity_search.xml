@@ -96,7 +96,7 @@
             android:layout_height="44dp"
             android:layout_gravity="center"
             android:layout_marginTop="@dimen/dimen_88dp"
-            android:indeterminateTint="@color/progressbar_color"
+            android:indeterminateTint="@color/background_color"
             android:visibility="gone" />
 
         <LinearLayout

@@ -29,6 +29,7 @@
 
     <LinearLayout
         style="@style/SettingsOptionContainer"
+        android:layout_marginTop="@dimen/dimen_24dp"
         android:paddingVertical="@dimen/dimen_20dp"
         tools:ignore="UseCompoundDrawables">
 

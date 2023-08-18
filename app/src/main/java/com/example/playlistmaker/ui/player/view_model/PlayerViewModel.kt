@@ -2,11 +2,11 @@ package com.example.playlistmaker.ui.player.view_model
 
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.example.playlistmaker.domain.player.PlayerStateObserver
 import com.example.playlistmaker.domain.player.models.PlayerState
 import com.example.playlistmaker.domain.search.models.Track
 import com.example.playlistmaker.util.Creator
@@ -16,20 +16,24 @@ import java.util.Locale
 class PlayerViewModel(
     private val track: Track
 ) : ViewModel() {
-    init {
-        Log.e("PlayerViewModel", "PlayerViewModel INIT trackID = ${track.trackId}")
-    }
-
     private val playerInteractor = Creator.providePlayerInteractor(track)
-    val playerState = playerInteractor.getPlayerState()
+    private val _playerState = MutableLiveData<PlayerState>()
+    val playerState: LiveData<PlayerState> get() = _playerState
     private val handler = Handler(Looper.getMainLooper())
     private val timerRunnable = Runnable { updateTimer() }
     private val _timer = MutableLiveData<String>(CURRENT_TIME)
 
+    init {
+        playerInteractor.getPlayerState(object : PlayerStateObserver {
+            override fun onPlayerStateChanged(state: PlayerState) {
+                _playerState.value = state
+            }
+        })
+    }
     val timeProgress: LiveData<String>
         get() = _timer
 
-    fun startPlayer() {
+    private fun startPlayer() {
         playerInteractor.startPlayer() {}
     }
 
@@ -59,12 +63,10 @@ class PlayerViewModel(
     }
 
     private fun updateTimer() {
-        Log.e("PlayerViewModel", "updateTimer called with state ${playerState.value}")
         when (playerState.value) {
             PlayerState.STATE_PLAYING -> {
-                Log.e("PlayerViewModel", "Setting timer value: ${getTimerPosition()}")
                 _timer.value = getTimerPosition()
-                handler.postDelayed(timerRunnable, DELAY)
+                handler.postDelayed(timerRunnable, DELAY_10MS)
             }
             PlayerState.STATE_PAUSED -> handler.removeCallbacks(timerRunnable)
             else -> {
@@ -81,7 +83,7 @@ class PlayerViewModel(
 
     companion object {
         private const val CURRENT_TIME = "00:00"
-        private const val DELAY = 10L
+        private const val DELAY_10MS = 10L
 
         fun getViewModelFactory(track: Track): ViewModelProvider.Factory =
             object : ViewModelProvider.Factory {
