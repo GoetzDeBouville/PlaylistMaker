@@ -8,6 +8,7 @@
     android:paddingTop="@dimen/dimen_16dp">
 
     <LinearLayout
+        android:id="@+id/ll_arrow_back"
         style="@style/ActivityHeaderStyle"
         android:orientation="horizontal"
         tools:ignore="UseCompoundDrawables">
@@ -28,6 +29,7 @@
 
     <LinearLayout
         style="@style/SettingsOptionContainer"
+        android:layout_marginTop="@dimen/dimen_24dp"
         android:paddingVertical="@dimen/dimen_20dp"
         tools:ignore="UseCompoundDrawables">
 

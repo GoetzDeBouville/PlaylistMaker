@@ -1,1 +1,3 @@
-# PlaylistMaker приложение
+# PlaylistMaker
+
+Учебный проект
