@@ -84,15 +84,5 @@ class PlayerViewModel(
     companion object {
         private const val CURRENT_TIME = "00:00"
         private const val DELAY_10MS = 10L
-
-        fun getViewModelFactory(track: Track): ViewModelProvider.Factory =
-            object : ViewModelProvider.Factory {
-                @Suppress("UNCHECKED_CAST")
-                override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                    return PlayerViewModel(
-                        track
-                    ) as T
-                }
-            }
     }
 }

@@ -14,6 +14,8 @@ import com.example.playlistmaker.databinding.ActivityAudioPlayerBinding
 import com.example.playlistmaker.domain.search.models.Track
 import com.example.playlistmaker.domain.player.models.PlayerState
 import com.example.playlistmaker.ui.player.view_model.PlayerViewModel
+import com.example.playlistmaker.ui.player.view_model.PlayerViewModelFactory
+import com.example.playlistmaker.util.Creator
 
 class PlayerActivity : AppCompatActivity() {
 
@@ -29,10 +31,11 @@ class PlayerActivity : AppCompatActivity() {
 
         track = intent.extras?.get(ADDITIONAL_KEY_TRACK) as Track
 
-        viewModel = ViewModelProvider(
-            this,
-            PlayerViewModel.getViewModelFactory(track)
-        )[PlayerViewModel::class.java]
+        val factory = PlayerViewModelFactory(
+            track
+        )
+
+        viewModel = ViewModelProvider(this, factory)[PlayerViewModel::class.java]
 
         fetchPlayer()
         observeViewModel()
