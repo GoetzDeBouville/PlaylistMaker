@@ -15,7 +15,6 @@ import com.example.playlistmaker.domain.search.models.Track
 import com.example.playlistmaker.domain.player.models.PlayerState
 import com.example.playlistmaker.ui.player.view_model.PlayerViewModel
 import com.example.playlistmaker.ui.player.view_model.PlayerViewModelFactory
-import com.example.playlistmaker.util.Creator
 
 class PlayerActivity : AppCompatActivity() {
 

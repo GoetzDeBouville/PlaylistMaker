@@ -46,7 +46,7 @@ class SharedPreferencesHistoryStorage(context: Context) : History {
     }
 
     companion object {
-        const val SHARED_PREFERERNCES = "playlist_maker_preferences"
+        const val SHARED_PREFERERNCES = "pm_prefs"
         const val SEARCH_KEY = "search_key"
         const val TRACKLIST_SIZE = 10
     }

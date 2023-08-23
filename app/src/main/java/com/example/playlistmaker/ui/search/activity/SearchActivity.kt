@@ -18,11 +18,12 @@ import com.example.playlistmaker.ui.player.activity.PlayerActivity
 import com.example.playlistmaker.ui.search.adapters.TrackAdapter
 import com.example.playlistmaker.ui.search.view_model.SearchViewModel
 import com.example.playlistmaker.ui.search.view_model.SearchViewModelFactory
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySearchBinding
-    private lateinit var viewModel: SearchViewModel
-
+//    private lateinit var viewModel: SearchViewModel
+    private val viewModel: SearchViewModel by viewModel()
     private val historyTracklist = ArrayList<Track>()
     private val tracksList = ArrayList<Track>()
     private lateinit var trackAdapter: TrackAdapter
@@ -33,8 +34,8 @@ class SearchActivity : AppCompatActivity() {
         binding = ActivitySearchBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        viewModel =
-            ViewModelProvider(this, SearchViewModelFactory(this)).get(SearchViewModel::class.java)
+//        viewModel =
+//            ViewModelProvider(this, SearchViewModelFactory(this)).get(SearchViewModel::class.java)
 
         initAdapters()
         setupRecyclerViews()
