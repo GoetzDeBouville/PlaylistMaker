@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
@@ -14,13 +13,15 @@ import com.example.playlistmaker.databinding.ActivityAudioPlayerBinding
 import com.example.playlistmaker.domain.search.models.Track
 import com.example.playlistmaker.domain.player.models.PlayerState
 import com.example.playlistmaker.ui.player.view_model.PlayerViewModel
-import com.example.playlistmaker.ui.player.view_model.PlayerViewModelFactory
+import org.koin.core.parameter.parametersOf
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class PlayerActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityAudioPlayerBinding
     private lateinit var track: Track
-    private lateinit var viewModel: PlayerViewModel
+
+    private val viewModel: PlayerViewModel by viewModel { parametersOf(track) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -29,12 +30,6 @@ class PlayerActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         track = intent.extras?.get(ADDITIONAL_KEY_TRACK) as Track
-
-        val factory = PlayerViewModelFactory(
-            track
-        )
-
-        viewModel = ViewModelProvider(this, factory)[PlayerViewModel::class.java]
 
         fetchPlayer()
         observeViewModel()

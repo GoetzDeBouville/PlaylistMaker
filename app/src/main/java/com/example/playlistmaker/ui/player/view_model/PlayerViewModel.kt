@@ -5,18 +5,15 @@ import android.os.Looper
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
+import com.example.playlistmaker.domain.player.PlayerInteractor
 import com.example.playlistmaker.domain.player.PlayerStateObserver
 import com.example.playlistmaker.domain.player.models.PlayerState
-import com.example.playlistmaker.domain.search.models.Track
-import com.example.playlistmaker.util.Creator
 import java.text.SimpleDateFormat
 import java.util.Locale
 
 class PlayerViewModel(
-    private val track: Track
+    private val playerInteractor: PlayerInteractor
 ) : ViewModel() {
-    private val playerInteractor = Creator.providePlayerInteractor(track)
     private val _playerState = MutableLiveData<PlayerState>()
     val playerState: LiveData<PlayerState> get() = _playerState
     private val handler = Handler(Looper.getMainLooper())

@@ -20,7 +20,6 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySearchBinding
-//    private lateinit var viewModel: SearchViewModel
     private val viewModel: SearchViewModel by viewModel()
 
     private val historyTracklist = ArrayList<Track>()
@@ -32,9 +31,6 @@ class SearchActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivitySearchBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-//        viewModel =
-//            ViewModelProvider(this, SearchViewModelFactory(this)).get(SearchViewModel::class.java)
 
         initAdapters()
         setupRecyclerViews()

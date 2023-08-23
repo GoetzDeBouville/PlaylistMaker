@@ -12,5 +12,6 @@ import org.koin.dsl.module
 val repositoryModule = module {
     single<SearchRepository> { SearchRepositoryImpl(get()) }
     single<HistoryRepository> { HistoryRepositoryImpl(get()) }
+
     single<SettingsRepository> { SettingsRepositoryImpl(androidContext()) }
 }
