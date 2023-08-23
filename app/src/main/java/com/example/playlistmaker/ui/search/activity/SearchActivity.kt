@@ -8,7 +8,6 @@ import android.text.TextWatcher
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ActivitySearchBinding
@@ -17,13 +16,13 @@ import com.example.playlistmaker.domain.search.models.Track
 import com.example.playlistmaker.ui.player.activity.PlayerActivity
 import com.example.playlistmaker.ui.search.adapters.TrackAdapter
 import com.example.playlistmaker.ui.search.view_model.SearchViewModel
-import com.example.playlistmaker.ui.search.view_model.SearchViewModelFactory
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySearchBinding
 //    private lateinit var viewModel: SearchViewModel
     private val viewModel: SearchViewModel by viewModel()
+
     private val historyTracklist = ArrayList<Track>()
     private val tracksList = ArrayList<Track>()
     private lateinit var trackAdapter: TrackAdapter
