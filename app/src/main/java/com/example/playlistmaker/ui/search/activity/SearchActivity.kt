@@ -69,6 +69,8 @@ class SearchActivity : AppCompatActivity() {
         }
         trackHistoryAdapter = TrackAdapter {
             if (viewModel.clickDebounce()) {
+                viewModel.saveTrack(it)
+                viewModel.showHistory()
                 PlayerActivity.newIntent(this, it).apply {
                     startActivity(this)
                 }
