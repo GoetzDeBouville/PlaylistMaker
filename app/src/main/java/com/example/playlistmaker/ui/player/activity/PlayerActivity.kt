@@ -2,10 +2,12 @@ package com.example.playlistmaker.ui.player.activity
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.drawable.VectorDrawable
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
@@ -19,18 +21,19 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class PlayerActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityAudioPlayerBinding
-    private lateinit var track: Track
+    private var track: Track? = null
 
     private val viewModel: PlayerViewModel by viewModel { parametersOf(track) }
+    private var vectorDrawable: VectorDrawable? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
         binding = ActivityAudioPlayerBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
         track = intent.extras?.get(ADDITIONAL_KEY_TRACK) as Track
 
+        vectorDrawable = ContextCompat.getDrawable(this, R.drawable.play_button) as VectorDrawable
         fetchPlayer()
         observeViewModel()
         binding.arrowBack.setOnClickListener { finish() }
@@ -54,8 +57,14 @@ class PlayerActivity : AppCompatActivity() {
     private fun renderState(state: PlayerState) {
         when (state) {
             PlayerState.STATE_PLAYING -> showPauseBtn()
-            PlayerState.STATE_PAUSED, PlayerState.STATE_PREPARED -> showPlayBtn()
-            PlayerState.STATE_DEFAULT -> shoOnPrepareMessage()
+            PlayerState.STATE_PAUSED, PlayerState.STATE_PREPARED -> {
+                vectorDrawable?.setTint(ContextCompat.getColor(this, R.color.play_button_color))
+                showPlayBtn()
+            }
+            PlayerState.STATE_DEFAULT -> {
+                vectorDrawable?.setTint(ContextCompat.getColor(this, R.color.prepaing_play_button))
+                shoOnPrepareMessage()
+            }
         }
     }
 
@@ -83,7 +92,7 @@ class PlayerActivity : AppCompatActivity() {
     private fun fetchPlayer() {
         with(binding) {
             Glide.with(this@PlayerActivity)
-                .load(track.getArtwork512())
+                .load(track?.getArtwork512())
                 .placeholder(R.drawable.poster_placeholder)
                 .transform(
                     RoundedCorners(
@@ -91,19 +100,19 @@ class PlayerActivity : AppCompatActivity() {
                     )
                 )
                 .into(albumPosterImage)
-            trackName.text = track.trackName
-            trackArtist.text = track.artistName
-            textDurationValue.text = track.timeFormater()
-            if (track.collectionName != null) {
-                textAlbumValue.text = track.collectionName
+            trackName.text = track?.trackName
+            trackArtist.text = track?.artistName
+            textDurationValue.text = track?.timeFormater()
+            if (track?.collectionName != null) {
+                textAlbumValue.text = track?.collectionName
             } else {
                 textAlbumValue.visibility = View.INVISIBLE
                 textAlbum.visibility = View.INVISIBLE
             }
-            textGenreValue.text = track.primaryGenreName
-            textCountryValue.text = track.country
-            textYearValue.text = track.releaseDate
-            textYearValue.text = track.yearFormater()
+            textGenreValue.text = track?.primaryGenreName
+            textCountryValue.text = track?.country
+            textYearValue.text = track?.releaseDate
+            textYearValue.text = track?.yearFormater()
         }
     }
 
