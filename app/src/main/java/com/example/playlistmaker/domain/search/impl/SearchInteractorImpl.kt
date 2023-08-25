@@ -22,12 +22,4 @@ class SearchInteractorImpl(
             }
         }
     }
-
-//    override fun getConnectionErrorMessage() : String {
-//        return errorMessageProvider.getConnectionErrorMessage()
-//    }
-//
-//    override fun getEmptyListMessage() : String {
-//        return errorMessageProvider.getEmptyListMessage()
-//    }
 }

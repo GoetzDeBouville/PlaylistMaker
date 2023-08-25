@@ -5,18 +5,15 @@ import android.os.Looper
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
+import com.example.playlistmaker.domain.player.PlayerInteractor
 import com.example.playlistmaker.domain.player.PlayerStateObserver
 import com.example.playlistmaker.domain.player.models.PlayerState
-import com.example.playlistmaker.domain.search.models.Track
-import com.example.playlistmaker.util.Creator
 import java.text.SimpleDateFormat
 import java.util.Locale
 
 class PlayerViewModel(
-    private val track: Track
+    private val playerInteractor: PlayerInteractor
 ) : ViewModel() {
-    private val playerInteractor = Creator.providePlayerInteractor(track)
     private val _playerState = MutableLiveData<PlayerState>()
     val playerState: LiveData<PlayerState> get() = _playerState
     private val handler = Handler(Looper.getMainLooper())
@@ -84,15 +81,5 @@ class PlayerViewModel(
     companion object {
         private const val CURRENT_TIME = "00:00"
         private const val DELAY_10MS = 10L
-
-        fun getViewModelFactory(track: Track): ViewModelProvider.Factory =
-            object : ViewModelProvider.Factory {
-                @Suppress("UNCHECKED_CAST")
-                override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                    return PlayerViewModel(
-                        track
-                    ) as T
-                }
-            }
     }
 }

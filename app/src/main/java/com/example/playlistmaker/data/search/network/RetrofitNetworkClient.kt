@@ -6,16 +6,9 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import com.example.playlistmaker.data.search.dto.Response
 import com.example.playlistmaker.data.search.dto.TracksSearchRequest
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
-class RetrofitNetworkClient(private val context: Context) : NetworkClient {
-    private val retrofit: Retrofit = Retrofit.Builder()
-        .baseUrl(BASE_URL)
-        .addConverterFactory(GsonConverterFactory.create())
-        .build()
-
-    private val itunesService: ItunesAPI = retrofit.create(ItunesAPI::class.java)
+class RetrofitNetworkClient(private val itunesService: ItunesAPI, private val context: Context) :
+    NetworkClient {
 
     override fun doRequest(dto: Any): Response {
         if (!isConnected()) {
@@ -27,14 +20,18 @@ class RetrofitNetworkClient(private val context: Context) : NetworkClient {
 
         val response = itunesService.search(dto.expression).execute()
         val body = response.body()
-        return body?.apply { resultCode = response.code() } ?: Response().apply { resultCode = response.code() }
+        return body?.apply { resultCode = response.code() } ?: Response().apply {
+            resultCode = response.code()
+        }
     }
 
     @SuppressLint("NewApi")
     private fun isConnected(): Boolean {
         val connectivityManager = context.getSystemService(
-            Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        val capabilities = connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
+            Context.CONNECTIVITY_SERVICE
+        ) as ConnectivityManager
+        val capabilities =
+            connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
         return capabilities != null &&
                 (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) ||
                         capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) ||
@@ -42,6 +39,6 @@ class RetrofitNetworkClient(private val context: Context) : NetworkClient {
     }
 
     companion object {
-        private const val BASE_URL = "https://itunes.apple.com/"
+        const val BASE_URL = "https://itunes.apple.com/"
     }
 }
