@@ -21,10 +21,10 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class PlayerActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityAudioPlayerBinding
-    private var track: Track? = null
 
     private val viewModel: PlayerViewModel by viewModel { parametersOf(track) }
     private var vectorDrawable: VectorDrawable? = null
+    private var track: Track? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -58,7 +58,7 @@ class PlayerActivity : AppCompatActivity() {
         when (state) {
             PlayerState.STATE_PLAYING -> showPauseBtn()
             PlayerState.STATE_PAUSED, PlayerState.STATE_PREPARED -> {
-                vectorDrawable?.setTint(ContextCompat.getColor(this, R.color.play_button_color))
+                vectorDrawable?.setTint(ContextCompat.getColor(this, R.color.elements_color))
                 showPlayBtn()
             }
             PlayerState.STATE_DEFAULT -> {

@@ -9,11 +9,11 @@ import com.example.playlistmaker.ui.media.MediaActivity
 import com.example.playlistmaker.ui.search.activity.SearchActivity
 import com.example.playlistmaker.databinding.ActivityMainBinding
 import com.example.playlistmaker.ui.settings.activity.SettingsActivity
+import com.google.android.material.tabs.TabLayoutMediator
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
-
     private var isClickedAllowed = true
     private val handler = Handler(Looper.getMainLooper())
 

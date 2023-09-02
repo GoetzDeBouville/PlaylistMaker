@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    style="@style/SearchBackgroundStyle"
+    style="@style/ActivitiesBackgroundStyle"
     android:paddingTop="@dimen/dimen_16dp">
 
     <LinearLayout
@@ -115,7 +115,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginBottom="@dimen/dimen_16dp"
-                tools:src="@drawable/no_internet_light" />
+                tools:src="@drawable/no_internet_img" />
 
             <TextView
                 android:id="@+id/placeholder_message"

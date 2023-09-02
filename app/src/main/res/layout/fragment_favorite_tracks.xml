@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".ui.media.PlaylistsFragment">
+
+    <ImageView
+        android:id="@+id/placeholder_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="120dp"
+        android:layout_marginBottom="@dimen/dimen_16dp"
+        android:src="@drawable/empty_list_img" />
+
+    <TextView
+        android:id="@+id/placeholder_message"
+        style="@style/StylePlaceholderStatusMessage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginBottom="@dimen/dimen_24dp"
+        android:text="@string/empty_favorite_list"
+        android:textAlignment="center" />
+</LinearLayout>

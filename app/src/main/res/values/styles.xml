@@ -8,6 +8,13 @@
         <item name="android:background">@color/background_color</item>
     </style>
 
+    <style name="ActivitiesBackgroundStyle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:orientation">vertical</item>
+        <item name="android:background">@color/white</item>
+    </style>
+
     <style name="MainTitle">
         <item name="android:fontFamily">@font/ys_display_medium</item>
         <item name="android:layout_width">wrap_content</item>
@@ -30,12 +37,6 @@
         <item name="iconTint">@color/black_text</item>
     </style>
 
-    <style name="SettingsBackgroundStyle">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">match_parent</item>
-        <item name="android:orientation">vertical</item>
-        <item name="android:background">@color/white</item>
-    </style>
 
     <style name="ActivityHeaderStyle">
         <item name="android:layout_width">wrap_content</item>
@@ -86,13 +87,6 @@
         <item name="switcher_on_color">@color/switcher_on_color</item>
         <item name="switcher_off_color">@color/text_gray</item>
         <item name="switcher_icon_color">@color/white</item>
-    </style>
-
-    <style name="SearchBackgroundStyle">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">match_parent</item>
-        <item name="android:orientation">vertical</item>
-        <item name="android:background">@color/white</item>
     </style>
 
     <style name="SearchEditextStyle">
@@ -159,4 +153,10 @@
         <item name="android:fontFamily">@font/ys_display_regular</item>
     </style>
 
+    <style name="TabsStyle">
+        <item name="android:fontFamily">@font/ys_display_medium</item>
+        <item name="android:textSize">14sp</item>
+        <item name="textAllCaps">false</item>
+        <item name="tabMode">fixed</item>
+    </style>
 </resources>
