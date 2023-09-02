@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ActivityMediaBinding
+import com.example.playlistmaker.ui.media.adapters.FragmentPagerAdapter
 import com.google.android.material.tabs.TabLayoutMediator
 
 class MediaActivity : AppCompatActivity() {
