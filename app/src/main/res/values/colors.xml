@@ -15,7 +15,10 @@
     <color name="blue_text">#3772E7</color>
     <color name="switcher_on_color">#48ea8b</color>
     <color name="transparent_background">#401A1B22</color>
-    <color name="play_button_color">#1A1B22</color>
+    <color name="elements_color">#1A1B22</color>
     <color name="red_color">#94DA352F</color>
+    <color name="prepaing_play_button">#401A1B22</color>
+    <color name="text_color">#1A1B22</color>
+    <color name="transparent">#00FFFFFF</color>
 
 </resources>

@@ -93,10 +93,7 @@ class SearchActivity : AppCompatActivity() {
         updateUI(View.VISIBLE, View.GONE, View.GONE)
         binding.placeholderMessage.text = message
         binding.refreshButton.visibility = View.GONE
-        binding.placeholderImage.setImageResource(
-            if (isNightMode()) R.drawable.emtpty_dark
-            else R.drawable.empty_light
-        )
+        binding.placeholderImage.setImageResource(R.drawable.empty_list_img)
     }
 
     private fun showFoundTracks(foundTracks: List<Track>) {
@@ -114,10 +111,7 @@ class SearchActivity : AppCompatActivity() {
         updateUI(View.VISIBLE, View.GONE, View.GONE)
         binding.placeholderMessage.text = errorMessage
         binding.refreshButton.visibility = View.VISIBLE
-        binding.placeholderImage.setImageResource(
-            if (isNightMode()) R.drawable.no_internet_dark
-            else R.drawable.no_internet_light
-        )
+        binding.placeholderImage.setImageResource(R.drawable.no_internet_img)
     }
 
     private fun showHistory(tracks: List<Track>) {

@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="transparent_background">#40FFFFFF</color>
-    <color name="play_button_color">#FFFFFF</color>
+    <color name="elements_color">#FFFFFF</color>
+    <color name="prepaing_play_button">#40FFFFFF</color>
+    <color name="text_color">#FFFFFF</color>
 
 
 </resources>
