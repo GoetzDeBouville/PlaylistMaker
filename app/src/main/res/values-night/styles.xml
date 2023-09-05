@@ -105,7 +105,7 @@
         <item name="tint">@color/white</item>
     </style>
 
-    <style name="RefreshButtonStyle" parent="Widget.Material3.Button">
+    <style name="ButtonStyle" parent="Widget.Material3.Button">
         <item name="android:backgroundTint">@color/white</item>
         <item name="android:textColor">@color/black_text</item>
         <item name="android:fontFamily">@font/ys_display_medium</item>

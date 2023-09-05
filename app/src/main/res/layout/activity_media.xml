@@ -14,21 +14,19 @@
         style="@style/ActivityHeaderStyle"
         android:orientation="horizontal"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="UseCompoundDrawables">
+        app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
+            android:contentDescription="@string/media"
             android:id="@+id/arrow_back"
             style="@style/SettingsHeaderIconStyle"
             android:layout_marginStart="@dimen/dimen_4dp"
-            android:src="@drawable/arrow_back"
-            tools:ignore="ContentDescription" />
+            android:src="@drawable/arrow_back"/>
 
         <TextView
             style="@style/SettingsHeaderTextStyle"
             android:paddingStart="@dimen/dimen_28dp"
-            android:text="@string/media"
-            tools:ignore="RtlSymmetry" />
+            android:text="@string/media" />
     </LinearLayout>
 
     <com.google.android.material.tabs.TabLayout
