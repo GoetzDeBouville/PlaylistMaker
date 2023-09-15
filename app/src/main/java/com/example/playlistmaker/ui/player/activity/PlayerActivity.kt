@@ -15,6 +15,7 @@ import com.example.playlistmaker.databinding.ActivityAudioPlayerBinding
 import com.example.playlistmaker.domain.search.models.Track
 import com.example.playlistmaker.domain.player.models.PlayerState
 import com.example.playlistmaker.ui.player.view_model.PlayerViewModel
+import com.example.playlistmaker.ui.search.fragment.SearchFragment
 import org.koin.core.parameter.parametersOf
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -61,6 +62,7 @@ class PlayerActivity : AppCompatActivity() {
                 vectorDrawable?.setTint(ContextCompat.getColor(this, R.color.elements_color))
                 showPlayBtn()
             }
+
             PlayerState.STATE_DEFAULT -> {
                 vectorDrawable?.setTint(ContextCompat.getColor(this, R.color.prepaing_play_button))
                 shoOnPrepareMessage()
