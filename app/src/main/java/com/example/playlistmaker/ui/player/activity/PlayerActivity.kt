@@ -61,6 +61,7 @@ class PlayerActivity : AppCompatActivity() {
                 vectorDrawable?.setTint(ContextCompat.getColor(this, R.color.elements_color))
                 showPlayBtn()
             }
+
             PlayerState.STATE_DEFAULT -> {
                 vectorDrawable?.setTint(ContextCompat.getColor(this, R.color.prepaing_play_button))
                 shoOnPrepareMessage()
