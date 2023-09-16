@@ -31,8 +31,6 @@ class SettingsFragment : Fragment() {
             binding.themeSwitcher.setChecked(isDarkTheme)
         }
 
-//        binding.llArrowBack.setOnClickListener { findNavController().popBackStack() }
-
         binding.shareApp.setOnClickListener {
             viewModel.shareApp()
         }

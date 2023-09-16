@@ -16,9 +16,8 @@ class MediaFragment : Fragment() {
 
     private lateinit var tabMediator: TabLayoutMediator
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+    ): View {
         _binding = FragmentMediaBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -28,11 +27,10 @@ class MediaFragment : Fragment() {
 
         val viewPager = binding.viewPager
         viewPager.adapter =
-            FragmentPagerAdapter(childFragmentManager, lifecycle)
+            FragmentPagerAdapter(requireActivity().supportFragmentManager, lifecycle)
 
         tabMediator = TabLayoutMediator(
-            binding.tabLayout,
-            viewPager
+            binding.tabLayout, viewPager
         ) { tab, position ->
             when (position) {
                 0 -> tab.text = this.getString(R.string.favorite_tracks)
