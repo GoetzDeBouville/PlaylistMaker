@@ -6,26 +6,6 @@
     android:paddingTop="@dimen/dimen_16dp"
     tools:context=".ui.search.fragment.SearchFragment">
 
-    <LinearLayout
-        android:id="@+id/ll_arrow_back"
-        style="@style/ActivityHeaderStyle"
-        android:layout_marginLeft="@dimen/dimen_16dp"
-        android:orientation="horizontal"
-        tools:ignore="RtlHardcoded,UseCompoundDrawables">
-
-        <ImageView
-            android:id="@+id/arrow_back"
-            style="@style/SettingsHeaderIconStyle"
-            android:src="@drawable/arrow_back"
-            tools:ignore="ContentDescription" />
-
-        <TextView
-            style="@style/SettingsHeaderTextStyle"
-            android:paddingStart="@dimen/dimen_28dp"
-            android:text="@string/search"
-            tools:ignore="RtlSymmetry" />
-    </LinearLayout>
-
     <FrameLayout
         android:id="@+id/container"
         android:layout_width="match_parent"

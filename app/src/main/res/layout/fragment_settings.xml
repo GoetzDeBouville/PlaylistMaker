@@ -8,26 +8,6 @@
     tools:context="com.example.playlistmaker.ui.settings.fragment.SettingsFragment">
 
     <LinearLayout
-        android:id="@+id/ll_arrow_back"
-        style="@style/ActivityHeaderStyle"
-        android:orientation="horizontal"
-        tools:ignore="UseCompoundDrawables">
-
-        <ImageView
-            android:id="@+id/arrow_back"
-            style="@style/SettingsHeaderIconStyle"
-            android:layout_marginStart="@dimen/dimen_4dp"
-            android:src="@drawable/arrow_back"
-            tools:ignore="ContentDescription" />
-
-        <TextView
-            style="@style/SettingsHeaderTextStyle"
-            android:paddingStart="@dimen/dimen_28dp"
-            android:text="@string/settings"
-            tools:ignore="RtlSymmetry" />
-    </LinearLayout>
-
-    <LinearLayout
         style="@style/SettingsOptionContainer"
         android:layout_marginTop="@dimen/dimen_24dp"
         android:paddingVertical="@dimen/dimen_20dp"

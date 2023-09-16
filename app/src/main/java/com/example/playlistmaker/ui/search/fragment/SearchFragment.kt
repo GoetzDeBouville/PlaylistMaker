@@ -1,7 +1,6 @@
 package com.example.playlistmaker.ui.search.fragment
 
 import android.content.Context.INPUT_METHOD_SERVICE
-import android.content.res.Configuration
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -23,7 +22,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchFragment : Fragment() {
     private var _binding: FragmentSearchBinding? = null
-    private val binding = _binding!!
+    private val binding get() = _binding!!
 
     private val viewModel: SearchViewModel by viewModel()
 
@@ -66,11 +65,6 @@ class SearchFragment : Fragment() {
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
-    }
-
-    private fun isNightMode(): Boolean {
-        val currentNightMode = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
-        return currentNightMode == Configuration.UI_MODE_NIGHT_YES
     }
 
     private fun initAdapters() {
@@ -188,9 +182,7 @@ class SearchFragment : Fragment() {
         binding.inputEditText.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 val searchRequest = binding.inputEditText.text.toString()
-                if (searchRequest.isNotBlank()) {
-                    viewModel.searchRequest(searchRequest)
-                }
+                if (searchRequest.isNotBlank()) viewModel.searchRequest(searchRequest)
                 return@setOnEditorActionListener true
             }
             return@setOnEditorActionListener false
@@ -204,9 +196,7 @@ class SearchFragment : Fragment() {
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 binding.clearIcon.visibility = clearButtonVisibility(s)
-                if (s != null) {
-                    search()
-                }
+                if (s != null) search()
             }
 
             override fun afterTextChanged(s: Editable?) {
@@ -217,9 +207,11 @@ class SearchFragment : Fragment() {
 
     private fun setupFocusChangeListener() {
         binding.inputEditText.setOnFocusChangeListener { _, hasFocus ->
-            binding.searchHistory.visibility =
-                if (hasFocus && binding.inputEditText.text.isEmpty() && historyTracklist.isNotEmpty()) View.VISIBLE
-                else View.GONE
+            if (hasFocus && binding.inputEditText.text.isEmpty() && historyTracklist.isNotEmpty()) {
+                binding.searchHistory.visibility = View.VISIBLE
+            } else {
+                binding.searchHistory.visibility = View.GONE
+            }
         }
     }
 
@@ -242,11 +234,8 @@ class SearchFragment : Fragment() {
 
     private fun search() {
         val searchText = binding.inputEditText.text.toString()
-        if (searchText.isNotBlank()) {
-            viewModel.searchDebounce(binding.inputEditText.text.toString())
-        } else {
-            viewModel.stopSearch()
-        }
+        if (searchText.isNotBlank()) viewModel.searchDebounce(binding.inputEditText.text.toString())
+        else viewModel.stopSearch()
     }
 
     private fun clearButtonVisibility(s: CharSequence?): Int {
