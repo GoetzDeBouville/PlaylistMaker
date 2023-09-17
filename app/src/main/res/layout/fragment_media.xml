@@ -9,13 +9,26 @@
     android:paddingTop="@dimen/dimen_16dp"
     tools:context=".ui.media.fragment.MediaFragment">
 
+    <LinearLayout
+        android:id="@+id/ll_arrow_back"
+        style="@style/ActivityHeaderStyle"
+        android:orientation="horizontal"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            style="@style/SettingsHeaderTextStyle"
+            android:text="@string/media" />
+    </LinearLayout>
+
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tabLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dimen_24dp"
         android:background="@color/transparent"
-        app:layout_constraintTop_toTopOf="parent"
+        android:contentDescription="@string/app_name"
+        app:layout_constraintTop_toBottomOf="@id/ll_arrow_back"
         app:tabIndicatorAnimationMode="elastic"
         app:tabIndicatorColor="@color/elements_color"
         app:tabIndicatorFullWidth="true"
