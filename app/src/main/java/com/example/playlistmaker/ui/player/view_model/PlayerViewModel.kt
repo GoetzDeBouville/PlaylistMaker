@@ -45,7 +45,7 @@ class PlayerViewModel(
         ).format(playerInteractor.getCurrentTrackTime())
     }
 
-    private fun releasePlayer() {
+    fun releasePlayer() {
         playerInteractor.releasePlayer()
         updateTimer()
     }

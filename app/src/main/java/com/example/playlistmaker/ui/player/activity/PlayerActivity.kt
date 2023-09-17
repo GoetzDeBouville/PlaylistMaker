@@ -50,8 +50,13 @@ class PlayerActivity : AppCompatActivity() {
     }
 
     override fun onPause() {
-        super.onPause()
         viewModel.pausePlayer()
+        super.onPause()
+    }
+
+    override fun onDestroy() {
+        viewModel.releasePlayer()
+        super.onDestroy()
     }
 
     private fun renderState(state: PlayerState) {
