@@ -11,17 +11,21 @@ class RetrofitNetworkClient(private val itunesService: ItunesAPI, private val co
     NetworkClient {
 
     override fun doRequest(dto: Any): Response {
-        if (!isConnected()) {
-            return Response().apply { resultCode = -1 }
-        }
-        if (dto !is TracksSearchRequest) {
-            return Response().apply { resultCode = 400 }
-        }
+        return try {
+            if (!isConnected()) {
+                return Response().apply { resultCode = -1 }
+            }
+            if (dto !is TracksSearchRequest) {
+                return Response().apply { resultCode = 400 }
+            }
 
-        val response = itunesService.search(dto.expression).execute()
-        val body = response.body()
-        return body?.apply { resultCode = response.code() } ?: Response().apply {
-            resultCode = response.code()
+            val response = itunesService.search(dto.expression).execute()
+            val body = response.body()
+            body?.apply { resultCode = response.code() } ?: Response().apply {
+                resultCode = response.code()
+            }
+        } catch (e: Exception) {
+            return Response().apply { resultCode = -2 }
         }
     }
 
