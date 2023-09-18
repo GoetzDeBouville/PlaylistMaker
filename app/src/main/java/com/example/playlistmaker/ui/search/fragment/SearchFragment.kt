@@ -13,7 +13,7 @@ import android.view.inputmethod.InputMethodManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentSearchBinding
-import com.example.playlistmaker.domain.search.models.SearchActivityState
+import com.example.playlistmaker.domain.search.models.SearchState
 import com.example.playlistmaker.domain.search.models.Track
 import com.example.playlistmaker.ui.player.activity.PlayerActivity
 import com.example.playlistmaker.ui.search.adapters.TrackAdapter
@@ -27,7 +27,6 @@ class SearchFragment : Fragment() {
     private val viewModel: SearchViewModel by viewModel()
 
     private val historyTracklist = ArrayList<Track>()
-    private val tracksList = ArrayList<Track>()
     private lateinit var trackAdapter: TrackAdapter
     private lateinit var trackHistoryAdapter: TrackAdapter
     override fun onCreateView(
@@ -107,8 +106,7 @@ class SearchFragment : Fragment() {
 
     private fun showFoundTracks(foundTracks: List<Track>) {
         updateUI(View.GONE, View.GONE, View.VISIBLE)
-        tracksList.clear()
-        tracksList.addAll(foundTracks)
+        trackAdapter.trackList = foundTracks as ArrayList<Track>
         trackAdapter.notifyDataSetChanged()
     }
 
@@ -136,13 +134,13 @@ class SearchFragment : Fragment() {
         }
     }
 
-    private fun renderState(state: SearchActivityState) {
+    private fun renderState(state: SearchState) {
         when (state) {
-            is SearchActivityState.SearchHistory -> showHistory(state.trackList)
-            is SearchActivityState.Content -> showFoundTracks(state.trackList)
-            is SearchActivityState.Loading -> showLoading()
-            is SearchActivityState.Empty -> showEmpty(getString(R.string.nothing_found))
-            is SearchActivityState.ConnectionError -> showError(getString(R.string.check_connection))
+            is SearchState.SearchHistory -> showHistory(state.trackList)
+            is SearchState.Content -> showFoundTracks(state.trackList)
+            is SearchState.Loading -> showLoading()
+            is SearchState.Empty -> showEmpty(getString(R.string.nothing_found))
+            is SearchState.ConnectionError -> showError(getString(R.string.check_connection))
         }
     }
 
@@ -165,7 +163,6 @@ class SearchFragment : Fragment() {
                 binding.inputEditText.windowToken, 0
             )
             binding.inputEditText.clearFocus()
-            tracksList.clear()
             trackAdapter.notifyDataSetChanged()
             viewModel.showHistory()
         }
@@ -222,7 +219,6 @@ class SearchFragment : Fragment() {
 
     private fun setupTracklistRecycler() {
         binding.tracklistRecycler.layoutManager = LinearLayoutManager(requireContext())
-        trackAdapter.trackList = tracksList
         binding.tracklistRecycler.adapter = trackAdapter
     }
 
