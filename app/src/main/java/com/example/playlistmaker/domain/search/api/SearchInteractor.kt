@@ -5,8 +5,6 @@ import com.example.playlistmaker.domain.LoadingStatus
 
 interface SearchInteractor {
     fun searchTracks(expression: String, consumer: TracksConsumer)
-//    fun getConnectionErrorMessage() : String
-//    fun getEmptyListMessage() : String
     interface TracksConsumer {
         fun consume(foundTracks: List<Track>?, errorType: LoadingStatus?)
     }

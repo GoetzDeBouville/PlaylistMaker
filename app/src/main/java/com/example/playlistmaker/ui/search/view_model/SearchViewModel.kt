@@ -1,41 +1,43 @@
 package com.example.playlistmaker.ui.search.view_model
 
-import android.os.Handler
-import android.os.Looper
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.domain.search.api.HistoryInteractor
 import com.example.playlistmaker.domain.search.api.SearchInteractor
 import com.example.playlistmaker.domain.search.models.SearchState
 import com.example.playlistmaker.domain.search.models.Track
 import com.example.playlistmaker.domain.LoadingStatus
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class SearchViewModel(
     private val searchInteractor: SearchInteractor,
     private val historyInteractor: HistoryInteractor
 ) : ViewModel() {
 
-    private val handler = Handler(Looper.getMainLooper())
-    private val searchRunnable = Runnable { searchRequest(latestSearchText) }
-
     private var latestSearchText: String = ""
-
     private var isClickAllowed = true
+    private var searchJob: Job? = null
 
     private val _state = MutableLiveData<SearchState>()
+    var savedSearchRequest = ""
     val state: LiveData<SearchState>
         get() = _state
-
-    var savedSearchRequest = ""
 
     fun searchDebounce(searchText: String) {
         if (searchText.isBlank()) {
             _state.value = SearchState.SearchHistory(getHistory())
         } else {
             this.latestSearchText = searchText
-            handler.removeCallbacks(searchRunnable)
-            handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY)
+
+            searchJob?.cancel()
+            searchJob = viewModelScope.launch {
+                delay(SEARCH_DEBOUNCE_DELAY)
+                searchRequest(searchText)
+            }
         }
     }
 
@@ -78,7 +80,10 @@ class SearchViewModel(
         val current = isClickAllowed
         if (isClickAllowed) {
             isClickAllowed = false
-            handler.postDelayed({ isClickAllowed = true }, CLICK_DEBOUNCE_DELAY)
+            viewModelScope.launch {
+                delay(CLICK_DEBOUNCE_DELAY)
+                isClickAllowed = true
+            }
         }
         return current
     }
@@ -101,7 +106,6 @@ class SearchViewModel(
     }
 
     fun stopSearch() {
-        handler.removeCallbacks(searchRunnable)
         showHistory()
     }
 

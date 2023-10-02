@@ -29,6 +29,7 @@ class SearchFragment : Fragment() {
     private val historyTracklist = ArrayList<Track>()
     private lateinit var trackAdapter: TrackAdapter
     private lateinit var trackHistoryAdapter: TrackAdapter
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
