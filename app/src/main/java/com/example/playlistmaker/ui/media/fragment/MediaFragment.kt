@@ -27,7 +27,7 @@ class MediaFragment : Fragment() {
 
         val viewPager = binding.viewPager
         viewPager.adapter =
-            FragmentPagerAdapter(requireActivity().supportFragmentManager, lifecycle)
+            FragmentPagerAdapter(childFragmentManager, lifecycle)
 
         tabMediator = TabLayoutMediator(
             binding.tabLayout, viewPager
