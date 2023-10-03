@@ -70,7 +70,7 @@ class PlayerViewModel(
                 timerJob = viewModelScope.launch {
                     while (true) {
                         _timer.value = getTimerPosition()
-                        delay(DELAY_10MS)
+                        delay(DELAY_300MS)
                     }
                 }
             }
@@ -88,6 +88,6 @@ class PlayerViewModel(
 
     companion object {
         private const val CURRENT_TIME = "00:00"
-        private const val DELAY_10MS = 10L
+        private const val DELAY_300MS = 300L
     }
 }
