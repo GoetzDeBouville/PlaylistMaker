@@ -44,29 +44,24 @@ class SearchViewModel(
     fun searchRequest(newSearchText: String) {
         if (newSearchText.isNotEmpty()) {
             renderState(SearchState.Loading)
-
-            searchInteractor.searchTracks(newSearchText, object : SearchInteractor.TracksConsumer {
-                override fun consume(foundTracks: List<Track>?, errorType: LoadingStatus?) {
-                    val tracks = mutableListOf<Track>()
-                    if (foundTracks != null) {
-                        tracks.addAll(foundTracks)
+            viewModelScope.launch {
+                searchInteractor.searchTracks(newSearchText)
+                    .collect { pair ->
+                        processResult(pair.first, pair.second)
                     }
+            }
+        }
+    }
 
-                    when {
-                        errorType != null -> {
-                            renderState(SearchState.ConnectionError)
-                        }
+    private fun processResult(foundTracks: List<Track>?, errorType: LoadingStatus?) {
+        val tracks = mutableListOf<Track>()
 
-                        tracks.isEmpty() -> {
-                            renderState(SearchState.Empty)
-                        }
+        if (foundTracks != null) tracks.addAll(foundTracks)
 
-                        else -> {
-                            renderState(SearchState.Content(trackList = tracks))
-                        }
-                    }
-                }
-            })
+        when {
+            errorType != null -> renderState(SearchState.ConnectionError)
+            tracks.isEmpty() -> renderState(SearchState.Empty)
+            else -> renderState(SearchState.Content(trackList = tracks))
         }
     }
 
