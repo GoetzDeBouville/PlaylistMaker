@@ -37,7 +37,9 @@ class PlayerActivity : AppCompatActivity() {
         fetchPlayer()
         observeViewModel()
         binding.arrowBack.setOnClickListener { finish() }
-        binding.playButton.setOnClickListener { viewModel.playbackControl() }
+        binding.playButton.setOnClickListener {
+            viewModel.playbackControl()
+        }
     }
 
     private fun observeViewModel() {
@@ -50,13 +52,8 @@ class PlayerActivity : AppCompatActivity() {
     }
 
     override fun onPause() {
-        viewModel.pausePlayer()
         super.onPause()
-    }
-
-    override fun onDestroy() {
-        viewModel.releasePlayer()
-        super.onDestroy()
+        viewModel.pausePlayer()
     }
 
     private fun renderState(state: PlayerState) {
@@ -69,7 +66,7 @@ class PlayerActivity : AppCompatActivity() {
 
             PlayerState.STATE_DEFAULT -> {
                 vectorDrawable?.setTint(ContextCompat.getColor(this, R.color.prepaing_play_button))
-                shoOnPrepareMessage()
+                showOnPrepareMessage()
             }
         }
     }
@@ -88,7 +85,7 @@ class PlayerActivity : AppCompatActivity() {
         binding.playButton.setImageResource(R.drawable.play_button)
     }
 
-    private fun shoOnPrepareMessage() {
+    private fun showOnPrepareMessage() {
         binding.playButton.setOnClickListener {
             showToast(getString(R.string.player_in_progress))
         }

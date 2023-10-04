@@ -49,8 +49,9 @@ class PlayerViewModel(
         ).format(playerInteractor.getCurrentTrackTime())
     }
 
-    fun releasePlayer() {
+    private fun releasePlayer() {
         playerInteractor.releasePlayer()
+        timerJob = null
         updateTimer()
     }
 
@@ -76,7 +77,7 @@ class PlayerViewModel(
             }
 
             PlayerState.STATE_PAUSED -> timerJob?.cancel()
-            
+
             else -> _timer.value = CURRENT_TIME
         }
     }
