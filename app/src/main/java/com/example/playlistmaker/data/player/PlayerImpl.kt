@@ -5,7 +5,6 @@ import com.example.playlistmaker.domain.player.Player
 import com.example.playlistmaker.domain.player.PlayerStateObserver
 import com.example.playlistmaker.domain.player.models.PlayerState
 import com.example.playlistmaker.domain.search.models.Track
-import java.io.IOException
 
 class PlayerImpl(track: Track) : Player {
 
@@ -14,6 +13,7 @@ class PlayerImpl(track: Track) : Player {
     private var startTime: Long = 0L
     private var playerState: PlayerState = PlayerState.STATE_DEFAULT
     private val observers = mutableListOf<PlayerStateObserver>()
+
     init {
         preparePlayer(track) {}
     }
@@ -36,7 +36,7 @@ class PlayerImpl(track: Track) : Player {
                     notifyPlayerStateChanged(playerState)
                     callback(false)
                 }
-            } catch (e: IOException) {
+            } catch (e: Exception) {
                 callback(false)
             }
         } else {
@@ -45,11 +45,17 @@ class PlayerImpl(track: Track) : Player {
     }
 
     override fun startPlayer(callback: () -> Unit) {
-        mediaPlayer.start()
-        playerState = PlayerState.STATE_PLAYING
-        startTime = System.currentTimeMillis() - currentTrackTime
-        notifyPlayerStateChanged(playerState)
-        callback()
+        try {
+            if (!mediaPlayer.isPlaying) {
+                mediaPlayer.start()
+            }
+            playerState = PlayerState.STATE_PLAYING
+            startTime = System.currentTimeMillis() - currentTrackTime
+            notifyPlayerStateChanged(playerState)
+            callback()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     override fun pausePlayer() {

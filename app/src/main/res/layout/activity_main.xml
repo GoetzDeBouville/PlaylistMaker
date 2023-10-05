@@ -1,48 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    style="@style/MainActivityBackgroundStyle"
-    android:paddingHorizontal="@dimen/dimen_16dp">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.main.activity.MainActivity">
 
-    <TextView
-        style="@style/MainTitle"
-        android:paddingTop="@dimen/dimen_16dp"
-        android:text="@string/playlist_maker" />
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/container_view"
+        android:name="androidx.navigation.fragment.NavHostFragment"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:defaultNavHost="true"
+        app:layout_constraintBottom_toTopOf="@id/bottomNavigationView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:navGraph="@navigation/nav_graph" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:paddingTop="@dimen/dimen_24dp"
-        android:paddingBottom="@dimen/dimen_28dp">
-
-        <Button
-            android:id="@+id/search"
-            style="@style/MainButton"
-            android:layout_weight="1"
-            android:insetTop="@dimen/dimen_16dp"
-            android:text="@string/search"
-            app:icon="@drawable/search"
-            app:iconPadding="@dimen/dimen_8dp" />
-
-        <Button
-            android:id="@+id/media"
-            style="@style/MainButton"
-            android:layout_weight="1"
-            android:insetTop="@dimen/dimen_16dp"
-            android:text="@string/media"
-            app:icon="@drawable/media"
-            app:iconPadding="@dimen/dimen_8dp" />
-
-
-        <Button
-            android:id="@+id/settings"
-            style="@style/MainButton"
-            android:layout_weight="1"
-            android:insetTop="@dimen/dimen_16dp"
-            android:text="@string/settings"
-            app:icon="@drawable/settings"
-            app:iconPadding="@dimen/dimen_8dp" />
-    </LinearLayout>
-
-</LinearLayout>
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigationView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:itemIconTint="@color/bottom_navigation_item_color"
+        app:itemTextColor="@color/bottom_navigation_item_color"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:menu="@menu/bottom_navigation_menu" />
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,13 +1,15 @@
 package com.example.playlistmaker.ui.player.view_model
 
-import android.os.Handler
-import android.os.Looper
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.domain.player.PlayerInteractor
 import com.example.playlistmaker.domain.player.PlayerStateObserver
 import com.example.playlistmaker.domain.player.models.PlayerState
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -16,8 +18,9 @@ class PlayerViewModel(
 ) : ViewModel() {
     private val _playerState = MutableLiveData<PlayerState>()
     val playerState: LiveData<PlayerState> get() = _playerState
-    private val handler = Handler(Looper.getMainLooper())
-    private val timerRunnable = Runnable { updateTimer() }
+
+    private var timerJob: Job? = null
+
     private val _timer = MutableLiveData<String>(CURRENT_TIME)
 
     init {
@@ -27,6 +30,7 @@ class PlayerViewModel(
             }
         })
     }
+
     val timeProgress: LiveData<String>
         get() = _timer
 
@@ -47,6 +51,7 @@ class PlayerViewModel(
 
     private fun releasePlayer() {
         playerInteractor.releasePlayer()
+        timerJob = null
         updateTimer()
     }
 
@@ -60,16 +65,20 @@ class PlayerViewModel(
     }
 
     private fun updateTimer() {
+        timerJob?.cancel()
         when (playerState.value) {
             PlayerState.STATE_PLAYING -> {
-                _timer.value = getTimerPosition()
-                handler.postDelayed(timerRunnable, DELAY_10MS)
+                timerJob = viewModelScope.launch {
+                    while (true) {
+                        _timer.value = getTimerPosition()
+                        delay(DELAY_300MS)
+                    }
+                }
             }
-            PlayerState.STATE_PAUSED -> handler.removeCallbacks(timerRunnable)
-            else -> {
-                handler.removeCallbacks(timerRunnable)
-                _timer.value = CURRENT_TIME
-            }
+
+            PlayerState.STATE_PAUSED -> timerJob?.cancel()
+
+            else -> _timer.value = CURRENT_TIME
         }
     }
 
@@ -80,6 +89,6 @@ class PlayerViewModel(
 
     companion object {
         private const val CURRENT_TIME = "00:00"
-        private const val DELAY_10MS = 10L
+        private const val DELAY_300MS = 300L
     }
 }

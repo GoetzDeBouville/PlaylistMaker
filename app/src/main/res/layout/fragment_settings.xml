@@ -2,10 +2,10 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-
     style="@style/ActivitiesBackgroundStyle"
     android:paddingHorizontal="@dimen/dimen_16dp"
-    android:paddingTop="@dimen/dimen_16dp">
+    android:paddingTop="@dimen/dimen_16dp"
+    tools:context="com.example.playlistmaker.ui.settings.fragment.SettingsFragment">
 
     <LinearLayout
         android:id="@+id/ll_arrow_back"
@@ -13,16 +13,8 @@
         android:orientation="horizontal"
         tools:ignore="UseCompoundDrawables">
 
-        <ImageView
-            android:id="@+id/arrow_back"
-            style="@style/SettingsHeaderIconStyle"
-            android:layout_marginStart="@dimen/dimen_4dp"
-            android:src="@drawable/arrow_back"
-            tools:ignore="ContentDescription" />
-
         <TextView
             style="@style/SettingsHeaderTextStyle"
-            android:paddingStart="@dimen/dimen_28dp"
             android:text="@string/settings"
             tools:ignore="RtlSymmetry" />
     </LinearLayout>
@@ -39,9 +31,10 @@
             android:text="@string/dark_theme" />
 
         <com.bitvale.switcher.SwitcherX
-            style="@style/SettingsThemeSwitcher"
             android:id="@+id/themeSwitcher"
-/>
+            style="@style/SettingsThemeSwitcher"
+            android:contentDescription="@string/app_name"
+            tools:ignore="TouchTargetSizeCheck" />
 
     </LinearLayout>
 

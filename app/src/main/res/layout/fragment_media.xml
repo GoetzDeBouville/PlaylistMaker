@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:paddingHorizontal="@dimen/dimen_16dp"
     android:paddingTop="@dimen/dimen_16dp"
-    tools:context=".ui.media.MediaActivity">
+    tools:context=".ui.media.fragment.MediaFragment">
 
     <LinearLayout
         android:id="@+id/ll_arrow_back"
@@ -16,16 +16,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <ImageView
-            android:contentDescription="@string/media"
-            android:id="@+id/arrow_back"
-            style="@style/SettingsHeaderIconStyle"
-            android:layout_marginStart="@dimen/dimen_4dp"
-            android:src="@drawable/arrow_back"/>
-
         <TextView
             style="@style/SettingsHeaderTextStyle"
-            android:paddingStart="@dimen/dimen_28dp"
             android:text="@string/media" />
     </LinearLayout>
 
@@ -35,6 +27,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dimen_24dp"
         android:background="@color/transparent"
+        android:contentDescription="@string/app_name"
         app:layout_constraintTop_toBottomOf="@id/ll_arrow_back"
         app:tabIndicatorAnimationMode="elastic"
         app:tabIndicatorColor="@color/elements_color"
