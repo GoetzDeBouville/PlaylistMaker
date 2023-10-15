@@ -1,6 +1,7 @@
 package com.example.playlistmaker.di
 
 import android.content.Context
+import androidx.room.Room
 import com.example.playlistmaker.data.player.PlayerImpl
 import com.example.playlistmaker.data.search.network.ItunesAPI
 import com.example.playlistmaker.data.search.network.NetworkClient
@@ -9,6 +10,7 @@ import com.example.playlistmaker.data.search.storage.History
 import com.example.playlistmaker.data.search.storage.shared_preferences.SharedPreferencesHistoryStorage
 import com.example.playlistmaker.data.sharing.impl.ContentProviderImpl
 import com.example.playlistmaker.data.sharing.impl.ExternalNavigatorImpl
+import com.example.playlistmaker.db.AppDatabase
 import com.example.playlistmaker.domain.player.Player
 import com.example.playlistmaker.domain.search.models.Track
 import com.example.playlistmaker.domain.sharing.ContentProvider
@@ -45,4 +47,9 @@ val dataModule = module {
     single<ExternalNavigator> { ExternalNavigatorImpl(androidContext()) }
 
     factory<Player> { (track: Track) -> PlayerImpl(track) }
+
+    single {
+        Room.databaseBuilder(androidContext(), AppDatabase::class.java, "favorite_tracks.db")
+            .build()
+    }
 }

@@ -92,6 +92,12 @@ class PlayerActivity : AppCompatActivity() {
         binding.playButton.setImageResource(R.drawable.play_button)
     }
 
+    private fun manageFavoriteTracks() {
+        binding.likeButton.setOnClickListener {
+
+        }
+    }
+
     private fun fetchPlayer() {
         with(binding) {
             Glide.with(this@PlayerActivity)

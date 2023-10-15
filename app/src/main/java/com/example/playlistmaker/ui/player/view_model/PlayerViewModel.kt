@@ -82,6 +82,10 @@ class PlayerViewModel(
         }
     }
 
+    fun manageFavoriteTracks() {
+
+    }
+
     override fun onCleared() {
         super.onCleared()
         releasePlayer()
