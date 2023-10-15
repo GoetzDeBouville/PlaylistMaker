@@ -13,7 +13,7 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 
 val repositoryModule = module {
-    single<SearchRepository> { SearchRepositoryImpl(get()) }
+    single<SearchRepository> { SearchRepositoryImpl(get(), get()) }
     single<HistoryRepository> { HistoryRepositoryImpl(get()) }
 
     single<SettingsRepository> { SettingsRepositoryImpl(androidContext()) }

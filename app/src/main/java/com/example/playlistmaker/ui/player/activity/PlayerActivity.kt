@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
@@ -40,14 +41,37 @@ class PlayerActivity : AppCompatActivity() {
         binding.playButton.setOnClickListener {
             viewModel.playbackControl()
         }
+        binding.likeButton.setOnClickListener {
+            viewModel.onFavoriteTrackClicked()
+        }
     }
 
     private fun observeViewModel() {
         viewModel.playerState.observe(this) {
             renderState(it)
         }
+
         viewModel.timeProgress.observe(this) {
             binding.textTrackTimeValue.text = it
+        }
+
+        viewModel.isFavorite.observe(this) {
+            manageLikeButtonState(it)
+        }
+    }
+
+    private fun manageLikeButtonState(isFavorite: Boolean) {
+        if (isFavorite) {
+            binding.likeButtonState.setImageDrawable(
+                AppCompatResources.getDrawable(
+                    this,
+                    R.drawable.ic_infavorite
+                )
+            )
+        } else {
+            binding.likeButtonState.setImageDrawable(
+                AppCompatResources.getDrawable(this, R.drawable.ic_like)
+            )
         }
     }
 

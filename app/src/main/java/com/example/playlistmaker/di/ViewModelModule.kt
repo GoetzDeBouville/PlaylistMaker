@@ -19,7 +19,7 @@ val viewModelModule = module {
 
     viewModel { (track: Track) ->
         val player = get<Player> { parametersOf(track) }
-        PlayerViewModel(PlayerInteractorImpl(player))
+        PlayerViewModel(track, PlayerInteractorImpl(player), get())
     }
 
     viewModel { FavoriteTracksViewModel() }

@@ -4,9 +4,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.playlistmaker.domain.db.FavoriteTracksInteractor
 import com.example.playlistmaker.domain.player.PlayerInteractor
 import com.example.playlistmaker.domain.player.PlayerStateObserver
 import com.example.playlistmaker.domain.player.models.PlayerState
+import com.example.playlistmaker.domain.search.models.Track
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -14,10 +16,16 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 
 class PlayerViewModel(
-    private val playerInteractor: PlayerInteractor
+    private val track: Track,
+    private val playerInteractor: PlayerInteractor,
+    private val favoriteTracksInteractor: FavoriteTracksInteractor
 ) : ViewModel() {
     private val _playerState = MutableLiveData<PlayerState>()
     val playerState: LiveData<PlayerState> get() = _playerState
+
+    private val _isFavorite = MutableLiveData<Boolean>()
+    val isFavorite: LiveData<Boolean>
+        get() = _isFavorite
 
     private var timerJob: Job? = null
 
@@ -82,8 +90,17 @@ class PlayerViewModel(
         }
     }
 
-    fun manageFavoriteTracks() {
-
+    fun onFavoriteTrackClicked() {
+        viewModelScope.launch {
+            if (track.isFavorite) {
+                favoriteTracksInteractor.removeFromFavoriteTrackList(track)
+                track.isFavorite = false
+            } else {
+                favoriteTracksInteractor.addToFavoriteTrackList(track)
+                track.isFavorite = true
+            }
+            _isFavorite.postValue(track.isFavorite)
+        }
     }
 
     override fun onCleared() {

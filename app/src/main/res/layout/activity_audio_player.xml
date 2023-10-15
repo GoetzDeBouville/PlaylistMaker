@@ -131,9 +131,10 @@
         app:layout_constraintTop_toTopOf="@id/playButton" />
 
     <ImageView
+        android:id="@+id/like_button_state"
         android:layout_width="23dp"
         android:layout_height="25dp"
-        android:src="@drawable/heart_button"
+        android:src="@drawable/ic_like"
         app:layout_constraintBottom_toBottomOf="@+id/like_button"
         app:layout_constraintEnd_toEndOf="@+id/like_button"
         app:layout_constraintStart_toStartOf="@+id/like_button"
