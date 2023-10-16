@@ -70,7 +70,10 @@ class PlayerActivity : AppCompatActivity() {
             )
         } else {
             binding.likeButtonState.setImageDrawable(
-                AppCompatResources.getDrawable(this, R.drawable.ic_like)
+                AppCompatResources.getDrawable(
+                    this,
+                    R.drawable.ic_like
+                )
             )
         }
     }
@@ -114,12 +117,6 @@ class PlayerActivity : AppCompatActivity() {
             showToast(getString(R.string.player_in_progress))
         }
         binding.playButton.setImageResource(R.drawable.play_button)
-    }
-
-    private fun manageFavoriteTracks() {
-        binding.likeButton.setOnClickListener {
-
-        }
     }
 
     private fun fetchPlayer() {

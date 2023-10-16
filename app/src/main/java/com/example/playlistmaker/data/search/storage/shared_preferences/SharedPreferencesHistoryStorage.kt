@@ -6,7 +6,7 @@ import com.example.playlistmaker.data.search.storage.History
 import com.example.playlistmaker.domain.search.models.Track
 
 class SharedPreferencesHistoryStorage(context: Context) : History {
-    private val savedTracks = mutableListOf<Track>()
+    private var savedTracks = mutableListOf<Track>()
     private val mapper = TrackMapper()
     private val sharedPrefs = context.getSharedPreferences(SHARED_PREFERERNCES,
         Context.MODE_PRIVATE

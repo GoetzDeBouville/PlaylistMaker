@@ -9,8 +9,10 @@ import com.example.playlistmaker.domain.search.api.SearchRepository
 import com.example.playlistmaker.domain.search.models.Track
 import com.example.playlistmaker.domain.LoadingStatus
 import com.example.playlistmaker.domain.Resource
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.withContext
 
 class SearchRepositoryImpl(
     private val networkClient: NetworkClient,
@@ -18,7 +20,9 @@ class SearchRepositoryImpl(
 ) : SearchRepository {
     private val mapper = TrackMapper()
     override fun searchTracks(expression: String): Flow<Resource<List<Track>>> = flow {
-        val favoriteTracksListID = appDatabase.trackDao().getFavoriteIdList()
+        val favoriteTracksListID = withContext(Dispatchers.IO) {
+            appDatabase.trackDao().getFavoriteIdList()
+        }
         val response = networkClient.doRequest(TracksSearchRequest(expression))
         when (response.resultCode) {
             NO_INTERNET_CODE -> emit(Resource.Error(LoadingStatus.NO_INTERNET))

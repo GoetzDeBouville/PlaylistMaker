@@ -1,5 +1,6 @@
 package com.example.playlistmaker.ui.player.view_model
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -32,6 +33,10 @@ class PlayerViewModel(
     private val _timer = MutableLiveData<String>(CURRENT_TIME)
 
     init {
+        viewModelScope.launch {
+            _isFavorite.value = favoriteTracksInteractor.isFavoriteTrack(track)
+        }
+
         playerInteractor.getPlayerState(object : PlayerStateObserver {
             override fun onPlayerStateChanged(state: PlayerState) {
                 _playerState.value = state
@@ -91,15 +96,15 @@ class PlayerViewModel(
     }
 
     fun onFavoriteTrackClicked() {
+        Log.e("PlayerViewModel", "_isFavorite.value = ${_isFavorite.value}")
         viewModelScope.launch {
-            if (track.isFavorite) {
+            if (_isFavorite.value == true) {
                 favoriteTracksInteractor.removeFromFavoriteTrackList(track)
-                track.isFavorite = false
+                _isFavorite.postValue(false)
             } else {
                 favoriteTracksInteractor.addToFavoriteTrackList(track)
-                track.isFavorite = true
+                _isFavorite.postValue(true)
             }
-            _isFavorite.postValue(track.isFavorite)
         }
     }
 

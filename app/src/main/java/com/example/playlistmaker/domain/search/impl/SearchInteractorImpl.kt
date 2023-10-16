@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.map
 class SearchInteractorImpl(
     private val repository: SearchRepository
 ) : SearchInteractor {
-    override fun searchTracks(expression: String): Flow<Pair<List<Track>?, LoadingStatus?>> {
+    override suspend fun searchTracks(expression: String): Flow<Pair<List<Track>?, LoadingStatus?>> {
         return repository.searchTracks(expression).map { result ->
             when (result) {
                 is Resource.Success -> Pair(result.data, null)
