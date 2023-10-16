@@ -29,15 +29,6 @@ class TrackAdapter(private var onClickedTrack: ((Track) -> Unit)? = null) :
     }
 
     var trackList = ArrayList<Track>()
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrackViewHolder {
-        val binding = ItemTrackBinding.inflate(
-            LayoutInflater.from(parent.context),
-            parent,
-            false
-        )
-        return TrackViewHolder(binding)
-    }
-
     override fun getItemCount() = trackList.size
 
     override fun onBindViewHolder(holder: TrackViewHolder, position: Int) {
@@ -46,5 +37,14 @@ class TrackAdapter(private var onClickedTrack: ((Track) -> Unit)? = null) :
         holder.itemView.setOnClickListener {
             onClickedTrack?.invoke(trackList[position])
         }
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrackViewHolder {
+        val binding = ItemTrackBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent,
+            false
+        )
+        return TrackViewHolder(binding)
     }
 }

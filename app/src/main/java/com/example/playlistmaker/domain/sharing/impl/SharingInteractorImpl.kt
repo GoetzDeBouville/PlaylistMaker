@@ -9,16 +9,20 @@ class SharingInteractorImpl(
     private val externalNavigator: ExternalNavigator,
     private val contentProvider: ContentProvider
 ) : SharingInteractor {
-    override fun shareApp() {
-        externalNavigator.shareApp(getShareAppLink(), getShareAppTitle())
+    override fun openSupport() {
+        externalNavigator.openEmail(getSupportEmailData(), getTextChosingApp(), getNoAppText())
     }
 
     override fun openTerms() {
         externalNavigator.openTerms(getTermsLink())
     }
 
-    override fun openSupport() {
-        externalNavigator.openEmail(getSupportEmailData(), getTextChosingApp(), getNoAppText())
+    override fun shareApp() {
+        externalNavigator.shareApp(getShareAppLink(), getShareAppTitle())
+    }
+
+    private fun getNoAppText(): String {
+        return contentProvider.getNoAppText()
     }
 
     private fun getShareAppLink(): String {
@@ -29,10 +33,6 @@ class SharingInteractorImpl(
         return contentProvider.getShareAppTitle()
     }
 
-    private fun getTermsLink(): String {
-        return contentProvider.getTermsLink()
-    }
-
     private fun getSupportEmailData(): EmailData {
         return contentProvider.getSupportEmailData()
     }
@@ -41,7 +41,7 @@ class SharingInteractorImpl(
         return contentProvider.getTextChosingApp()
     }
 
-    private fun getNoAppText(): String {
-        return contentProvider.getNoAppText()
+    private fun getTermsLink(): String {
+        return contentProvider.getTermsLink()
     }
 }

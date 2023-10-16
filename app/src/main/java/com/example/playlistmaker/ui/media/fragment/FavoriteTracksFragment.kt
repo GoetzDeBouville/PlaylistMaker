@@ -43,19 +43,6 @@ class FavoriteTracksFragment : Fragment() {
         _binding = null
     }
 
-    private fun initRecyclerView() {
-        initAdapters()
-        binding.favouriteTrackRecyclerView.layoutManager = LinearLayoutManager(requireContext())
-        binding.favouriteTrackRecyclerView.adapter = adapter
-        binding.favouriteTrackRecyclerView.itemAnimator = null
-    }
-    private fun renderState(state: FavoriteTracksState) {
-        when (state) {
-            is FavoriteTracksState.Content -> showTracks(state.favoriteTracks)
-            is FavoriteTracksState.Empty -> showEmpty()
-        }
-    }
-
     private fun initAdapters() {
         if (_binding != null) {
             adapter = TrackAdapter {
@@ -68,8 +55,21 @@ class FavoriteTracksFragment : Fragment() {
         }
     }
 
+    private fun initRecyclerView() {
+        initAdapters()
+        binding.favouriteTrackRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+        binding.favouriteTrackRecyclerView.adapter = adapter
+        binding.favouriteTrackRecyclerView.itemAnimator = null
+    }
+
+    private fun renderState(state: FavoriteTracksState) {
+        when (state) {
+            is FavoriteTracksState.Content -> showTracks(state.favoriteTracks)
+            is FavoriteTracksState.Empty -> showEmpty()
+        }
+    }
+
     private fun showEmpty() {
-//        adapter.submitList(emptyList())
         binding.placeholder.visibility = View.VISIBLE
         binding.favouriteTrackList.visibility = View.INVISIBLE
     }

@@ -1,10 +1,6 @@
 package com.example.playlistmaker
 
 import android.app.Application
-import androidx.room.Room
-import androidx.room.getQueryDispatcher
-import com.example.playlistmaker.db.AppDatabase
-import com.example.playlistmaker.db.entity.TrackEntity
 import com.example.playlistmaker.di.dataModule
 import com.example.playlistmaker.di.interactorModule
 import com.example.playlistmaker.di.repositoryModule

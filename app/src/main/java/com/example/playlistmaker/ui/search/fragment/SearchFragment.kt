@@ -98,40 +98,11 @@ class SearchFragment : Fragment() {
         binding.tracklistRecycler.visibility = tracklistRecyclerVisible
     }
 
-    private fun showEmpty(message: String) {
-        updateUI(View.VISIBLE, View.GONE, View.GONE)
-        binding.placeholderMessage.text = message
-        binding.refreshButton.visibility = View.GONE
-        binding.placeholderImage.setImageResource(R.drawable.empty_list_img)
-    }
-
-    private fun showFoundTracks(foundTracks: List<Track>) {
-        updateUI(View.GONE, View.GONE, View.VISIBLE)
-        trackAdapter.trackList = foundTracks as ArrayList<Track>
-        trackAdapter.notifyDataSetChanged()
-    }
-
-    private fun showLoading() {
-        updateUI(View.GONE, View.VISIBLE, View.GONE)
-    }
-
-    private fun showError(errorMessage: String) {
-        updateUI(View.VISIBLE, View.GONE, View.GONE)
-        binding.placeholderMessage.text = errorMessage
-        binding.refreshButton.visibility = View.VISIBLE
-        binding.placeholderImage.setImageResource(R.drawable.no_internet_img)
-    }
-
-    private fun showHistory(tracks: List<Track>) {
-        historyTracklist.clear()
-        historyTracklist.addAll(tracks)
-        binding.placeholderError.visibility = View.GONE
-        binding.progressBar.visibility = View.GONE
-        binding.tracklistRecycler.visibility = View.GONE
-        if (historyTracklist.isNotEmpty()) {
-            binding.searchHistory.visibility = View.VISIBLE
-            binding.historyLayout.visibility = View.VISIBLE
-            trackHistoryAdapter.notifyDataSetChanged()
+    private fun clearButtonVisibility(s: CharSequence?): Int {
+        return if (s.isNullOrEmpty()) {
+            View.GONE
+        } else {
+            View.VISIBLE
         }
     }
 
@@ -143,6 +114,12 @@ class SearchFragment : Fragment() {
             is SearchState.Empty -> showEmpty(getString(R.string.nothing_found))
             is SearchState.ConnectionError -> showError(getString(R.string.check_connection))
         }
+    }
+
+    private fun search() {
+        val searchText = binding.inputEditText.text.toString()
+        if (searchText.isNotBlank()) viewModel.searchDebounce(binding.inputEditText.text.toString())
+        else viewModel.stopSearch()
     }
 
     private fun setupBtnClearHistoryClickListener() {
@@ -169,13 +146,6 @@ class SearchFragment : Fragment() {
         }
     }
 
-    private fun setupSearchEditText() {
-        binding.inputEditText.setText(viewModel.savedSearchRequest)
-        setupFocusChangeListener()
-        setupTextChangedListener()
-        setSearchEditorActionListener()
-    }
-
     private fun setSearchEditorActionListener() {
         binding.inputEditText.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
@@ -185,6 +155,34 @@ class SearchFragment : Fragment() {
             }
             return@setOnEditorActionListener false
         }
+    }
+
+    private fun setupHistoryRecycler() {
+        binding.historyRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+        trackHistoryAdapter.trackList = historyTracklist
+        binding.historyRecyclerView.adapter = trackHistoryAdapter
+    }
+
+    private fun setupFocusChangeListener() {
+        binding.inputEditText.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus && binding.inputEditText.text.isEmpty() && historyTracklist.isNotEmpty()) {
+                binding.searchHistory.visibility = View.VISIBLE
+            } else {
+                binding.searchHistory.visibility = View.GONE
+            }
+        }
+    }
+
+    private fun setupRecyclerViews() {
+        setupTracklistRecycler()
+        setupHistoryRecycler()
+    }
+
+    private fun setupSearchEditText() {
+        binding.inputEditText.setText(viewModel.savedSearchRequest)
+        setupFocusChangeListener()
+        setupTextChangedListener()
+        setSearchEditorActionListener()
     }
 
     private fun setupTextChangedListener() {
@@ -203,43 +201,45 @@ class SearchFragment : Fragment() {
         })
     }
 
-    private fun setupFocusChangeListener() {
-        binding.inputEditText.setOnFocusChangeListener { _, hasFocus ->
-            if (hasFocus && binding.inputEditText.text.isEmpty() && historyTracklist.isNotEmpty()) {
-                binding.searchHistory.visibility = View.VISIBLE
-            } else {
-                binding.searchHistory.visibility = View.GONE
-            }
-        }
-    }
-
-    private fun setupRecyclerViews() {
-        setupTracklistRecycler()
-        setupHistoryRecycler()
-    }
-
     private fun setupTracklistRecycler() {
         binding.tracklistRecycler.layoutManager = LinearLayoutManager(requireContext())
         binding.tracklistRecycler.adapter = trackAdapter
     }
 
-    private fun setupHistoryRecycler() {
-        binding.historyRecyclerView.layoutManager = LinearLayoutManager(requireContext())
-        trackHistoryAdapter.trackList = historyTracklist
-        binding.historyRecyclerView.adapter = trackHistoryAdapter
+    private fun showEmpty(message: String) {
+        updateUI(View.VISIBLE, View.GONE, View.GONE)
+        binding.placeholderMessage.text = message
+        binding.refreshButton.visibility = View.GONE
+        binding.placeholderImage.setImageResource(R.drawable.empty_list_img)
     }
 
-    private fun search() {
-        val searchText = binding.inputEditText.text.toString()
-        if (searchText.isNotBlank()) viewModel.searchDebounce(binding.inputEditText.text.toString())
-        else viewModel.stopSearch()
+    private fun showError(errorMessage: String) {
+        updateUI(View.VISIBLE, View.GONE, View.GONE)
+        binding.placeholderMessage.text = errorMessage
+        binding.refreshButton.visibility = View.VISIBLE
+        binding.placeholderImage.setImageResource(R.drawable.no_internet_img)
     }
 
-    private fun clearButtonVisibility(s: CharSequence?): Int {
-        return if (s.isNullOrEmpty()) {
-            View.GONE
-        } else {
-            View.VISIBLE
+    private fun showFoundTracks(foundTracks: List<Track>) {
+        updateUI(View.GONE, View.GONE, View.VISIBLE)
+        trackAdapter.trackList = foundTracks as ArrayList<Track>
+        trackAdapter.notifyDataSetChanged()
+    }
+
+    private fun showHistory(tracks: List<Track>) {
+        historyTracklist.clear()
+        historyTracklist.addAll(tracks)
+        binding.placeholderError.visibility = View.GONE
+        binding.progressBar.visibility = View.GONE
+        binding.tracklistRecycler.visibility = View.GONE
+        if (historyTracklist.isNotEmpty()) {
+            binding.searchHistory.visibility = View.VISIBLE
+            binding.historyLayout.visibility = View.VISIBLE
+            trackHistoryAdapter.notifyDataSetChanged()
         }
+    }
+
+    private fun showLoading() {
+        updateUI(View.GONE, View.VISIBLE, View.GONE)
     }
 }

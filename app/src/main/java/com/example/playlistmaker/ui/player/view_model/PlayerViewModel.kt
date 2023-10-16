@@ -1,6 +1,5 @@
 package com.example.playlistmaker.ui.player.view_model
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -47,12 +46,34 @@ class PlayerViewModel(
     val timeProgress: LiveData<String>
         get() = _timer
 
-    private fun startPlayer() {
-        playerInteractor.startPlayer() {}
+    override fun onCleared() {
+        super.onCleared()
+        releasePlayer()
+    }
+
+    fun onFavoriteTrackClicked() {
+        viewModelScope.launch {
+            if (_isFavorite.value == true) {
+                favoriteTracksInteractor.removeFromFavoriteTrackList(track)
+                _isFavorite.postValue(false)
+            } else {
+                favoriteTracksInteractor.addToFavoriteTrackList(track)
+                _isFavorite.postValue(true)
+            }
+        }
     }
 
     fun pausePlayer() {
         playerInteractor.pausePlayer()
+    }
+
+    fun playbackControl() {
+        when (playerState.value) {
+            PlayerState.STATE_PLAYING -> pausePlayer()
+            PlayerState.STATE_PREPARED, PlayerState.STATE_PAUSED -> startPlayer()
+            else -> {}
+        }
+        updateTimer()
     }
 
     private fun getTimerPosition(): String {
@@ -68,13 +89,8 @@ class PlayerViewModel(
         updateTimer()
     }
 
-    fun playbackControl() {
-        when (playerState.value) {
-            PlayerState.STATE_PLAYING -> pausePlayer()
-            PlayerState.STATE_PREPARED, PlayerState.STATE_PAUSED -> startPlayer()
-            else -> {}
-        }
-        updateTimer()
+    private fun startPlayer() {
+        playerInteractor.startPlayer() {}
     }
 
     private fun updateTimer() {
@@ -95,23 +111,6 @@ class PlayerViewModel(
         }
     }
 
-    fun onFavoriteTrackClicked() {
-        Log.e("PlayerViewModel", "_isFavorite.value = ${_isFavorite.value}")
-        viewModelScope.launch {
-            if (_isFavorite.value == true) {
-                favoriteTracksInteractor.removeFromFavoriteTrackList(track)
-                _isFavorite.postValue(false)
-            } else {
-                favoriteTracksInteractor.addToFavoriteTrackList(track)
-                _isFavorite.postValue(true)
-            }
-        }
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        releasePlayer()
-    }
 
     companion object {
         private const val CURRENT_TIME = "00:00"

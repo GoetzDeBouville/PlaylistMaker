@@ -11,21 +11,10 @@ class SharedPreferencesHistoryStorage(context: Context) : History {
     private val sharedPrefs = context.getSharedPreferences(SHARED_PREFERERNCES,
         Context.MODE_PRIVATE
     )
-
-    override fun saveTrack(track: Track) {
-        if (savedTracks.contains(track)) {
-            savedTracks.remove(track)
-        }
-        if (savedTracks.size == TRACKLIST_SIZE) {
-            savedTracks.removeLast()
-        }
-        savedTracks.add(0, track)
-
+    override fun clearHistory() {
+        savedTracks.clear()
         sharedPrefs.edit()
-            .putString(
-                SEARCH_KEY,
-                mapper.createJsonFromTracksList(savedTracks.toTypedArray())
-            )
+            .remove(SEARCH_KEY)
             .apply()
     }
 
@@ -38,10 +27,20 @@ class SharedPreferencesHistoryStorage(context: Context) : History {
         return savedTracks.toList()
     }
 
-    override fun clearHistory() {
-        savedTracks.clear()
+    override fun saveTrack(track: Track) {
+        val existingTrack = savedTracks.find { it.trackId == track.trackId }
+        if (existingTrack != null) {
+            savedTracks.remove(existingTrack)
+        }
+        savedTracks.add(0, track)
+        if (savedTracks.size > TRACKLIST_SIZE) {
+            savedTracks.removeLast()
+        }
         sharedPrefs.edit()
-            .remove(SEARCH_KEY)
+            .putString(
+                SEARCH_KEY,
+                mapper.createJsonFromTracksList(savedTracks.toTypedArray())
+            )
             .apply()
     }
 

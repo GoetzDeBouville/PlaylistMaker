@@ -1,6 +1,5 @@
 package com.example.playlistmaker.ui.media.view_model
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -18,17 +17,6 @@ class FavoriteTracksViewModel(private val favoriteTracksInteractor: FavoriteTrac
         get() = _state
     private var isClickAllowed = true
 
-    fun getFavoriteTracks() {
-        viewModelScope.launch {
-            favoriteTracksInteractor.getFavoriteTracks().collect {
-                if (it.isEmpty()) _state.postValue(FavoriteTracksState.Empty)
-                else _state.postValue(FavoriteTracksState.Content(it))
-            }
-
-            Log.i("FavoriteTracksViewModel", "_state.value = ${_state.value}")
-        }
-    }
-
     fun clickDebounce(): Boolean {
         val current = isClickAllowed
         if (isClickAllowed) {
@@ -39,6 +27,15 @@ class FavoriteTracksViewModel(private val favoriteTracksInteractor: FavoriteTrac
             }
         }
         return current
+    }
+
+    fun getFavoriteTracks() {
+        viewModelScope.launch {
+            favoriteTracksInteractor.getFavoriteTracks().collect {
+                if (it.isEmpty()) _state.postValue(FavoriteTracksState.Empty)
+                else _state.postValue(FavoriteTracksState.Content(it))
+            }
+        }
     }
 
     companion object {
