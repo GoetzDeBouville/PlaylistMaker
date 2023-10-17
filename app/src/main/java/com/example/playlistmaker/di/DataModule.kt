@@ -17,12 +17,14 @@ import com.example.playlistmaker.domain.sharing.ContentProvider
 import com.example.playlistmaker.domain.sharing.ExternalNavigator
 import com.google.gson.Gson
 import org.koin.android.ext.koin.androidContext
+import org.koin.core.module.dsl.bind
+import org.koin.core.module.dsl.factoryOf
+import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 val dataModule = module {
-
     single<ItunesAPI> {
         Retrofit.Builder()
             .baseUrl(RetrofitNetworkClient.BASE_URL)
@@ -30,24 +32,16 @@ val dataModule = module {
             .build()
             .create(ItunesAPI::class.java)
     }
-
     single {
         androidContext()
             .getSharedPreferences("pm_prefs", Context.MODE_PRIVATE)
     }
-
-    factory { Gson() }
-
-    single<NetworkClient> { RetrofitNetworkClient(get(), androidContext()) }
-
-    factory<History> { SharedPreferencesHistoryStorage(get()) }
-
-    single<ContentProvider> { ContentProviderImpl(androidContext()) }
-
-    single<ExternalNavigator> { ExternalNavigatorImpl(androidContext()) }
-
+    factoryOf(::Gson)
+    singleOf(::RetrofitNetworkClient) { bind<NetworkClient>() }
+    factoryOf(::SharedPreferencesHistoryStorage) { bind<History>() }
+    singleOf(::ContentProviderImpl) { bind<ContentProvider>() }
+    singleOf(::ExternalNavigatorImpl) { bind<ExternalNavigator>() }
     factory<Player> { (track: Track) -> PlayerImpl(track) }
-
     single {
         Room.databaseBuilder(androidContext(), AppDatabase::class.java, "favorite_tracks.db")
             .build()

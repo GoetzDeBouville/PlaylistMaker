@@ -1,16 +1,14 @@
 package com.example.playlistmaker.data.search.storage.shared_preferences
 
-import android.content.Context
+import android.content.SharedPreferences
 import com.example.playlistmaker.data.search.mappers.TrackMapper
 import com.example.playlistmaker.data.search.storage.History
 import com.example.playlistmaker.domain.search.models.Track
 
-class SharedPreferencesHistoryStorage(context: Context) : History {
+class SharedPreferencesHistoryStorage(private val sharedPrefs: SharedPreferences) : History {
     private var savedTracks = mutableListOf<Track>()
     private val mapper = TrackMapper()
-    private val sharedPrefs = context.getSharedPreferences(SHARED_PREFERERNCES,
-        Context.MODE_PRIVATE
-    )
+
     override fun clearHistory() {
         savedTracks.clear()
         sharedPrefs.edit()
@@ -45,7 +43,6 @@ class SharedPreferencesHistoryStorage(context: Context) : History {
     }
 
     companion object {
-        const val SHARED_PREFERERNCES = "pm_prefs"
         const val SEARCH_KEY = "search_key"
         const val TRACKLIST_SIZE = 10
     }
