@@ -8,6 +8,6 @@ interface PlayerInteractor {
     fun pausePlayer()
     fun preparePlayer(track: Track, callback: (Boolean) -> Unit)
     fun setCurrentTrackTime(time: Long)
-    fun startPlayer(callback: () -> Unit)
+    fun startPlayer()
     fun releasePlayer()
 }

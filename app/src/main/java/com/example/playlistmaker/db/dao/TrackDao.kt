@@ -15,7 +15,7 @@ interface TrackDao {
     @Query("SELECT trackId FROM tracks_table")
     fun getFavoriteIdList(): List<Int>
 
-    @Query("SELECT * FROM tracks_table ORDER BY timeStamp ASC")
+    @Query("SELECT * FROM tracks_table ORDER BY timeStamp DESC")
     fun getFavoriteTracks(): List<TrackEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

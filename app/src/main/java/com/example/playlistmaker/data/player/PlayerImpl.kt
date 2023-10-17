@@ -73,15 +73,12 @@ class PlayerImpl(track: Track) : Player {
         currentTrackTime = time
     }
     
-    override fun startPlayer(callback: () -> Unit) {
+    override fun startPlayer() {
         try {
-            if (!mediaPlayer.isPlaying) {
-                mediaPlayer.start()
-            }
+            if (!mediaPlayer.isPlaying) mediaPlayer.start()
             playerState = PlayerState.STATE_PLAYING
             startTime = System.currentTimeMillis() - currentTrackTime
             notifyPlayerStateChanged(playerState)
-            callback()
         } catch (e: Exception) {
             e.printStackTrace()
         }

@@ -9,5 +9,5 @@ interface Player {
     fun preparePlayer(track: Track, callback: (Boolean) -> Unit)
     fun releasePlayer()
     fun setCurrentTrackTime(time: Long)
-    fun startPlayer(callback: () -> Unit)
+    fun startPlayer()
 }

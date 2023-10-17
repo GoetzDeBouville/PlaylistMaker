@@ -71,7 +71,7 @@ class PlayerViewModel(
         when (playerState.value) {
             PlayerState.STATE_PLAYING -> pausePlayer()
             PlayerState.STATE_PREPARED, PlayerState.STATE_PAUSED -> startPlayer()
-            else -> {}
+            else -> Unit
         }
         updateTimer()
     }
@@ -90,7 +90,7 @@ class PlayerViewModel(
     }
 
     private fun startPlayer() {
-        playerInteractor.startPlayer() {}
+        playerInteractor.startPlayer()
     }
 
     private fun updateTimer() {

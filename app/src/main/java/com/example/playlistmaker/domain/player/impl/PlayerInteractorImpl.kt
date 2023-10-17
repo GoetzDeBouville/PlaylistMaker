@@ -30,7 +30,7 @@ class PlayerInteractorImpl(private val player: Player) : PlayerInteractor {
         player.setCurrentTrackTime(time)
     }
 
-    override fun startPlayer(callback: () -> Unit) {
-        player.startPlayer(callback)
+    override fun startPlayer() {
+        player.startPlayer()
     }
 }
