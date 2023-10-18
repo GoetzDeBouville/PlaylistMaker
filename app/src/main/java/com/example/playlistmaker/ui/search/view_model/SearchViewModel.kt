@@ -27,6 +27,29 @@ class SearchViewModel(
     val state: LiveData<SearchState>
         get() = _state
 
+    fun clearHistory() {
+        historyInteractor.clearHistory()
+        _state.value = SearchState.SearchHistory(
+            emptyList()
+        )
+    }
+
+    fun clickDebounce(): Boolean {
+        val current = isClickAllowed
+        if (isClickAllowed) {
+            isClickAllowed = false
+            viewModelScope.launch {
+                delay(CLICK_DEBOUNCE_DELAY)
+                isClickAllowed = true
+            }
+        }
+        return current
+    }
+
+    fun saveTrack(track: Track) {
+        historyInteractor.saveTrack(track)
+    }
+
     fun searchDebounce(searchText: String) {
         if (searchText.isBlank()) {
             _state.value = SearchState.SearchHistory(getHistory())
@@ -53,6 +76,18 @@ class SearchViewModel(
         }
     }
 
+    fun showHistory() {
+        _state.value = SearchState.SearchHistory(
+            getHistory()
+        )
+    }
+
+    fun stopSearch() {
+        showHistory()
+    }
+
+    private fun getHistory() = historyInteractor.getAllTracks()
+
     private fun processResult(foundTracks: List<Track>?, errorType: LoadingStatus?) {
         val tracks = mutableListOf<Track>()
 
@@ -67,41 +102,6 @@ class SearchViewModel(
 
     private fun renderState(state: SearchState) {
         _state.postValue(state)
-    }
-
-    private fun getHistory() = historyInteractor.getAllTracks()
-
-    fun clickDebounce(): Boolean {
-        val current = isClickAllowed
-        if (isClickAllowed) {
-            isClickAllowed = false
-            viewModelScope.launch {
-                delay(CLICK_DEBOUNCE_DELAY)
-                isClickAllowed = true
-            }
-        }
-        return current
-    }
-
-    fun saveTrack(track: Track) {
-        historyInteractor.saveTrack(track)
-    }
-
-    fun clearHistory() {
-        historyInteractor.clearHistory()
-        _state.value = SearchState.SearchHistory(
-            emptyList()
-        )
-    }
-
-    fun showHistory() {
-        _state.value = SearchState.SearchHistory(
-            getHistory()
-        )
-    }
-
-    fun stopSearch() {
-        showHistory()
     }
 
     companion object {

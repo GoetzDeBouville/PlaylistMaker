@@ -18,6 +18,27 @@ class PlayerImpl(track: Track) : Player {
         preparePlayer(track) {}
     }
 
+    override fun getCurrentTrackTime(): Long {
+        if (playerState == PlayerState.STATE_PLAYING) {
+            currentTrackTime = System.currentTimeMillis() - startTime
+        }
+        return currentTrackTime
+    }
+
+    override fun getPlayerState(observer: PlayerStateObserver) {
+        observers.add(observer)
+        observer.onPlayerStateChanged(playerState)
+    }
+
+    override fun pausePlayer() {
+        if (playerState == PlayerState.STATE_PLAYING) {
+            currentTrackTime = System.currentTimeMillis() - startTime
+            mediaPlayer.pause()
+            playerState = PlayerState.STATE_PAUSED
+            notifyPlayerStateChanged(playerState)
+        }
+    }
+
     override fun preparePlayer(track: Track, callback: (Boolean) -> Unit) {
         if (track.previewUrl != null) {
             try {
@@ -44,47 +65,23 @@ class PlayerImpl(track: Track) : Player {
         }
     }
 
-    override fun startPlayer(callback: () -> Unit) {
-        try {
-            if (!mediaPlayer.isPlaying) {
-                mediaPlayer.start()
-            }
-            playerState = PlayerState.STATE_PLAYING
-            startTime = System.currentTimeMillis() - currentTrackTime
-            notifyPlayerStateChanged(playerState)
-            callback()
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-    }
-
-    override fun pausePlayer() {
-        if (playerState == PlayerState.STATE_PLAYING) {
-            currentTrackTime = System.currentTimeMillis() - startTime
-            mediaPlayer.pause()
-            playerState = PlayerState.STATE_PAUSED
-            notifyPlayerStateChanged(playerState)
-        }
-    }
-
-    override fun getPlayerState(observer: PlayerStateObserver) {
-        observers.add(observer)
-        observer.onPlayerStateChanged(playerState)
-    }
-
-    override fun getCurrentTrackTime(): Long {
-        if (playerState == PlayerState.STATE_PLAYING) {
-            currentTrackTime = System.currentTimeMillis() - startTime
-        }
-        return currentTrackTime
+    override fun releasePlayer() {
+        mediaPlayer.release()
     }
 
     override fun setCurrentTrackTime(time: Long) {
         currentTrackTime = time
     }
-
-    override fun releasePlayer() {
-        mediaPlayer.release()
+    
+    override fun startPlayer() {
+        try {
+            if (!mediaPlayer.isPlaying) mediaPlayer.start()
+            playerState = PlayerState.STATE_PLAYING
+            startTime = System.currentTimeMillis() - currentTrackTime
+            notifyPlayerStateChanged(playerState)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     private fun notifyPlayerStateChanged(state: PlayerState) {

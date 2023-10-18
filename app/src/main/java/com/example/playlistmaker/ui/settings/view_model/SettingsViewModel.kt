@@ -18,8 +18,16 @@ class SettingsViewModel(
     init {
         loadThemeSettings()
     }
-    private fun loadThemeSettings() {
-        _themeSettings.value = settingsInteractor.getThemeSettings().isDarkTheme
+    fun openSupport() {
+        sharingInteractor.openSupport()
+    }
+
+    fun openTerms() {
+        sharingInteractor.openTerms()
+    }
+
+    fun shareApp() {
+        sharingInteractor.shareApp()
     }
 
     fun updateThemeSettings(isDarkTheme: Boolean) {
@@ -27,15 +35,7 @@ class SettingsViewModel(
         _themeSettings.value = isDarkTheme
     }
 
-    fun shareApp() {
-        sharingInteractor.shareApp()
-    }
-
-    fun openSupport() {
-        sharingInteractor.openSupport()
-    }
-
-    fun openTerms() {
-        sharingInteractor.openTerms()
+    private fun loadThemeSettings() {
+        _themeSettings.value = settingsInteractor.getThemeSettings().isDarkTheme
     }
 }

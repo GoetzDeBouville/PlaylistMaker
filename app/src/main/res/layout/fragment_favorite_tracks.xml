@@ -4,25 +4,44 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".ui.media.PlaylistsFragment">
+    tools:context=".ui.media.fragment.PlaylistsFragment">
 
-    <ImageView
-        android:id="@+id/placeholder_image"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="120dp"
-        android:layout_marginBottom="@dimen/dimen_16dp"
-        android:src="@drawable/empty_list_img"
-        android:contentDescription="@string/media" />
+    <LinearLayout
+        android:id="@+id/placeholder"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/placeholder_message"
-        style="@style/StylePlaceholderStatusMessage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginBottom="@dimen/dimen_24dp"
-        android:text="@string/empty_favorite_list"
-        android:textAlignment="center" />
+        <ImageView
+            android:id="@+id/placeholder_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="120dp"
+            android:layout_marginBottom="@dimen/dimen_16dp"
+            android:contentDescription="@string/media"
+            android:src="@drawable/empty_list_img" />
+
+        <TextView
+            android:id="@+id/placeholder_message"
+            style="@style/StylePlaceholderStatusMessage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="@dimen/dimen_24dp"
+            android:text="@string/empty_favorite_list"
+            android:textAlignment="center" />
+    </LinearLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/favourite_track_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/dimen_20dp">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/favourite_track_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </androidx.core.widget.NestedScrollView>
 </LinearLayout>

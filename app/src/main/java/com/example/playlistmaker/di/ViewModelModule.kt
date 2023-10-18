@@ -9,20 +9,17 @@ import com.example.playlistmaker.ui.player.view_model.PlayerViewModel
 import com.example.playlistmaker.ui.search.view_model.SearchViewModel
 import com.example.playlistmaker.ui.settings.view_model.SettingsViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
+import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.core.parameter.parametersOf
 import org.koin.dsl.module
 
 val viewModelModule = module {
-    viewModel { SearchViewModel(get(), get()) }
-
-    viewModel { SettingsViewModel(get(), get()) }
-
+    viewModelOf(::SearchViewModel)
+    viewModelOf(::SettingsViewModel)
+    viewModelOf(::FavoriteTracksViewModel)
+    viewModelOf(::PlaylistsViewModel)
     viewModel { (track: Track) ->
         val player = get<Player> { parametersOf(track) }
-        PlayerViewModel(PlayerInteractorImpl(player))
+        PlayerViewModel(track, PlayerInteractorImpl(player), get())
     }
-
-    viewModel { FavoriteTracksViewModel() }
-
-    viewModel { PlaylistsViewModel() }
 }

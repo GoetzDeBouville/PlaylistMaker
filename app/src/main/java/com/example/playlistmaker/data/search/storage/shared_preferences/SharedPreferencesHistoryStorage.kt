@@ -1,31 +1,18 @@
 package com.example.playlistmaker.data.search.storage.shared_preferences
 
-import android.content.Context
+import android.content.SharedPreferences
 import com.example.playlistmaker.data.search.mappers.TrackMapper
 import com.example.playlistmaker.data.search.storage.History
 import com.example.playlistmaker.domain.search.models.Track
 
-class SharedPreferencesHistoryStorage(context: Context) : History {
-    private val savedTracks = mutableListOf<Track>()
+class SharedPreferencesHistoryStorage(private val sharedPrefs: SharedPreferences) : History {
+    private var savedTracks = mutableListOf<Track>()
     private val mapper = TrackMapper()
-    private val sharedPrefs = context.getSharedPreferences(SHARED_PREFERERNCES,
-        Context.MODE_PRIVATE
-    )
 
-    override fun saveTrack(track: Track) {
-        if (savedTracks.contains(track)) {
-            savedTracks.remove(track)
-        }
-        if (savedTracks.size == TRACKLIST_SIZE) {
-            savedTracks.removeLast()
-        }
-        savedTracks.add(0, track)
-
+    override fun clearHistory() {
+        savedTracks.clear()
         sharedPrefs.edit()
-            .putString(
-                SEARCH_KEY,
-                mapper.createJsonFromTracksList(savedTracks.toTypedArray())
-            )
+            .remove(SEARCH_KEY)
             .apply()
     }
 
@@ -38,15 +25,24 @@ class SharedPreferencesHistoryStorage(context: Context) : History {
         return savedTracks.toList()
     }
 
-    override fun clearHistory() {
-        savedTracks.clear()
+    override fun saveTrack(track: Track) {
+        val existingTrack = savedTracks.find { it.trackId == track.trackId }
+        if (existingTrack != null) {
+            savedTracks.remove(existingTrack)
+        }
+        savedTracks.add(0, track)
+        if (savedTracks.size > TRACKLIST_SIZE) {
+            savedTracks.removeLast()
+        }
         sharedPrefs.edit()
-            .remove(SEARCH_KEY)
+            .putString(
+                SEARCH_KEY,
+                mapper.createJsonFromTracksList(savedTracks.toTypedArray())
+            )
             .apply()
     }
 
     companion object {
-        const val SHARED_PREFERERNCES = "pm_prefs"
         const val SEARCH_KEY = "search_key"
         const val TRACKLIST_SIZE = 10
     }

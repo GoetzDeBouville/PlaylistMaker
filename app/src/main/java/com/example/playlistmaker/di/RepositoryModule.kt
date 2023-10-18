@@ -1,17 +1,24 @@
 package com.example.playlistmaker.di
 
+import com.example.playlistmaker.data.converters.TrackDbConverter
+import com.example.playlistmaker.data.db.FavoriteTracksRepositoryImpl
 import com.example.playlistmaker.data.search.repository.HistoryRepositoryImpl
 import com.example.playlistmaker.data.search.repository.SearchRepositoryImpl
 import com.example.playlistmaker.data.settings.impl.SettingsRepositoryImpl
+import com.example.playlistmaker.domain.db.FavoriteTracksRepository
 import com.example.playlistmaker.domain.search.api.HistoryRepository
 import com.example.playlistmaker.domain.search.api.SearchRepository
 import com.example.playlistmaker.domain.settings.SettingsRepository
-import org.koin.android.ext.koin.androidContext
+import org.koin.core.module.dsl.bind
+import org.koin.core.module.dsl.factoryOf
+import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
 val repositoryModule = module {
-    single<SearchRepository> { SearchRepositoryImpl(get()) }
-    single<HistoryRepository> { HistoryRepositoryImpl(get()) }
+    singleOf(::HistoryRepositoryImpl) { bind<HistoryRepository>() }
+    singleOf(::SearchRepositoryImpl) { bind<SearchRepository>() }
+    singleOf(::SettingsRepositoryImpl) { bind<SettingsRepository>() }
+    singleOf(::FavoriteTracksRepositoryImpl) { bind<FavoriteTracksRepository>() }
 
-    single<SettingsRepository> { SettingsRepositoryImpl(androidContext()) }
+    factoryOf(::TrackDbConverter)
 }

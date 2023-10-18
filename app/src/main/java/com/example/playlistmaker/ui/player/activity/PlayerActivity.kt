@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
@@ -40,56 +41,14 @@ class PlayerActivity : AppCompatActivity() {
         binding.playButton.setOnClickListener {
             viewModel.playbackControl()
         }
-    }
-
-    private fun observeViewModel() {
-        viewModel.playerState.observe(this) {
-            renderState(it)
-        }
-        viewModel.timeProgress.observe(this) {
-            binding.textTrackTimeValue.text = it
+        binding.likeButton.setOnClickListener {
+            viewModel.onFavoriteTrackClicked()
         }
     }
 
     override fun onPause() {
         super.onPause()
         viewModel.pausePlayer()
-    }
-
-    private fun renderState(state: PlayerState) {
-        when (state) {
-            PlayerState.STATE_PLAYING -> showPauseBtn()
-            PlayerState.STATE_PAUSED, PlayerState.STATE_PREPARED -> {
-                vectorDrawable?.setTint(ContextCompat.getColor(this, R.color.elements_color))
-                showPlayBtn()
-            }
-
-            PlayerState.STATE_DEFAULT -> {
-                vectorDrawable?.setTint(ContextCompat.getColor(this, R.color.prepaing_play_button))
-                showOnPrepareMessage()
-            }
-        }
-    }
-
-    private fun showPauseBtn() {
-        binding.playButton.setOnClickListener {
-            viewModel.playbackControl()
-        }
-        binding.playButton.setImageResource(R.drawable.pause_button)
-    }
-
-    private fun showPlayBtn() {
-        binding.playButton.setOnClickListener {
-            viewModel.playbackControl()
-        }
-        binding.playButton.setImageResource(R.drawable.play_button)
-    }
-
-    private fun showOnPrepareMessage() {
-        binding.playButton.setOnClickListener {
-            showToast(getString(R.string.player_in_progress))
-        }
-        binding.playButton.setImageResource(R.drawable.play_button)
     }
 
     private fun fetchPlayer() {
@@ -117,6 +76,74 @@ class PlayerActivity : AppCompatActivity() {
             textYearValue.text = track?.releaseDate
             textYearValue.text = track?.yearFormater()
         }
+    }
+
+    private fun manageLikeButtonState(isFavorite: Boolean) {
+        if (isFavorite) {
+            binding.likeButtonState.setImageDrawable(
+                AppCompatResources.getDrawable(
+                    this,
+                    R.drawable.ic_infavorite
+                )
+            )
+        } else {
+            binding.likeButtonState.setImageDrawable(
+                AppCompatResources.getDrawable(
+                    this,
+                    R.drawable.ic_like
+                )
+            )
+        }
+    }
+
+    private fun observeViewModel() {
+        viewModel.playerState.observe(this) {
+            renderState(it)
+        }
+
+        viewModel.timeProgress.observe(this) {
+            binding.textTrackTimeValue.text = it
+        }
+
+        viewModel.isFavorite.observe(this) {
+            manageLikeButtonState(it)
+        }
+    }
+
+    private fun renderState(state: PlayerState) {
+        when (state) {
+            PlayerState.STATE_PLAYING -> showPauseBtn()
+            PlayerState.STATE_PAUSED, PlayerState.STATE_PREPARED -> {
+                vectorDrawable?.setTint(ContextCompat.getColor(this, R.color.elements_color))
+                showPlayBtn()
+            }
+
+            PlayerState.STATE_DEFAULT -> {
+                vectorDrawable?.setTint(ContextCompat.getColor(this, R.color.prepaing_play_button))
+                showOnPrepareMessage()
+            }
+        }
+    }
+
+    private fun showOnPrepareMessage() {
+        binding.playButton.setOnClickListener {
+            showToast(getString(R.string.player_in_progress))
+        }
+        binding.playButton.setImageResource(R.drawable.play_button)
+    }
+
+    private fun showPauseBtn() {
+        binding.playButton.setOnClickListener {
+            viewModel.playbackControl()
+        }
+        binding.playButton.setImageResource(R.drawable.pause_button)
+    }
+
+    private fun showPlayBtn() {
+        binding.playButton.setOnClickListener {
+            viewModel.playbackControl()
+        }
+        binding.playButton.setImageResource(R.drawable.play_button)
     }
 
     private fun showToast(message: String) {
