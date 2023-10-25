@@ -99,11 +99,8 @@ class SearchFragment : Fragment() {
     }
 
     private fun clearButtonVisibility(s: CharSequence?): Int {
-        return if (s.isNullOrEmpty()) {
-            View.GONE
-        } else {
-            View.VISIBLE
-        }
+        return if (s.isNullOrEmpty()) View.GONE
+        else View.VISIBLE
     }
 
     private fun renderState(state: SearchState) {
@@ -119,7 +116,7 @@ class SearchFragment : Fragment() {
     private fun search() {
         val searchText = binding.inputEditText.text.toString()
         if (searchText.isNotBlank()) viewModel.searchDebounce(binding.inputEditText.text.toString())
-        else viewModel.stopSearch()
+        else viewModel.showHistory()
     }
 
     private fun setupBtnClearHistoryClickListener() {
@@ -132,7 +129,7 @@ class SearchFragment : Fragment() {
 
     private fun setupBtnClearSearchClickListener() {
         binding.clearIcon.setOnClickListener {
-            viewModel.stopSearch()
+            viewModel.showHistory()
             binding.inputEditText.setText("")
             viewModel.savedSearchRequest = ""
             val keyboard =

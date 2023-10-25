@@ -52,7 +52,7 @@ class SearchViewModel(
 
     fun searchDebounce(searchText: String) {
         if (searchText.isBlank()) {
-            _state.value = SearchState.SearchHistory(getHistory())
+            _state.value = SearchState.SearchHistory(historyInteractor.getAllTracks())
         } else {
             this.latestSearchText = searchText
 
@@ -78,15 +78,9 @@ class SearchViewModel(
 
     fun showHistory() {
         _state.value = SearchState.SearchHistory(
-            getHistory()
+            historyInteractor.getAllTracks()
         )
     }
-
-    fun stopSearch() {
-        showHistory()
-    }
-
-    private fun getHistory() = historyInteractor.getAllTracks()
 
     private fun processResult(foundTracks: List<Track>?, errorType: LoadingStatus?) {
         val tracks = mutableListOf<Track>()
