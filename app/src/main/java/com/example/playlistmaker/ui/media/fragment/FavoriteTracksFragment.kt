@@ -24,7 +24,7 @@ class FavoriteTracksFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentFavoriteTracksBinding.inflate(inflater, container, false)
         viewModel.state.observe(viewLifecycleOwner) {
             renderState(it)
