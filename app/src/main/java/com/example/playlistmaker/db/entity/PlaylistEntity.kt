@@ -1,5 +1,6 @@
 package com.example.playlistmaker.db.entity
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
@@ -7,9 +8,10 @@ import androidx.room.PrimaryKey
 data class PlaylistEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
-    val title: String,
+    val title: String?,
     val description: String?,
     val imagePath: String?,
     var trackIds: String?,
+    @ColumnInfo(defaultValue = "0")
     var trackAmount: Int = 0
 )
