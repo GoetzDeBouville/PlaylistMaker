@@ -4,18 +4,23 @@ import androidx.room.AutoMigration
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import com.example.playlistmaker.db.dao.PlaylistDao
+import com.example.playlistmaker.db.dao.PlaylistTracksDao
 import com.example.playlistmaker.db.dao.TrackDao
 import com.example.playlistmaker.db.entity.PlaylistEntity
+import com.example.playlistmaker.db.entity.PlaylistTracksEntity
+import com.example.playlistmaker.db.entity.SavedTrackEntity
 import com.example.playlistmaker.db.entity.TrackEntity
 
 @Database(
-    version = 4,
-    entities = [TrackEntity::class, PlaylistEntity::class],
-    autoMigrations = [AutoMigration(3, 4)],
+    version = 5,
+    entities = [TrackEntity::class, PlaylistEntity::class, PlaylistTracksEntity::class, SavedTrackEntity::class],
+    autoMigrations = [AutoMigration(4, 5)],
     exportSchema = true
 )
 
 abstract class AppDatabase : RoomDatabase() {
     abstract fun trackDao(): TrackDao
     abstract fun playlistDao(): PlaylistDao
+    abstract fun playlistTracksDao(): PlaylistTracksDao
+    abstract fun savedTracksDao(): SavedTrackEntity
 }
