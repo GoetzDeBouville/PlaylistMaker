@@ -6,7 +6,9 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
+import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentPlaylistsBinding
 import com.example.playlistmaker.domain.media.models.PlaylistState
 import com.example.playlistmaker.ui.media.adapters.PlaylistsAdapter
@@ -26,16 +28,12 @@ class PlaylistsFragment : Fragment() {
         _binding = FragmentPlaylistsBinding.inflate(inflater, container, false)
         return binding.root
     }
-// todo требуется реализзовать снэкбар
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         binding.addPlaylistBtn.setOnClickListener {
-            val newPlaylistFragment = NewPlaylistFragment.newInstance()
-            val transaction = requireActivity().supportFragmentManager.beginTransaction()
-            transaction.replace(android.R.id.content, newPlaylistFragment)
-            transaction.addToBackStack(null)
-            transaction.commit()
+            findNavController().navigate(R.id.action_global_to_newPlaylistFragment)
         }
 
         viewModel.getPlaylists()

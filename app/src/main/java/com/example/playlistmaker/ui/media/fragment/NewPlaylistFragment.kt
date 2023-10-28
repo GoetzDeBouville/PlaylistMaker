@@ -20,6 +20,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.core.widget.doOnTextChanged
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
@@ -184,7 +185,8 @@ class NewPlaylistFragment : Fragment() {
                 }
                 .show()
         } else {
-            requireActivity().supportFragmentManager.popBackStack()
+            findNavController().popBackStack()
+//            requireActivity().supportFragmentManager.popBackStack()
         }
     }
     private fun showSnackbar(title : String) {
