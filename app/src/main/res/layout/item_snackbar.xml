@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/dimen_48dp"
+    android:layout_gravity="bottom|center"
+    android:layout_marginHorizontal="@dimen/dimen_8dp"
+    android:layout_marginBottom="@dimen/dimen_16dp"
+    android:background="@color/text_color"
+    android:gravity="center">
+
+    <TextView
+        android:id="@+id/snackbar_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Плейлист Best SoNg EvEr! создан"
+        android:fontFamily="@font/ys_display_regular"
+        android:textSize="@dimen/text_14sp"
+        android:textColor="@color/snack_text" />
+</RelativeLayout>

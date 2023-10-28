@@ -19,7 +19,7 @@ class PlaylistDbConverter {
     fun map(playlist: PlaylistEntity) : Playlist {
         return Playlist(
             id = playlist.id,
-            title = playlist.title,
+            title = playlist.title!!,
             description = playlist.description,
             imagePath = playlist.imagePath?.toUri(),
             trackIds = playlist.trackIds,

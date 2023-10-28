@@ -21,5 +21,6 @@
     <color name="prepaing_play_button">#401A1B22</color>
     <color name="text_color">#1A1B22</color>
     <color name="transparent">#00FFFFFF</color>
+    <color name="snack_text">@color/white</color>
 
 </resources>

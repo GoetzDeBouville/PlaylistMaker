@@ -8,6 +8,7 @@ import androidx.room.PrimaryKey
 data class PlaylistEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
+    @ColumnInfo(defaultValue = "")
     val title: String?,
     val description: String?,
     val imagePath: String?,
