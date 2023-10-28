@@ -69,12 +69,12 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dimen_32dp"
         android:hint="@string/title"
-        app:boxCornerRadiusBottomEnd="@dimen/dimen_8dp"
         app:boxBackgroundColor="@color/transparent"
+        app:boxBackgroundMode="outline"
+        app:boxCornerRadiusBottomEnd="@dimen/dimen_8dp"
         app:boxCornerRadiusBottomStart="@dimen/dimen_8dp"
         app:boxCornerRadiusTopEnd="@dimen/dimen_8dp"
         app:boxCornerRadiusTopStart="@dimen/dimen_8dp"
-        app:boxBackgroundMode="outline"
         app:boxStrokeColor="@drawable/box_stroke_selector"
         app:boxStrokeWidth="1dp"
         app:hintAnimationEnabled="true"
@@ -102,12 +102,12 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dimen_16dp"
         android:hint="@string/description"
-        app:boxCornerRadiusBottomEnd="@dimen/dimen_8dp"
         app:boxBackgroundColor="@color/transparent"
+        app:boxBackgroundMode="outline"
+        app:boxCornerRadiusBottomEnd="@dimen/dimen_8dp"
         app:boxCornerRadiusBottomStart="@dimen/dimen_8dp"
         app:boxCornerRadiusTopEnd="@dimen/dimen_8dp"
         app:boxCornerRadiusTopStart="@dimen/dimen_8dp"
-        app:boxBackgroundMode="outline"
         app:boxStrokeColor="@drawable/box_stroke_selector"
         app:boxStrokeWidth="1dp"
         app:hintAnimationEnabled="true"
@@ -128,28 +128,27 @@
             app:layout_constraintTop_toBottomOf="@+id/pl_image" />
     </com.google.android.material.textfield.TextInputLayout>
 
-    <View
-        android:id="@+id/button_cover"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintTop_toTopOf="@id/create_button"
-        app:layout_constraintStart_toStartOf="@id/create_button"
-        app:layout_constraintEnd_toEndOf="@id/create_button"
-        app:layout_constraintBottom_toBottomOf="@id/create_button"/>
-
-    <Button
+    <androidx.cardview.widget.CardView
         android:id="@+id/create_button"
         android:layout_width="0dp"
         android:layout_height="@dimen/dimen_44dp"
         android:layout_marginBottom="@dimen/dimen_32dp"
-        android:background="@drawable/button_background"
-        android:backgroundTint="@color/transparent"
         android:fontFamily="@font/ys_display_medium"
-        android:text="@string/create"
-        android:textAllCaps="false"
-        android:textColor="@color/white"
+        tools:backgroundTint="@color/text_gray"
+        app:cardCornerRadius="@dimen/dimen_8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/right_text_guideline"
-        app:layout_constraintStart_toEndOf="@id/left_text_guideline" />
+        app:layout_constraintStart_toEndOf="@id/left_text_guideline" >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:fontFamily="@font/ys_display_medium"
+            android:textColor="@color/white"
+            android:text="@string/create"
+            android:textAlignment="center"/>
+    </androidx.cardview.widget.CardView>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

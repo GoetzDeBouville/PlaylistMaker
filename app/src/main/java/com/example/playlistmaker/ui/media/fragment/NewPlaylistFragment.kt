@@ -8,17 +8,18 @@ import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
+import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.ColorRes
+import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.core.widget.doOnTextChanged
+import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
@@ -28,8 +29,8 @@ import com.example.playlistmaker.domain.media.models.NewPlaylistState
 import com.example.playlistmaker.domain.media.models.Playlist
 import com.example.playlistmaker.ui.media.view_model.NewPlaylistViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.snackbar.Snackbar
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.io.File
@@ -42,18 +43,21 @@ class NewPlaylistFragment : Fragment() {
 
     private var imagePath: Uri? = null
 
-    private val pickMedia = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
-        uri?.let {
-            val cornerRadius = requireContext().resources.getDimensionPixelSize(R.dimen.dimen_8dp)
+    private val pickMedia =
+        registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+            uri?.let {
+                val cornerRadius =
+                    requireContext().resources.getDimensionPixelSize(R.dimen.dimen_8dp)
 
-            Glide.with(requireContext())
-                .load(uri)
-                .transform(CenterCrop(), RoundedCorners(cornerRadius))
-                .into(binding.plImage)
+                Glide.with(requireContext())
+                    .load(uri)
+                    .transform(CenterCrop(), RoundedCorners(cornerRadius))
+                    .into(binding.plImage)
 
-            saveImageToInternalStorage(uri)
+                saveImageToInternalStorage(uri)
+            }
         }
-    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -85,71 +89,76 @@ class NewPlaylistFragment : Fragment() {
         }
 
         binding.createButton.setOnClickListener {
-            val playlist = Playlist(
-                0,
-                title = binding.titleEdit.text.toString(),
-                description = binding.descriptionEdit.text.toString(),
-                imagePath = imagePath,
-                trackIds = "",
-                trackAmount = 0
-            )
-            viewModel.savePlayList(playlist)
+            val blueButton = ContextCompat.getColor(requireContext(), R.color.blue_text)
 
-            Toast.makeText(
-                requireContext(),
-                "Плейлист ${playlist.title} создан",
-                Toast.LENGTH_SHORT
-            ).show()
+            if (binding.createButton.cardBackgroundColor.defaultColor == blueButton) {
+                val playlist = Playlist(
+                    0,
+                    title = binding.titleEdit.text.toString(),
+                    description = binding.descriptionEdit.text.toString(),
+                    imagePath = imagePath,
+                    trackIds = "",
+                    trackAmount = 0
+                )
+                viewModel.savePlayList(playlist)
 
-            requireActivity().supportFragmentManager.popBackStack()
-        }
+                showSnackbar(playlist.title)
+                requireActivity().supportFragmentManager.popBackStack()
+            } else {
+                viewLifecycleOwner.lifecycleScope.launch {
+                    val colorAnimator =
+                        ValueAnimator.ofObject(ArgbEvaluator(), Color.RED, Color.TRANSPARENT)
+                    colorAnimator.duration = 300
+                    colorAnimator.repeatMode = ValueAnimator.REVERSE
+                    colorAnimator.repeatCount = 3
+                    colorAnimator.addUpdateListener { animator ->
+                        val color = animator.animatedValue as Int
+                        binding.titleInput.boxStrokeColor = color
+                        binding.titleInput.boxBackgroundColor = color
+                    }
+                    colorAnimator.start()
 
-        binding.buttonCover.setOnClickListener {
-            GlobalScope.launch {
-                val colorAnimator = ValueAnimator.ofObject(ArgbEvaluator(), Color.RED, Color.GREEN)
-                colorAnimator.duration = 1500
-                colorAnimator.addUpdateListener { animator ->
-                    val color = animator.animatedValue as Int
-                    binding.titleInput.boxStrokeColor = color
+                    delay(1000)
+                    colorAnimator.cancel()
+
+                    binding.titleInput.boxStrokeColor =
+                        ContextCompat.getColor(requireContext(), R.color.blue_text)
+                    binding.titleInput.boxBackgroundColor =
+                        ContextCompat.getColor(requireContext(), R.color.transparent)
                 }
-                colorAnimator.start()
-                delay(1500)
             }
         }
 
         binding.titleEdit.doOnTextChanged() { text, _, _, _ ->
-            if (text.isNullOrEmpty()) {
-                viewModel.setEmptyState()
-                Log.e("NewPlaylistFragment", "EditTextFilled")
-            }
-            else {
-                viewModel.setNotEmptyState()
-                Log.e("NewPlaylistFragment", "EditText mpt")
-            }
+            if (text.isNullOrEmpty()) viewModel.setEmptyState()
+            else viewModel.setNotEmptyState()
         }
     }
 
     private fun obserViewModel() {
         viewModel.state.observe(viewLifecycleOwner) {
-            if (it is NewPlaylistState.Empty) renderUi(false, buttonColor = R.color.light_gray)
-            else renderUi(true, buttonColor = R.color.blue_text)
+            if (it is NewPlaylistState.Empty) renderUi(buttonColor = R.color.text_gray)
+            else renderUi(buttonColor = R.color.blue_text)
         }
     }
 
-    private fun renderUi(isButtonEnabled: Boolean, @ColorRes buttonColor: Int) {
-        binding.createButton.isEnabled = isButtonEnabled
-        binding.buttonCover.isEnabled = !isButtonEnabled
-        binding.createButton.setBackgroundColor(resources.getColor(buttonColor, null))
+    private fun renderUi(@ColorRes buttonColor: Int) {
+        binding.createButton.setCardBackgroundColor(
+            ContextCompat.getColor(
+                requireContext(),
+                buttonColor
+            )
+        )
     }
 
     private fun saveImageToInternalStorage(uri: Uri) {
         val filePath = File(
             requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES),
-            getString(R.string.playlists)
+            getString(R.string.covers)
         )
-        if (!filePath.exists()) {
-            filePath.mkdirs()
-        }
+
+        if (!filePath.exists()) filePath.mkdirs()
+
         val file = File(filePath, uri.lastPathSegment ?: "image")
         val inputStream = requireActivity().contentResolver.openInputStream(uri)
         val outputStream = FileOutputStream(file)
@@ -162,14 +171,34 @@ class NewPlaylistFragment : Fragment() {
     }
 
     private fun showDialog() {
-        MaterialAlertDialogBuilder(requireContext())
-            .setTitle("Покинуть экран создания плейлиста?")
-            .setMessage("Введённые данные будут утрачены")
-            .setNeutralButton("Отмена") { _, _ -> }
-            .setNegativeButton("Покинуть") { _, _ ->
-                requireActivity().supportFragmentManager.popBackStack()
-            }
-            .show()
+        if (binding.titleEdit.text.toString()
+                .isNotEmpty() || binding.descriptionEdit.text.toString()
+                .isNotEmpty() || (imagePath != null)
+        ) {
+            MaterialAlertDialogBuilder(requireContext())
+                .setTitle(R.string.dialog_question)
+                .setMessage(R.string.losing_data)
+                .setNeutralButton(R.string.cancel) { _, _ -> }
+                .setNegativeButton(R.string.done) { _, _ ->
+                    requireActivity().supportFragmentManager.popBackStack()
+                }
+                .show()
+        } else {
+            requireActivity().supportFragmentManager.popBackStack()
+        }
+    }
+    private fun showSnackbar(title : String) {
+        val snackbar = Snackbar.make(binding.root, "Плейлист $title создан", Snackbar.LENGTH_SHORT)
+        val snackTextColor = ContextCompat.getColor(requireContext(), R.color.snack_text)
+        val backgroundColor = ContextCompat.getColor(requireContext(), R.color.text_color)
+
+        val textView =
+            snackbar.view.findViewById<TextView>(com.google.android.material.R.id.snackbar_text)
+        textView.textAlignment = View.TEXT_ALIGNMENT_CENTER
+        textView.textSize = 16f
+        textView.setTextColor(snackTextColor)
+        snackbar.view.setBackgroundColor(backgroundColor)
+        snackbar.show()
     }
 
     companion object {

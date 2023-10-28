@@ -6,17 +6,11 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.Animation
-import android.view.animation.AnimationUtils
 import androidx.recyclerview.widget.GridLayoutManager
-import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentPlaylistsBinding
 import com.example.playlistmaker.domain.media.models.PlaylistState
 import com.example.playlistmaker.ui.media.adapters.PlaylistsAdapter
 import com.example.playlistmaker.ui.media.view_model.PlaylistsViewModel
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class PlaylistsFragment : Fragment() {
@@ -24,6 +18,7 @@ class PlaylistsFragment : Fragment() {
     private val binding get() = _binding!!
     private val viewModel: PlaylistsViewModel by viewModel()
     private val adapter = PlaylistsAdapter()
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -41,10 +36,6 @@ class PlaylistsFragment : Fragment() {
             transaction.replace(android.R.id.content, newPlaylistFragment)
             transaction.addToBackStack(null)
             transaction.commit()
-        }
-
-        binding.ll.setOnClickListener {
-            showCustomSnackbar(binding.root)
         }
 
         viewModel.getPlaylists()
@@ -73,29 +64,6 @@ class PlaylistsFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         viewModel.getPlaylists()
-    }
-
-
-    private fun showCustomSnackbar(rootView: View) {
-        val snackbarLayout = LayoutInflater.from(rootView.context).inflate(R.layout.item_snackbar, null)
-        val container = rootView.findViewById<ViewGroup>(R.id.snackbar_container)
-
-        container.addView(snackbarLayout)
-        snackbarLayout.animation = AnimationUtils.loadAnimation(rootView.context, R.anim.snackbar_enter)
-        snackbarLayout.visibility = View.VISIBLE
-
-        GlobalScope.launch {
-            val exitAnimation = AnimationUtils.loadAnimation(rootView.context, R.anim.snackbar_exit)
-            exitAnimation.setAnimationListener(object : Animation.AnimationListener {
-                override fun onAnimationStart(animation: Animation?) {}
-                override fun onAnimationRepeat(animation: Animation?) {}
-                override fun onAnimationEnd(animation: Animation?) {
-                    container.removeView(snackbarLayout)
-                }
-            })
-            snackbarLayout.startAnimation(exitAnimation)
-            delay(2000)
-        }
     }
 
     companion object {
