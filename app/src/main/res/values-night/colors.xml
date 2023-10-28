@@ -6,5 +6,7 @@
     <color name="text_color">#FFFFFF</color>
     <color name="background_navbar">#1A1B22</color>
     <color name="snack_text">@color/background_navbar</color>
+    <color name="handler_elem">@color/white</color>
+    <color name="playlist_amount">@color/white</color>
 
 </resources>

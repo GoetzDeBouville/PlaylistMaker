@@ -22,6 +22,6 @@ val viewModelModule = module {
     viewModelOf(::NewPlaylistViewModel)
     viewModel { (track: Track) ->
         val player = get<Player> { parametersOf(track) }
-        PlayerViewModel(track, PlayerInteractorImpl(player), get())
+        PlayerViewModel(track, PlayerInteractorImpl(player), get(), get())
     }
 }

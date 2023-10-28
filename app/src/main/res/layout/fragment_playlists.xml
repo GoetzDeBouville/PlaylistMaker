@@ -22,7 +22,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="@dimen/dimen_16dp"
-        tools:listitem="@layout/item_playlist"
+        tools:listitem="@layout/item_playlist_grid"
         tools:itemCount="4"
         tools:visibility="visible" />
 

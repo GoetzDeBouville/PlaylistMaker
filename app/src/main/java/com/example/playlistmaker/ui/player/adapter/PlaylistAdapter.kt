@@ -1,4 +1,4 @@
-package com.example.playlistmaker.ui.media.adapters
+package com.example.playlistmaker.ui.player.adapter
 
 import android.util.Log
 import android.view.LayoutInflater
@@ -10,11 +10,12 @@ import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ItemPlaylistGridBinding
+import com.example.playlistmaker.databinding.ItemPlaylistLinearBinding
 import com.example.playlistmaker.domain.media.models.Playlist
 
-class PlaylistsAdapter(private var onClickedTrack: ((Playlist) -> Unit)? = null) :
-    RecyclerView.Adapter<PlaylistsAdapter.PlailistViewHolder>() {
-    class PlailistViewHolder(private val binding: ItemPlaylistGridBinding) :
+class PlaylistAdapter(private var onClickedTrack: ((Playlist) -> Unit)? = null) :
+    RecyclerView.Adapter<PlaylistAdapter.PlailistViewHolder>() {
+    class PlailistViewHolder(private val binding: ItemPlaylistLinearBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(plailist: Playlist) {
             binding.tvTitle.text = plailist.title
@@ -22,7 +23,12 @@ class PlaylistsAdapter(private var onClickedTrack: ((Playlist) -> Unit)? = null)
             Glide.with(itemView)
                 .load(plailist.imagePath)
                 .placeholder(R.drawable.empty_poster)
-                .transform(MultiTransformation(CenterCrop(), RoundedCorners(itemView.resources.getDimensionPixelSize(R.dimen.dimen_8dp))))
+                .transform(
+                    MultiTransformation(
+                        CenterCrop(), RoundedCorners(itemView.resources.getDimensionPixelSize(
+                            R.dimen.dimen_8dp))
+                    )
+                )
                 .into(binding.imgCover)
         }
 
@@ -57,7 +63,7 @@ class PlaylistsAdapter(private var onClickedTrack: ((Playlist) -> Unit)? = null)
             "PLAdapter",
             "onCreateViewHolder"
         )
-        val binding = ItemPlaylistGridBinding.inflate(
+        val binding = ItemPlaylistLinearBinding.inflate(
             LayoutInflater.from(parent.context),
             parent,
             false

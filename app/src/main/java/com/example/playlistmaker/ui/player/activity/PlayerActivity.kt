@@ -5,17 +5,22 @@ import android.content.Intent
 import android.graphics.drawable.VectorDrawable
 import android.os.Bundle
 import android.view.View
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ActivityAudioPlayerBinding
+import com.example.playlistmaker.domain.media.models.PlaylistState
 import com.example.playlistmaker.domain.search.models.Track
 import com.example.playlistmaker.domain.player.models.PlayerState
+import com.example.playlistmaker.ui.player.adapter.PlaylistAdapter
 import com.example.playlistmaker.ui.player.view_model.PlayerViewModel
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import org.koin.core.parameter.parametersOf
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -26,14 +31,19 @@ class PlayerActivity : AppCompatActivity() {
     private val viewModel: PlayerViewModel by viewModel { parametersOf(track) }
     private var vectorDrawable: VectorDrawable? = null
     private var track: Track? = null
-
+    private val playlistAdapter = PlaylistAdapter()
     override fun onCreate(savedInstanceState: Bundle?) {
-
         super.onCreate(savedInstanceState)
         binding = ActivityAudioPlayerBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        track = intent.extras?.get(ADDITIONAL_KEY_TRACK) as Track
+        val bottomSheetContainer = binding.standardBottomSheet
+        val bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetContainer).apply {
+            state = BottomSheetBehavior.STATE_HIDDEN
+        }
+        bottomSheetObserver(bottomSheetBehavior, binding.overlay)
 
+        track = intent.extras?.get(ADDITIONAL_KEY_TRACK) as Track
+        viewModel.getPlaylists()
         vectorDrawable = ContextCompat.getDrawable(this, R.drawable.play_button) as VectorDrawable
         fetchPlayer()
         observeViewModel()
@@ -44,11 +54,31 @@ class PlayerActivity : AppCompatActivity() {
         binding.likeButton.setOnClickListener {
             viewModel.onFavoriteTrackClicked()
         }
+        binding.addToPlaylistButton.setOnClickListener {
+            bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+        }
     }
 
     override fun onPause() {
         super.onPause()
         viewModel.pausePlayer()
+    }
+
+    private fun bottomSheetObserver(
+        bottomSheetBehavior: BottomSheetBehavior<LinearLayout>,
+        overlay: View
+    ) {
+        bottomSheetBehavior.addBottomSheetCallback(object :
+            BottomSheetBehavior.BottomSheetCallback() {
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+                if (newState == BottomSheetBehavior.STATE_HIDDEN) overlay.visibility = View.GONE
+                else overlay.visibility = View.VISIBLE
+            }
+
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {
+                overlay.alpha = slideOffset
+            }
+        })
     }
 
     private fun fetchPlayer() {
@@ -108,6 +138,17 @@ class PlayerActivity : AppCompatActivity() {
         viewModel.isFavorite.observe(this) {
             manageLikeButtonState(it)
         }
+
+        viewModel.playlistState.observe(this) {
+            if (it is PlaylistState.Content) {
+                playlistAdapter.playlists.clear()
+                playlistAdapter.playlists.addAll(it.playlists)
+                playlistAdapter.notifyDataSetChanged()
+            }
+        }
+
+        binding.recyclerView.layoutManager = LinearLayoutManager(this)
+        binding.recyclerView.adapter = playlistAdapter
     }
 
     private fun renderState(state: PlayerState) {

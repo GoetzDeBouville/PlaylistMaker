@@ -5,6 +5,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.domain.db.FavoriteTracksInteractor
+import com.example.playlistmaker.domain.db.PlaylistInteractor
+import com.example.playlistmaker.domain.media.models.PlaylistState
 import com.example.playlistmaker.domain.player.PlayerInteractor
 import com.example.playlistmaker.domain.player.PlayerStateObserver
 import com.example.playlistmaker.domain.player.models.PlayerState
@@ -18,7 +20,8 @@ import java.util.Locale
 class PlayerViewModel(
     private val track: Track,
     private val playerInteractor: PlayerInteractor,
-    private val favoriteTracksInteractor: FavoriteTracksInteractor
+    private val favoriteTracksInteractor: FavoriteTracksInteractor,
+    private val playlistInteractor: PlaylistInteractor
 ) : ViewModel() {
     private val _playerState = MutableLiveData<PlayerState>()
     val playerState: LiveData<PlayerState> get() = _playerState
@@ -26,6 +29,9 @@ class PlayerViewModel(
     private val _isFavorite = MutableLiveData<Boolean>()
     val isFavorite: LiveData<Boolean>
         get() = _isFavorite
+
+    private val _playlistState = MutableLiveData<PlaylistState>()
+    val playlistState: LiveData<PlaylistState> = _playlistState
 
     private var timerJob: Job? = null
 
@@ -59,6 +65,15 @@ class PlayerViewModel(
             } else {
                 favoriteTracksInteractor.addToFavoriteTrackList(track)
                 _isFavorite.postValue(true)
+            }
+        }
+    }
+
+    fun getPlaylists() {
+        viewModelScope.launch {
+            playlistInteractor.getPlaylists().collect {
+                if (it.isEmpty()) _playlistState.postValue(PlaylistState.Empty)
+                else _playlistState.postValue(PlaylistState.Content(it))
             }
         }
     }
