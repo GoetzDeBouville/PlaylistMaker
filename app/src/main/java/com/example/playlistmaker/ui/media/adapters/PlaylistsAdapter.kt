@@ -12,7 +12,7 @@ import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ItemPlaylistGridBinding
 import com.example.playlistmaker.domain.media.models.Playlist
 
-class PlaylistsAdapter(private var onClickedTrack: ((Playlist) -> Unit)? = null) :
+class PlaylistsAdapter(private var onClicked: ((Playlist) -> Unit)? = null) :
     RecyclerView.Adapter<PlaylistsAdapter.PlailistViewHolder>() {
     class PlailistViewHolder(private val binding: ItemPlaylistGridBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -45,10 +45,7 @@ class PlaylistsAdapter(private var onClickedTrack: ((Playlist) -> Unit)? = null)
     override fun onBindViewHolder(holder: PlailistViewHolder, position: Int) {
         holder.bind(playlists[position])
         holder.itemView.setOnClickListener {
-            Log.i(
-                "PLAdapter",
-                "Clicked on pl title = ${playlists[position].title} description = ${playlists[position].description} trackAmount = ${playlists[position].trackAmount}"
-            )
+            onClicked?.invoke(playlists[position])
         }
     }
 

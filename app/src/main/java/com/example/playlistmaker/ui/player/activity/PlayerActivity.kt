@@ -4,8 +4,10 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.drawable.VectorDrawable
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.LinearLayout
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
@@ -15,12 +17,14 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ActivityAudioPlayerBinding
+import com.example.playlistmaker.domain.media.models.AddToPlaylist
 import com.example.playlistmaker.domain.media.models.PlaylistState
 import com.example.playlistmaker.domain.search.models.Track
 import com.example.playlistmaker.domain.player.models.PlayerState
 import com.example.playlistmaker.ui.player.adapter.PlaylistAdapter
 import com.example.playlistmaker.ui.player.view_model.PlayerViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.snackbar.Snackbar
 import org.koin.core.parameter.parametersOf
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -31,7 +35,11 @@ class PlayerActivity : AppCompatActivity() {
     private val viewModel: PlayerViewModel by viewModel { parametersOf(track) }
     private var vectorDrawable: VectorDrawable? = null
     private var track: Track? = null
-    private val playlistAdapter = PlaylistAdapter()
+    private val playlistAdapter = PlaylistAdapter{ selectedPlaylist ->
+        Log.i("PlayerActivity", "null check track = $track")
+        viewModel.addTrackToPlayList(selectedPlaylist, track!!)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityAudioPlayerBinding.inflate(layoutInflater)
@@ -147,6 +155,16 @@ class PlayerActivity : AppCompatActivity() {
             }
         }
 
+        viewModel.addingState.observe(this) { state ->
+            viewModel.selectedPlaylistName.value?.let { playlistName ->
+                val message = when (state) {
+                    AddToPlaylist.ADDED -> "ADDED to $playlistName"
+                    else -> "ALREADY EXIST IN $playlistName"
+                }
+                showSnackbar(message)
+            }
+        }
+
         binding.recyclerView.layoutManager = LinearLayoutManager(this)
         binding.recyclerView.adapter = playlistAdapter
     }
@@ -193,6 +211,20 @@ class PlayerActivity : AppCompatActivity() {
             message,
             Toast.LENGTH_SHORT
         ).show()
+    }
+
+    private fun showSnackbar(message: String) {
+        val snackbar = Snackbar.make(binding.root, message, Snackbar.LENGTH_SHORT)
+        val snackTextColor = ContextCompat.getColor(this, R.color.snack_text)
+        val backgroundColor = ContextCompat.getColor(this, R.color.text_color)
+
+        val textView =
+            snackbar.view.findViewById<TextView>(com.google.android.material.R.id.snackbar_text)
+        textView.textAlignment = View.TEXT_ALIGNMENT_CENTER
+        textView.textSize = 16f
+        textView.setTextColor(snackTextColor)
+        snackbar.view.setBackgroundColor(backgroundColor)
+        snackbar.show()
     }
 
     companion object {

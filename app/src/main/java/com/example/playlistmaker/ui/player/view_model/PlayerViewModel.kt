@@ -6,6 +6,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.domain.db.FavoriteTracksInteractor
 import com.example.playlistmaker.domain.db.PlaylistInteractor
+import com.example.playlistmaker.domain.media.models.AddToPlaylist
+import com.example.playlistmaker.domain.media.models.Playlist
 import com.example.playlistmaker.domain.media.models.PlaylistState
 import com.example.playlistmaker.domain.player.PlayerInteractor
 import com.example.playlistmaker.domain.player.PlayerStateObserver
@@ -33,6 +35,13 @@ class PlayerViewModel(
     private val _playlistState = MutableLiveData<PlaylistState>()
     val playlistState: LiveData<PlaylistState> = _playlistState
 
+    private val _addingState = MutableLiveData<AddToPlaylist>()
+    val addingState: LiveData<AddToPlaylist> get() = _addingState
+
+    private val _selectedPlaylistName = MutableLiveData<String>()
+    val selectedPlaylistName: LiveData<String> get() = _selectedPlaylistName
+
+
     private var timerJob: Job? = null
 
     private val _timer = MutableLiveData<String>(CURRENT_TIME)
@@ -57,14 +66,12 @@ class PlayerViewModel(
         releasePlayer()
     }
 
-    fun onFavoriteTrackClicked() {
+    fun addTrackToPlayList(playlist: Playlist, track: Track) {
+        _selectedPlaylistName.postValue(playlist.title)
         viewModelScope.launch {
-            if (_isFavorite.value == true) {
-                favoriteTracksInteractor.removeFromFavoriteTrackList(track)
-                _isFavorite.postValue(false)
-            } else {
-                favoriteTracksInteractor.addToFavoriteTrackList(track)
-                _isFavorite.postValue(true)
+            playlistInteractor.addTrackToPlayList(playlist, track).collect {
+                if (it) _addingState.postValue(AddToPlaylist.ADDED)
+                else _addingState.postValue(AddToPlaylist.NOT_ADDED)
             }
         }
     }
@@ -74,6 +81,18 @@ class PlayerViewModel(
             playlistInteractor.getPlaylists().collect {
                 if (it.isEmpty()) _playlistState.postValue(PlaylistState.Empty)
                 else _playlistState.postValue(PlaylistState.Content(it))
+            }
+        }
+    }
+
+    fun onFavoriteTrackClicked() {
+        viewModelScope.launch {
+            if (_isFavorite.value == true) {
+                favoriteTracksInteractor.removeFromFavoriteTrackList(track)
+                _isFavorite.postValue(false)
+            } else {
+                favoriteTracksInteractor.addToFavoriteTrackList(track)
+                _isFavorite.postValue(true)
             }
         }
     }

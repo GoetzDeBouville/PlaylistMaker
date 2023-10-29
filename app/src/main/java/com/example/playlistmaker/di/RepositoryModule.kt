@@ -2,6 +2,7 @@ package com.example.playlistmaker.di
 
 import com.example.playlistmaker.data.converters.PlaylistDbConverter
 import com.example.playlistmaker.data.converters.TrackDbConverter
+import com.example.playlistmaker.data.converters.SavedTrackDbConverter
 import com.example.playlistmaker.data.db.FavoriteTracksRepositoryImpl
 import com.example.playlistmaker.data.db.PlaylistRepositoryImpl
 import com.example.playlistmaker.data.search.repository.HistoryRepositoryImpl
@@ -26,4 +27,5 @@ val repositoryModule = module {
 
     factoryOf(::TrackDbConverter)
     factoryOf(::PlaylistDbConverter)
+    factoryOf(::SavedTrackDbConverter)
 }

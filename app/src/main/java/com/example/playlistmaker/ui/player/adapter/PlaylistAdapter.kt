@@ -9,11 +9,10 @@ import com.bumptech.glide.load.MultiTransformation
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
-import com.example.playlistmaker.databinding.ItemPlaylistGridBinding
 import com.example.playlistmaker.databinding.ItemPlaylistLinearBinding
 import com.example.playlistmaker.domain.media.models.Playlist
 
-class PlaylistAdapter(private var onClickedTrack: ((Playlist) -> Unit)? = null) :
+class PlaylistAdapter(private var onClicked: ((Playlist) -> Unit)? = null) :
     RecyclerView.Adapter<PlaylistAdapter.PlailistViewHolder>() {
     class PlailistViewHolder(private val binding: ItemPlaylistLinearBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -55,6 +54,7 @@ class PlaylistAdapter(private var onClickedTrack: ((Playlist) -> Unit)? = null) 
                 "PLAdapter",
                 "Clicked on pl title = ${playlists[position].title} description = ${playlists[position].description} trackAmount = ${playlists[position].trackAmount}"
             )
+            onClicked?.invoke(playlists[position])
         }
     }
 
