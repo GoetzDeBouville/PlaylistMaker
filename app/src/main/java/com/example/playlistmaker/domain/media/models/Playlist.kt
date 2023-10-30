@@ -7,6 +7,6 @@ data class Playlist(
     val title: String,
     val description: String?,
     val imagePath: Uri?,
-    var trackIds: String?,
+    val trackIds: String?,
     var trackAmount: Int
 )

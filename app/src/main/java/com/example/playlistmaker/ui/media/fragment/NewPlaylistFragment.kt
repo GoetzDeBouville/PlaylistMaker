@@ -54,7 +54,7 @@ class NewPlaylistFragment : Fragment() {
                 Glide.with(requireContext())
                     .load(uri)
                     .transform(CenterCrop(), RoundedCorners(cornerRadius))
-                    .into(binding.plImage)
+                    .into(binding.ivPlCover)
 
                 saveImageToInternalStorage(uri)
             }
@@ -96,21 +96,21 @@ class NewPlaylistFragment : Fragment() {
     }
 
     private fun actionListeners() {
-        binding.arrowBack.setOnClickListener {
+        binding.ivArrowBack.setOnClickListener {
             showDialog()
         }
 
-        binding.plImage.setOnClickListener {
+        binding.ivPlCover.setOnClickListener {
             pickMedia.launch("image/*")
         }
 
-        binding.createButton.setOnClickListener {
+        binding.cvCreateButton.setOnClickListener {
             val blueButton = ContextCompat.getColor(requireContext(), R.color.blue_text)
 
-            if (binding.createButton.cardBackgroundColor.defaultColor == blueButton) {
+            if (binding.cvCreateButton.cardBackgroundColor.defaultColor == blueButton) {
                 val playlist = Playlist(
                     0,
-                    title = binding.titleEdit.text.toString(),
+                    title = binding.etTitle.text.toString(),
                     description = binding.descriptionEdit.text.toString(),
                     imagePath = imagePath,
                     trackIds = "",
@@ -133,23 +133,23 @@ class NewPlaylistFragment : Fragment() {
                     colorAnimator.repeatCount = 3
                     colorAnimator.addUpdateListener { animator ->
                         val color = animator.animatedValue as Int
-                        binding.titleInput.boxStrokeColor = color
-                        binding.titleInput.boxBackgroundColor = color
+                        binding.tiTitle.boxStrokeColor = color
+                        binding.tiTitle.boxBackgroundColor = color
                     }
                     colorAnimator.start()
 
                     delay(1000)
                     colorAnimator.cancel()
 
-                    binding.titleInput.boxStrokeColor =
+                    binding.tiTitle.boxStrokeColor =
                         ContextCompat.getColor(requireContext(), R.color.blue_text)
-                    binding.titleInput.boxBackgroundColor =
+                    binding.tiTitle.boxBackgroundColor =
                         ContextCompat.getColor(requireContext(), R.color.transparent)
                 }
             }
         }
 
-        binding.titleEdit.doOnTextChanged() { text, _, _, _ ->
+        binding.etTitle.doOnTextChanged() { text, _, _, _ ->
             if (text.isNullOrEmpty()) viewModel.setEmptyState()
             else viewModel.setNotEmptyState()
         }
@@ -163,7 +163,7 @@ class NewPlaylistFragment : Fragment() {
     }
 
     private fun renderUi(@ColorRes buttonColor: Int) {
-        binding.createButton.setCardBackgroundColor(
+        binding.cvCreateButton.setCardBackgroundColor(
             ContextCompat.getColor(
                 requireContext(),
                 buttonColor
@@ -191,7 +191,7 @@ class NewPlaylistFragment : Fragment() {
     }
 
     private fun showDialog() {
-        if (binding.titleEdit.text.toString()
+        if (binding.etTitle.text.toString()
                 .isNotEmpty() || binding.descriptionEdit.text.toString()
                 .isNotEmpty() || (imagePath != null)
         ) {

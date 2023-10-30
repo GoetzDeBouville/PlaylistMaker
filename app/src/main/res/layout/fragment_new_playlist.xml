@@ -8,7 +8,7 @@
     tools:context=".ui.media.fragment.NewPlaylistFragment">
 
     <ImageView
-        android:id="@+id/arrow_back"
+        android:id="@+id/iv_arrow_back"
         style="@style/SettingsHeaderIconStyle"
         android:layout_marginTop="@dimen/dimen_4dp"
         android:padding="@dimen/dimen_20dp"
@@ -22,18 +22,18 @@
         android:layout_height="wrap_content"
         android:padding="@dimen/dimen_12dp"
         android:text="@string/new_playlist"
-        app:layout_constraintStart_toEndOf="@+id/arrow_back"
-        app:layout_constraintTop_toTopOf="@+id/arrow_back" />
+        app:layout_constraintStart_toEndOf="@+id/iv_arrow_back"
+        app:layout_constraintTop_toTopOf="@+id/iv_arrow_back" />
 
     <ImageView
-        android:id="@+id/pl_image"
+        android:id="@+id/iv_pl_cover"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dimen_24dp"
         android:src="@drawable/ic_component_ph"
         app:layout_constraintEnd_toStartOf="@id/right_guideline"
         app:layout_constraintStart_toEndOf="@id/left_guideline"
-        app:layout_constraintTop_toBottomOf="@id/arrow_back" />
+        app:layout_constraintTop_toBottomOf="@id/iv_arrow_back" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/left_guideline"
@@ -64,7 +64,7 @@
         app:layout_constraintGuide_end="@dimen/dimen_16dp" />
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/title_input"
+        android:id="@+id/ti_title"
         style="@style/TextInputLayoutTextStyle"
         android:layout_marginTop="@dimen/dimen_32dp"
         android:hint="@string/title"
@@ -80,15 +80,15 @@
         app:hintTextColor="@color/blue_text"
         app:layout_constraintEnd_toStartOf="@id/right_text_guideline"
         app:layout_constraintStart_toEndOf="@id/left_text_guideline"
-        app:layout_constraintTop_toBottomOf="@id/pl_image">
+        app:layout_constraintTop_toBottomOf="@id/iv_pl_cover">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/title_edit"
+            android:id="@+id/et_title"
             style="@style/TextInputEditTextStyle"
             android:textSize="@dimen/text_16sp"
             app:layout_constraintEnd_toEndOf="@id/right_text_guideline"
             app:layout_constraintStart_toStartOf="@id/left_text_guideline"
-            app:layout_constraintTop_toBottomOf="@+id/pl_image" />
+            app:layout_constraintTop_toBottomOf="@+id/iv_pl_cover" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
@@ -108,7 +108,7 @@
         app:hintTextColor="@color/blue_text"
         app:layout_constraintEnd_toStartOf="@id/right_text_guideline"
         app:layout_constraintStart_toEndOf="@id/left_text_guideline"
-        app:layout_constraintTop_toBottomOf="@id/title_input">
+        app:layout_constraintTop_toBottomOf="@id/ti_title">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/description_edit"
@@ -116,11 +116,11 @@
             android:textSize="@dimen/text_16sp"
             app:layout_constraintEnd_toEndOf="@id/right_text_guideline"
             app:layout_constraintStart_toStartOf="@id/left_text_guideline"
-            app:layout_constraintTop_toBottomOf="@+id/pl_image" />
+            app:layout_constraintTop_toBottomOf="@+id/iv_pl_cover" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/create_button"
+        android:id="@+id/cv_create_button"
         android:layout_width="0dp"
         android:layout_height="@dimen/dimen_44dp"
         android:layout_marginBottom="@dimen/dimen_32dp"

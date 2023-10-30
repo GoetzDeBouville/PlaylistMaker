@@ -39,15 +39,15 @@ class PlaylistsFragment : Fragment() {
 
         viewModel.state.observe(viewLifecycleOwner) {
             if(it is PlaylistState.Content) {
-                binding.placeholderImage.visibility = View.GONE
-                binding.placeholderMessage.visibility = View.GONE
+                binding.ivPlaceholder.visibility = View.GONE
+                binding.tvPlaceholderMessage.visibility = View.GONE
                 binding.recyclerView.visibility = View.VISIBLE
                 adapter.playlists.clear()
                 adapter.playlists.addAll(it.playlists)
                 adapter.notifyDataSetChanged()
             } else {
-                binding.placeholderImage.visibility = View.VISIBLE
-                binding.placeholderMessage.visibility = View.VISIBLE
+                binding.ivPlaceholder.visibility = View.VISIBLE
+                binding.tvPlaceholderMessage.visibility = View.VISIBLE
                 binding.recyclerView.visibility = View.GONE
             }
         }

@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.domain.db.PlaylistInteractor
 import com.example.playlistmaker.domain.media.models.NewPlaylistState
 import com.example.playlistmaker.domain.media.models.Playlist
+import com.example.playlistmaker.utils.Tools
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -21,7 +22,7 @@ class NewPlaylistViewModel(private val playlistInteractor: PlaylistInteractor) :
         if (isClickAllowed) {
             isClickAllowed = false
             viewModelScope.launch {
-                delay(CLICK_DEBOUNCE_DELAY)
+                delay(Tools.CLICK_DEBOUNCE_DELAY_MS)
                 isClickAllowed = true
             }
         }
@@ -39,9 +40,5 @@ class NewPlaylistViewModel(private val playlistInteractor: PlaylistInteractor) :
 
     fun setNotEmptyState() {
         _state.postValue(NewPlaylistState.NotEmpty)
-    }
-
-    companion object {
-        private const val CLICK_DEBOUNCE_DELAY = 500L
     }
 }

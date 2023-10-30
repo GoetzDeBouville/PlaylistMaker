@@ -8,6 +8,8 @@ import com.example.playlistmaker.R
 import com.google.android.material.snackbar.Snackbar
 
 object Tools {
+    const val CLICK_DEBOUNCE_DELAY_MS = 500L
+    const val SEARCH_DEBOUNCE_DELAY_MS = 2000L
     fun showSnackbar(
         view: View,
         message: String,

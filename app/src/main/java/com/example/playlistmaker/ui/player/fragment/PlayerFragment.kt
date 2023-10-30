@@ -23,6 +23,7 @@ import com.example.playlistmaker.domain.search.models.Track
 import com.example.playlistmaker.ui.main.BottomNavigationController
 import com.example.playlistmaker.ui.player.adapter.PlaylistAdapter
 import com.example.playlistmaker.ui.player.view_model.PlayerViewModel
+import com.example.playlistmaker.ui.search.fragment.SearchFragment
 import com.example.playlistmaker.utils.Tools
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -63,21 +64,21 @@ class PlayerFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val bottomSheetContainer = binding.standardBottomSheet
+        val bottomSheetContainer = binding.llStandardBottomSheet
         val bottomSheetBehavior: BottomSheetBehavior<LinearLayout> =
             BottomSheetBehavior.from(bottomSheetContainer).apply {
                 state = BottomSheetBehavior.STATE_HIDDEN
             }
         bottomSheetObserver(bottomSheetBehavior, binding.overlay)
 
-        track = arguments?.getParcelable<Track>("track")
+        track = arguments?.getParcelable<Track>(SearchFragment.TRACK_KEY)
         viewModel.getPlaylists()
         vectorDrawable =
             ContextCompat.getDrawable(requireContext(), R.drawable.play_button) as VectorDrawable
         fetchPlayer()
         observeViewModel()
 
-        binding.addToPlaylistButton.setOnClickListener {
+        binding.btnAddToPlaylist.setOnClickListener {
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
         }
         clickListeners()
@@ -131,16 +132,16 @@ class PlayerFragment : Fragment() {
     }
 
     private fun clickListeners() {
-        binding.arrowBack.setOnClickListener {
+        binding.ivArrowBack.setOnClickListener {
             requireActivity().supportFragmentManager.popBackStack()
         }
-        binding.playButton.setOnClickListener {
+        binding.ivPlayButton.setOnClickListener {
             viewModel.playbackControl()
         }
-        binding.likeButton.setOnClickListener {
+        binding.ivLikeButton.setOnClickListener {
             viewModel.onFavoriteTrackClicked()
         }
-        binding.bottomSheetAddButton.setOnClickListener {
+        binding.btnBottomSheet.setOnClickListener {
             findNavController().navigate(R.id.action_global_to_newPlaylistFragment)
         }
     }
@@ -174,14 +175,14 @@ class PlayerFragment : Fragment() {
 
     private fun manageLikeButtonState(isFavorite: Boolean) {
         if (isFavorite) {
-            binding.likeButtonState.setImageDrawable(
+            binding.ivLikeButtonState.setImageDrawable(
                 AppCompatResources.getDrawable(
                     requireContext(),
                     R.drawable.ic_infavorite
                 )
             )
         } else {
-            binding.likeButtonState.setImageDrawable(
+            binding.ivLikeButtonState.setImageDrawable(
                 AppCompatResources.getDrawable(
                     requireContext(),
                     R.drawable.ic_like
@@ -241,27 +242,27 @@ class PlayerFragment : Fragment() {
     }
 
     private fun showOnPrepareMessage() {
-        binding.playButton.setOnClickListener {
+        binding.ivPlayButton.setOnClickListener {
             Tools.showSnackbar(
                 binding.root,
                 getString(R.string.player_in_progress),
                 requireActivity()
             )
         }
-        binding.playButton.setImageResource(R.drawable.play_button)
+        binding.ivPlayButton.setImageResource(R.drawable.play_button)
     }
 
     private fun showPauseBtn() {
-        binding.playButton.setOnClickListener {
+        binding.ivPlayButton.setOnClickListener {
             viewModel.playbackControl()
         }
-        binding.playButton.setImageResource(R.drawable.pause_button)
+        binding.ivPlayButton.setImageResource(R.drawable.pause_button)
     }
 
     private fun showPlayBtn() {
-        binding.playButton.setOnClickListener {
+        binding.ivPlayButton.setOnClickListener {
             viewModel.playbackControl()
         }
-        binding.playButton.setImageResource(R.drawable.play_button)
+        binding.ivPlayButton.setImageResource(R.drawable.play_button)
     }
 }

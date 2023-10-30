@@ -54,15 +54,15 @@ class FavoriteTracksFragment : Fragment() {
                     findNavController().navigate(R.id.action_global_to_playerFragment, bundle)
                 }
             }
-            binding.favouriteTrackRecyclerView.adapter = adapter
+            binding.rvFavouriteTracks.adapter = adapter
         }
     }
 
     private fun initRecyclerView() {
         initAdapters()
-        binding.favouriteTrackRecyclerView.layoutManager = LinearLayoutManager(requireContext())
-        binding.favouriteTrackRecyclerView.adapter = adapter
-        binding.favouriteTrackRecyclerView.itemAnimator = null
+        binding.rvFavouriteTracks.layoutManager = LinearLayoutManager(requireContext())
+        binding.rvFavouriteTracks.adapter = adapter
+        binding.rvFavouriteTracks.itemAnimator = null
     }
 
     private fun renderState(state: FavoriteTracksState) {
@@ -73,12 +73,12 @@ class FavoriteTracksFragment : Fragment() {
     }
 
     private fun showEmpty() {
-        binding.placeholder.visibility = View.VISIBLE
+        binding.llPlaceholder.visibility = View.VISIBLE
         binding.favouriteTrackList.visibility = View.INVISIBLE
     }
 
     private fun showTracks(favoriteTracksList: List<Track>) {
-        binding.placeholder.visibility = View.GONE
+        binding.llPlaceholder.visibility = View.GONE
         binding.favouriteTrackList.visibility = View.VISIBLE
         adapter.trackList = ArrayList(favoriteTracksList)
         adapter.notifyDataSetChanged()

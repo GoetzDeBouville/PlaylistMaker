@@ -9,6 +9,7 @@ import com.example.playlistmaker.domain.search.api.SearchInteractor
 import com.example.playlistmaker.domain.search.models.SearchState
 import com.example.playlistmaker.domain.search.models.Track
 import com.example.playlistmaker.domain.LoadingStatus
+import com.example.playlistmaker.utils.Tools
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -39,7 +40,7 @@ class SearchViewModel(
         if (isClickAllowed) {
             isClickAllowed = false
             viewModelScope.launch {
-                delay(CLICK_DEBOUNCE_DELAY)
+                delay(Tools.CLICK_DEBOUNCE_DELAY_MS)
                 isClickAllowed = true
             }
         }
@@ -58,7 +59,7 @@ class SearchViewModel(
 
             searchJob?.cancel()
             searchJob = viewModelScope.launch {
-                delay(SEARCH_DEBOUNCE_DELAY)
+                delay(Tools.SEARCH_DEBOUNCE_DELAY_MS)
                 searchRequest(searchText)
             }
         }
@@ -96,10 +97,5 @@ class SearchViewModel(
 
     private fun renderState(state: SearchState) {
         _state.postValue(state)
-    }
-
-    companion object {
-        private const val SEARCH_DEBOUNCE_DELAY = 2000L
-        private const val CLICK_DEBOUNCE_DELAY = 500L
     }
 }

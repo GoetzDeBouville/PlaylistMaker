@@ -31,7 +31,7 @@ class PlaylistAdapter(private var onClicked: ((Playlist) -> Unit)? = null) :
                         )
                     )
                 )
-                .into(binding.imgCover)
+                .into(binding.ivCover)
         }
     }
 

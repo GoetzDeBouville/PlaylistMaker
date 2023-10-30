@@ -23,7 +23,7 @@ class PlaylistsAdapter(private var onClicked: ((Playlist) -> Unit)? = null) :
                 .load(playlist.imagePath)
                 .placeholder(R.drawable.ic_cover_ph)
                 .transform(MultiTransformation(CenterCrop(), RoundedCorners(itemView.resources.getDimensionPixelSize(R.dimen.dimen_8dp))))
-                .into(binding.imgCover)
+                .into(binding.ivCover)
         }
     }
 
