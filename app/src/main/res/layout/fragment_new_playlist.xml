@@ -65,8 +65,7 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/title_input"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        style="@style/TextInputLayoutTextStyle"
         android:layout_marginTop="@dimen/dimen_32dp"
         android:hint="@string/title"
         app:boxBackgroundColor="@color/transparent"
@@ -85,13 +84,7 @@
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/title_edit"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/ys_display_regular"
-            android:maxLength="40"
-            android:maxLines="1"
-            android:singleLine="true"
-            android:textColor="@color/text_color"
+            style="@style/TextInputEditTextStyle"
             android:textSize="@dimen/text_16sp"
             app:layout_constraintEnd_toEndOf="@id/right_text_guideline"
             app:layout_constraintStart_toStartOf="@id/left_text_guideline"
@@ -100,8 +93,7 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/description_input"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        style="@style/TextInputLayoutTextStyle"
         android:layout_marginTop="@dimen/dimen_16dp"
         android:hint="@string/description"
         app:boxBackgroundColor="@color/transparent"
@@ -120,11 +112,7 @@
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/description_edit"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:fontFamily="@font/ys_display_regular"
-            android:maxLines="1"
-            android:singleLine="true"
+            style="@style/TextInputEditTextStyle"
             android:textSize="@dimen/text_16sp"
             app:layout_constraintEnd_toEndOf="@id/right_text_guideline"
             app:layout_constraintStart_toStartOf="@id/left_text_guideline"

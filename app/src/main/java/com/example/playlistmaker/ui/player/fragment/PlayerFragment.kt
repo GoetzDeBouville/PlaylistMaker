@@ -89,6 +89,9 @@ class PlayerFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         viewModel.pausePlayer()
+        if (context is BottomNavigationController) {
+            (context as BottomNavigationController).hideBottomNavigation()
+        }
     }
 
     private fun bottomSheetObserver(
