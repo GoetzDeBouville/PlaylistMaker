@@ -12,7 +12,6 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.ColorRes
@@ -29,8 +28,8 @@ import com.example.playlistmaker.databinding.FragmentNewPlaylistBinding
 import com.example.playlistmaker.domain.media.models.NewPlaylistState
 import com.example.playlistmaker.domain.media.models.Playlist
 import com.example.playlistmaker.ui.media.view_model.NewPlaylistViewModel
+import com.example.playlistmaker.utils.Tools
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.android.material.snackbar.Snackbar
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -103,7 +102,11 @@ class NewPlaylistFragment : Fragment() {
                 )
                 viewModel.savePlayList(playlist)
 
-                showSnackbar(playlist.title)
+                Tools.showSnackbar(
+                    binding.root,
+                    getString(R.string.playlist_created, playlist.title),
+                    requireContext()
+                )
                 requireActivity().supportFragmentManager.popBackStack()
             } else {
                 viewLifecycleOwner.lifecycleScope.launch {
@@ -186,21 +189,7 @@ class NewPlaylistFragment : Fragment() {
                 .show()
         } else {
             findNavController().popBackStack()
-//            requireActivity().supportFragmentManager.popBackStack()
         }
-    }
-    private fun showSnackbar(title : String) {
-        val snackbar = Snackbar.make(binding.root, "Плейлист $title создан", Snackbar.LENGTH_SHORT)
-        val snackTextColor = ContextCompat.getColor(requireContext(), R.color.snack_text)
-        val backgroundColor = ContextCompat.getColor(requireContext(), R.color.text_color)
-
-        val textView =
-            snackbar.view.findViewById<TextView>(com.google.android.material.R.id.snackbar_text)
-        textView.textAlignment = View.TEXT_ALIGNMENT_CENTER
-        textView.textSize = 16f
-        textView.setTextColor(snackTextColor)
-        snackbar.view.setBackgroundColor(backgroundColor)
-        snackbar.show()
     }
 
     companion object {

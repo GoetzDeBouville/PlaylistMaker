@@ -11,6 +11,7 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ItemPlaylistLinearBinding
 import com.example.playlistmaker.domain.media.models.Playlist
+import com.example.playlistmaker.utils.Tools
 
 class PlaylistAdapter(private var onClicked: ((Playlist) -> Unit)? = null) :
     RecyclerView.Adapter<PlaylistAdapter.PlailistViewHolder>() {
@@ -18,29 +19,20 @@ class PlaylistAdapter(private var onClicked: ((Playlist) -> Unit)? = null) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(plailist: Playlist) {
             binding.tvTitle.text = plailist.title
-            binding.tvAmount.text = amountTextFormater(plailist.trackAmount)
+            binding.tvAmount.text = Tools.amountTextFormater(plailist.trackAmount)
             Glide.with(itemView)
                 .load(plailist.imagePath)
                 .placeholder(R.drawable.empty_poster)
                 .transform(
                     MultiTransformation(
-                        CenterCrop(), RoundedCorners(itemView.resources.getDimensionPixelSize(
-                            R.dimen.dimen_8dp))
+                        CenterCrop(), RoundedCorners(
+                            itemView.resources.getDimensionPixelSize(
+                                R.dimen.dimen_8dp
+                            )
+                        )
                     )
                 )
                 .into(binding.imgCover)
-        }
-
-        private fun amountTextFormater(amount: Int): String {
-            val lastDigit = amount % 10
-            val lastTwoDigits = amount % 100
-
-            return when {
-                lastTwoDigits in 11..14 -> "$amount треков"
-                lastDigit == 1 -> "$amount трек"
-                lastDigit in 2..4 -> "$amount трека"
-                else -> "$amount треков"
-            }
         }
     }
 

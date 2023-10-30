@@ -27,6 +27,23 @@ class PlaylistRepositoryImpl(
         appDatabase.playlistDao().insertPlaylist(playlistEntity)
     }
 
+    override suspend fun addTrackToPlayList(playlist: Playlist, track: Track): Flow<Boolean> =
+        flow {
+            if (appDatabase.playlistTracksDao().getPlaylistTracksById(playlist.id, track.trackId).isNotEmpty()) {
+                emit(false)
+                return@flow
+            }
+            val savedTrackEntity =
+                savedTrackDbConverter.map(track).copy(timeStamp = System.currentTimeMillis())
+            appDatabase.savedTracksDao().insertSavedTrack(savedTrackEntity)
+
+            val playlistTrack = PlaylistTracksEntity(playlist.id, track.trackId)
+            appDatabase.playlistTracksDao().insertPlaylistTrack(playlistTrack)
+            playlist.trackAmount++
+            updatePlaylist(playlist)
+            emit(true)
+        }
+
     override fun getPlaylists(): Flow<List<Playlist>> {
         return flow {
             val playlists = appDatabase.playlistDao().getPlaylists()
@@ -49,22 +66,19 @@ class PlaylistRepositoryImpl(
         }
     }
 
-    override suspend fun addTrackToPlayList(playlist: Playlist, track: Track): Flow<Boolean> =
-        flow {
-            if (appDatabase.playlistTracksDao().getTracksById(track.trackId).isNotEmpty()) {
-                emit(false)
-                return@flow
-            }
-            val savedTrackEntity =
-                savedTrackDbConverter.map(track).copy(timeStamp = System.currentTimeMillis())
-            appDatabase.savedTracksDao().insertSavedTrack(savedTrackEntity)
+    suspend fun getTracksByPlaylistId(playlistId: Int): Flow<List<Track>> = flow {
+        val playlistTrackEntities = playlistTracksDao.getTracksByPlaylistId(playlistId)
 
-            val playlistTrack = PlaylistTracksEntity(playlist.id, track.trackId)
-            appDatabase.playlistTracksDao().insertPlaylistTrack(playlistTrack)
-            playlist.trackAmount++
-            updatePlaylist(playlist)
-            emit(true)
+        val trackList = mutableListOf<Track>()
+
+        for (entity in playlistTrackEntities) {
+            val savedTrackEntity = savedTrackDao.getTrackById(entity.trackId)
+            if (savedTrackEntity != null) {
+                trackList.add(savedTrackDbConverter.map(savedTrackEntity))
+            }
         }
+        emit(trackList)
+    }
 
     suspend fun removeSavedTrackFromPlaylist(playlist: Playlist, track: Track) {
         playlistTracksDao.removeTrackFromPlaylistTrack(playlist.id, track.trackId)
@@ -74,19 +88,5 @@ class PlaylistRepositoryImpl(
         if (playlistTracksDao.getTracksById(track.trackId).isEmpty()) {
             savedTrackDao.removeSavedTrack(track.trackId)
         }
-    }
-
-    suspend fun getTracksByPlaylistId(playlistId: Int): Flow<List<Track>> = flow {
-        val playlistTrackEntities = playlistTracksDao.getTracksByPlaylistId(playlistId)
-
-        val trackList = mutableListOf<Track>()
-
-        for (entity in playlistTrackEntities) {
-            val savedTrackEntity = savedTrackDao.getTrackById(entity.trackId) // Этот метод нужно добавить в SavedTrackDao
-            if (savedTrackEntity != null) {
-                trackList.add(savedTrackDbConverter.map(savedTrackEntity))
-            }
-        }
-        emit(trackList)
     }
 }

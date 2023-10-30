@@ -8,7 +8,7 @@ import com.example.playlistmaker.db.entity.SavedTrackEntity
 
 @Dao
 interface SavedTrackDao {
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertSavedTrack(savedTrack: SavedTrackEntity)
 
     @Query("SELECT * FROM saved_tracks_table WHERE trackId = :trackId")

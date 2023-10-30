@@ -21,7 +21,7 @@ class PlaylistsAdapter(private var onClicked: ((Playlist) -> Unit)? = null) :
             binding.tvAmount.text = amountTextFormater(plailist.trackAmount)
             Glide.with(itemView)
                 .load(plailist.imagePath)
-                .placeholder(R.drawable.empty_poster)
+                .placeholder(R.drawable.ic_cover_ph)
                 .transform(MultiTransformation(CenterCrop(), RoundedCorners(itemView.resources.getDimensionPixelSize(R.dimen.dimen_8dp))))
                 .into(binding.imgCover)
         }

@@ -10,12 +10,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentSearchBinding
 import com.example.playlistmaker.domain.search.models.SearchState
 import com.example.playlistmaker.domain.search.models.Track
-import com.example.playlistmaker.ui.player.activity.PlayerActivity
 import com.example.playlistmaker.ui.search.adapters.TrackAdapter
 import com.example.playlistmaker.ui.search.view_model.SearchViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -71,18 +71,20 @@ class SearchFragment : Fragment() {
         trackAdapter = TrackAdapter {
             if (viewModel.clickDebounce()) {
                 viewModel.saveTrack(it)
-                PlayerActivity.newIntent(requireContext(), it)
-                    .apply { startActivity(this) }
+                val bundle = Bundle().apply {
+                    putParcelable("track", it)
+                }
+                findNavController().navigate(R.id.action_global_to_playerFragment, bundle)
             }
         }
         trackHistoryAdapter = TrackAdapter {
             if (viewModel.clickDebounce()) {
                 viewModel.saveTrack(it)
                 viewModel.showHistory()
-                PlayerActivity.newIntent(requireContext(), it)
-                    .apply {
-                        startActivity(this)
-                    }
+                val bundle = Bundle().apply {
+                    putParcelable("track", it)
+                }
+                findNavController().navigate(R.id.action_global_to_playerFragment, bundle)
             }
         }
     }

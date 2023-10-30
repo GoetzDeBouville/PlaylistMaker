@@ -5,12 +5,13 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentFavoriteTracksBinding
 import com.example.playlistmaker.domain.media.models.FavoriteTracksState
 import com.example.playlistmaker.domain.search.models.Track
 import com.example.playlistmaker.ui.media.view_model.FavoriteTracksViewModel
-import com.example.playlistmaker.ui.player.activity.PlayerActivity
 import com.example.playlistmaker.ui.search.adapters.TrackAdapter
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -47,8 +48,10 @@ class FavoriteTracksFragment : Fragment() {
         if (_binding != null) {
             adapter = TrackAdapter {
                 if (viewModel.clickDebounce()) {
-                    PlayerActivity.newIntent(requireContext(), it)
-                        .apply { startActivity(this) }
+                    val bundle = Bundle().apply {
+                        putParcelable("track", it)
+                    }
+                    findNavController().navigate(R.id.action_global_to_playerFragment, bundle)
                 }
             }
             binding.favouriteTrackRecyclerView.adapter = adapter

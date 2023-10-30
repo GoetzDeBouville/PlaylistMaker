@@ -1,74 +1,94 @@
-package com.example.playlistmaker.ui.player.activity
+package com.example.playlistmaker.ui.player.fragment
 
 import android.content.Context
-import android.content.Intent
 import android.graphics.drawable.VectorDrawable
 import android.os.Bundle
 import android.util.Log
+import androidx.fragment.app.Fragment
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.LinearLayout
-import android.widget.TextView
-import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
-import com.example.playlistmaker.databinding.ActivityAudioPlayerBinding
+import com.example.playlistmaker.databinding.FragmentPlayerBinding
 import com.example.playlistmaker.domain.media.models.AddToPlaylist
 import com.example.playlistmaker.domain.media.models.PlaylistState
-import com.example.playlistmaker.domain.search.models.Track
 import com.example.playlistmaker.domain.player.models.PlayerState
+import com.example.playlistmaker.domain.search.models.Track
+import com.example.playlistmaker.ui.main.BottomNavigationController
 import com.example.playlistmaker.ui.player.adapter.PlaylistAdapter
 import com.example.playlistmaker.ui.player.view_model.PlayerViewModel
+import com.example.playlistmaker.utils.Tools
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.google.android.material.snackbar.Snackbar
-import org.koin.core.parameter.parametersOf
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
 
-class PlayerActivity : AppCompatActivity() {
-
-    private lateinit var binding: ActivityAudioPlayerBinding
-
+class PlayerFragment : Fragment() {
+    private var _binding : FragmentPlayerBinding? = null
+    private val binding get() = _binding!!
     private val viewModel: PlayerViewModel by viewModel { parametersOf(track) }
     private var vectorDrawable: VectorDrawable? = null
     private var track: Track? = null
     private val playlistAdapter = PlaylistAdapter{ selectedPlaylist ->
-        Log.i("PlayerActivity", "null check track = $track")
+        Log.i("PlayerFragment", "null check track = $track")
         viewModel.addTrackToPlayList(selectedPlaylist, track!!)
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding = ActivityAudioPlayerBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context is BottomNavigationController) {
+            context.hideBottomNavigation()
+        }
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        if (context is BottomNavigationController) {
+            (context as BottomNavigationController).showBottomNavigation()
+        }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentPlayerBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         val bottomSheetContainer = binding.standardBottomSheet
         val bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetContainer).apply {
             state = BottomSheetBehavior.STATE_HIDDEN
         }
         bottomSheetObserver(bottomSheetBehavior, binding.overlay)
 
-        track = intent.extras?.get(ADDITIONAL_KEY_TRACK) as Track
+        track = arguments?.getParcelable<Track>("track")
         viewModel.getPlaylists()
-        vectorDrawable = ContextCompat.getDrawable(this, R.drawable.play_button) as VectorDrawable
+        vectorDrawable = ContextCompat.getDrawable(requireContext(), R.drawable.play_button) as VectorDrawable
         fetchPlayer()
         observeViewModel()
-        binding.arrowBack.setOnClickListener { finish() }
-        binding.playButton.setOnClickListener {
-            viewModel.playbackControl()
-        }
-        binding.likeButton.setOnClickListener {
-            viewModel.onFavoriteTrackClicked()
-        }
+
         binding.addToPlaylistButton.setOnClickListener {
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
         }
+        clickListeners()
     }
 
     override fun onPause() {
         super.onPause()
+        viewModel.pausePlayer()
+    }
+
+    override fun onResume() {
+        super.onResume()
         viewModel.pausePlayer()
     }
 
@@ -89,9 +109,24 @@ class PlayerActivity : AppCompatActivity() {
         })
     }
 
+    private fun clickListeners() {
+        binding.arrowBack.setOnClickListener {
+            requireActivity().supportFragmentManager.popBackStack()
+        }
+        binding.playButton.setOnClickListener {
+            viewModel.playbackControl()
+        }
+        binding.likeButton.setOnClickListener {
+            viewModel.onFavoriteTrackClicked()
+        }
+        binding.bottomSheetAddButton.setOnClickListener {
+            findNavController().navigate(R.id.action_global_to_newPlaylistFragment)
+        }
+    }
+
     private fun fetchPlayer() {
         with(binding) {
-            Glide.with(this@PlayerActivity)
+            Glide.with(this@PlayerFragment)
                 .load(track?.getArtwork512())
                 .placeholder(R.drawable.poster_placeholder)
                 .transform(
@@ -120,14 +155,14 @@ class PlayerActivity : AppCompatActivity() {
         if (isFavorite) {
             binding.likeButtonState.setImageDrawable(
                 AppCompatResources.getDrawable(
-                    this,
+                    requireContext(),
                     R.drawable.ic_infavorite
                 )
             )
         } else {
             binding.likeButtonState.setImageDrawable(
                 AppCompatResources.getDrawable(
-                    this,
+                    requireContext(),
                     R.drawable.ic_like
                 )
             )
@@ -135,19 +170,19 @@ class PlayerActivity : AppCompatActivity() {
     }
 
     private fun observeViewModel() {
-        viewModel.playerState.observe(this) {
+        viewModel.playerState.observe(requireActivity()) {
             renderState(it)
         }
 
-        viewModel.timeProgress.observe(this) {
+        viewModel.timeProgress.observe(requireActivity()) {
             binding.textTrackTimeValue.text = it
         }
 
-        viewModel.isFavorite.observe(this) {
+        viewModel.isFavorite.observe(requireActivity()) {
             manageLikeButtonState(it)
         }
 
-        viewModel.playlistState.observe(this) {
+        viewModel.playlistState.observe(requireActivity()) {
             if (it is PlaylistState.Content) {
                 playlistAdapter.playlists.clear()
                 playlistAdapter.playlists.addAll(it.playlists)
@@ -155,17 +190,17 @@ class PlayerActivity : AppCompatActivity() {
             }
         }
 
-        viewModel.addingState.observe(this) { state ->
+        viewModel.addingState.observe(requireActivity()) { state ->
             viewModel.selectedPlaylistName.value?.let { playlistName ->
                 val message = when (state) {
-                    AddToPlaylist.ADDED -> "ADDED to $playlistName"
-                    else -> "ALREADY EXIST IN $playlistName"
+                    AddToPlaylist.ADDED -> getString(R.string.added_to_playlist, playlistName)
+                    else -> getString(R.string.track_exist_in_playlist, playlistName)
                 }
-                showSnackbar(message)
+                Tools.showSnackbar(binding.root, message, requireContext())
             }
         }
 
-        binding.recyclerView.layoutManager = LinearLayoutManager(this)
+        binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerView.adapter = playlistAdapter
     }
 
@@ -173,12 +208,12 @@ class PlayerActivity : AppCompatActivity() {
         when (state) {
             PlayerState.STATE_PLAYING -> showPauseBtn()
             PlayerState.STATE_PAUSED, PlayerState.STATE_PREPARED -> {
-                vectorDrawable?.setTint(ContextCompat.getColor(this, R.color.elements_color))
+                vectorDrawable?.setTint(ContextCompat.getColor(requireContext(), R.color.elements_color))
                 showPlayBtn()
             }
 
             PlayerState.STATE_DEFAULT -> {
-                vectorDrawable?.setTint(ContextCompat.getColor(this, R.color.prepaing_play_button))
+                vectorDrawable?.setTint(ContextCompat.getColor(requireContext(), R.color.prepaing_play_button))
                 showOnPrepareMessage()
             }
         }
@@ -186,7 +221,7 @@ class PlayerActivity : AppCompatActivity() {
 
     private fun showOnPrepareMessage() {
         binding.playButton.setOnClickListener {
-            showToast(getString(R.string.player_in_progress))
+            Tools.showSnackbar(binding.root, getString(R.string.player_in_progress), requireActivity())
         }
         binding.playButton.setImageResource(R.drawable.play_button)
     }
@@ -203,36 +238,5 @@ class PlayerActivity : AppCompatActivity() {
             viewModel.playbackControl()
         }
         binding.playButton.setImageResource(R.drawable.play_button)
-    }
-
-    private fun showToast(message: String) {
-        Toast.makeText(
-            this,
-            message,
-            Toast.LENGTH_SHORT
-        ).show()
-    }
-
-    private fun showSnackbar(message: String) {
-        val snackbar = Snackbar.make(binding.root, message, Snackbar.LENGTH_SHORT)
-        val snackTextColor = ContextCompat.getColor(this, R.color.snack_text)
-        val backgroundColor = ContextCompat.getColor(this, R.color.text_color)
-
-        val textView =
-            snackbar.view.findViewById<TextView>(com.google.android.material.R.id.snackbar_text)
-        textView.textAlignment = View.TEXT_ALIGNMENT_CENTER
-        textView.textSize = 16f
-        textView.setTextColor(snackTextColor)
-        snackbar.view.setBackgroundColor(backgroundColor)
-        snackbar.show()
-    }
-
-    companion object {
-        private const val ADDITIONAL_KEY_TRACK = "add_key_track"
-        fun newIntent(context: Context, track: Track): Intent {
-            return Intent(context, PlayerActivity::class.java).apply {
-                putExtra(ADDITIONAL_KEY_TRACK, track)
-            }
-        }
     }
 }
