@@ -2,6 +2,7 @@ package com.example.playlistmaker.ui.media.fragment
 
 import android.animation.ArgbEvaluator
 import android.animation.ValueAnimator
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
@@ -27,6 +28,7 @@ import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentNewPlaylistBinding
 import com.example.playlistmaker.domain.media.models.NewPlaylistState
 import com.example.playlistmaker.domain.media.models.Playlist
+import com.example.playlistmaker.ui.main.BottomNavigationController
 import com.example.playlistmaker.ui.media.view_model.NewPlaylistViewModel
 import com.example.playlistmaker.utils.Tools
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -58,12 +60,26 @@ class NewPlaylistFragment : Fragment() {
             }
         }
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context is BottomNavigationController) {
+            context.hideBottomNavigation()
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentNewPlaylistBinding.inflate(inflater, container, false)
         return binding.root
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        if (context is BottomNavigationController) {
+            (context as BottomNavigationController).showBottomNavigation()
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -190,9 +206,5 @@ class NewPlaylistFragment : Fragment() {
         } else {
             findNavController().popBackStack()
         }
-    }
-
-    companion object {
-        fun newInstance() = NewPlaylistFragment()
     }
 }

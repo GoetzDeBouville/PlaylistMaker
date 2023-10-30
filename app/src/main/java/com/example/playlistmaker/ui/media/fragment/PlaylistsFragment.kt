@@ -1,7 +1,6 @@
 package com.example.playlistmaker.ui.media.fragment
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -43,12 +42,10 @@ class PlaylistsFragment : Fragment() {
                 binding.placeholderImage.visibility = View.GONE
                 binding.placeholderMessage.visibility = View.GONE
                 binding.recyclerView.visibility = View.VISIBLE
-                Log.i("PlaylistsFragment", "StateContent = ${it.playlists}")
                 adapter.playlists.clear()
                 adapter.playlists.addAll(it.playlists)
                 adapter.notifyDataSetChanged()
             } else {
-                Log.i("PlaylistsFragment", "StateContent = Empty")
                 binding.placeholderImage.visibility = View.VISIBLE
                 binding.placeholderMessage.visibility = View.VISIBLE
                 binding.recyclerView.visibility = View.GONE

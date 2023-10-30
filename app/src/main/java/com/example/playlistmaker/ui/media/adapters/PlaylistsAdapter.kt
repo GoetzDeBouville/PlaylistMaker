@@ -1,6 +1,5 @@
 package com.example.playlistmaker.ui.media.adapters
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -50,10 +49,6 @@ class PlaylistsAdapter(private var onClicked: ((Playlist) -> Unit)? = null) :
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlailistViewHolder {
-        Log.i(
-            "PLAdapter",
-            "onCreateViewHolder"
-        )
         val binding = ItemPlaylistGridBinding.inflate(
             LayoutInflater.from(parent.context),
             parent,

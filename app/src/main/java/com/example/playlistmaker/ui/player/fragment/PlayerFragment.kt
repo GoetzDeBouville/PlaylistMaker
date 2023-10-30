@@ -3,7 +3,6 @@ package com.example.playlistmaker.ui.player.fragment
 import android.content.Context
 import android.graphics.drawable.VectorDrawable
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -36,7 +35,6 @@ class PlayerFragment : Fragment() {
     private var vectorDrawable: VectorDrawable? = null
     private var track: Track? = null
     private val playlistAdapter = PlaylistAdapter{ selectedPlaylist ->
-        Log.i("PlayerFragment", "null check track = $track")
         viewModel.addTrackToPlayList(selectedPlaylist, track!!)
     }
 
@@ -44,13 +42,6 @@ class PlayerFragment : Fragment() {
         super.onAttach(context)
         if (context is BottomNavigationController) {
             context.hideBottomNavigation()
-        }
-    }
-
-    override fun onDetach() {
-        super.onDetach()
-        if (context is BottomNavigationController) {
-            (context as BottomNavigationController).showBottomNavigation()
         }
     }
 
@@ -62,6 +53,14 @@ class PlayerFragment : Fragment() {
         _binding = FragmentPlayerBinding.inflate(inflater, container, false)
         return binding.root
     }
+
+    override fun onDetach() {
+        super.onDetach()
+        if (context is BottomNavigationController) {
+            (context as BottomNavigationController).showBottomNavigation()
+        }
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val bottomSheetContainer = binding.standardBottomSheet

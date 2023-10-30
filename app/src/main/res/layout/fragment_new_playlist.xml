@@ -88,7 +88,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="@font/ys_display_regular"
+            android:maxLength="40"
             android:maxLines="1"
+            android:singleLine="true"
             android:textColor="@color/text_color"
             android:textSize="@dimen/text_16sp"
             app:layout_constraintEnd_toEndOf="@id/right_text_guideline"
@@ -121,6 +123,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:fontFamily="@font/ys_display_regular"
+            android:maxLines="1"
+            android:singleLine="true"
             android:textSize="@dimen/text_16sp"
             app:layout_constraintEnd_toEndOf="@id/right_text_guideline"
             app:layout_constraintStart_toStartOf="@id/left_text_guideline"
@@ -147,6 +151,7 @@
             android:gravity="center"
             android:text="@string/create"
             android:textAlignment="center"
-            android:textColor="@color/white" />
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_19sp" />
     </androidx.cardview.widget.CardView>
 </androidx.constraintlayout.widget.ConstraintLayout>

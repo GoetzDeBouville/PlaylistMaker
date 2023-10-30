@@ -1,6 +1,5 @@
 package com.example.playlistmaker.ui.player.adapter
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -42,19 +41,11 @@ class PlaylistAdapter(private var onClicked: ((Playlist) -> Unit)? = null) :
     override fun onBindViewHolder(holder: PlailistViewHolder, position: Int) {
         holder.bind(playlists[position])
         holder.itemView.setOnClickListener {
-            Log.i(
-                "PLAdapter",
-                "Clicked on pl title = ${playlists[position].title} description = ${playlists[position].description} trackAmount = ${playlists[position].trackAmount}"
-            )
             onClicked?.invoke(playlists[position])
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlailistViewHolder {
-        Log.i(
-            "PLAdapter",
-            "onCreateViewHolder"
-        )
         val binding = ItemPlaylistLinearBinding.inflate(
             LayoutInflater.from(parent.context),
             parent,
