@@ -15,7 +15,7 @@ import com.example.playlistmaker.db.entity.TrackEntity
 @Database(
     version = 5,
     entities = [TrackEntity::class, PlaylistEntity::class, PlaylistTracksEntity::class, SavedTrackEntity::class],
-    autoMigrations = [AutoMigration(4, 5)],
+    autoMigrations = [AutoMigration(1, 5)],
     exportSchema = true
 )
 
