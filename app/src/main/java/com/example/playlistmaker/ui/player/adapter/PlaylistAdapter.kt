@@ -13,14 +13,14 @@ import com.example.playlistmaker.domain.media.models.Playlist
 import com.example.playlistmaker.utils.Tools
 
 class PlaylistAdapter(private var onClicked: ((Playlist) -> Unit)? = null) :
-    RecyclerView.Adapter<PlaylistAdapter.PlailistViewHolder>() {
-    class PlailistViewHolder(private val binding: ItemPlaylistLinearBinding) :
+    RecyclerView.Adapter<PlaylistAdapter.PlaylistViewHolder>() {
+    class PlaylistViewHolder(private val binding: ItemPlaylistLinearBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(plailist: Playlist) {
-            binding.tvTitle.text = plailist.title
-            binding.tvAmount.text = Tools.amountTextFormater(plailist.trackAmount)
+        fun bind(playlist: Playlist) {
+            binding.tvTitle.text = playlist.title
+            binding.tvAmount.text = Tools.amountTextFormater(playlist.trackAmount)
             Glide.with(itemView)
-                .load(plailist.imagePath)
+                .load(playlist.imagePath)
                 .placeholder(R.drawable.empty_poster)
                 .transform(
                     MultiTransformation(
@@ -38,19 +38,19 @@ class PlaylistAdapter(private var onClicked: ((Playlist) -> Unit)? = null) :
     var playlists = ArrayList<Playlist>()
     override fun getItemCount() = playlists.size
 
-    override fun onBindViewHolder(holder: PlailistViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: PlaylistViewHolder, position: Int) {
         holder.bind(playlists[position])
         holder.itemView.setOnClickListener {
             onClicked?.invoke(playlists[position])
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlailistViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlaylistViewHolder {
         val binding = ItemPlaylistLinearBinding.inflate(
             LayoutInflater.from(parent.context),
             parent,
             false
         )
-        return PlailistViewHolder(binding)
+        return PlaylistViewHolder(binding)
     }
 }
