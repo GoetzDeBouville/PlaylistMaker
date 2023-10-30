@@ -29,12 +29,12 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
 class PlayerFragment : Fragment() {
-    private var _binding : FragmentPlayerBinding? = null
+    private var _binding: FragmentPlayerBinding? = null
     private val binding get() = _binding!!
     private val viewModel: PlayerViewModel by viewModel { parametersOf(track) }
     private var vectorDrawable: VectorDrawable? = null
     private var track: Track? = null
-    private val playlistAdapter = PlaylistAdapter{ selectedPlaylist ->
+    private val playlistAdapter = PlaylistAdapter { selectedPlaylist ->
         viewModel.addTrackToPlayList(selectedPlaylist, track!!)
     }
 
@@ -64,14 +64,16 @@ class PlayerFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val bottomSheetContainer = binding.standardBottomSheet
-        val bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetContainer).apply {
-            state = BottomSheetBehavior.STATE_HIDDEN
-        }
+        val bottomSheetBehavior: BottomSheetBehavior<LinearLayout> =
+            BottomSheetBehavior.from(bottomSheetContainer).apply {
+                state = BottomSheetBehavior.STATE_HIDDEN
+            }
         bottomSheetObserver(bottomSheetBehavior, binding.overlay)
 
         track = arguments?.getParcelable<Track>("track")
         viewModel.getPlaylists()
-        vectorDrawable = ContextCompat.getDrawable(requireContext(), R.drawable.play_button) as VectorDrawable
+        vectorDrawable =
+            ContextCompat.getDrawable(requireContext(), R.drawable.play_button) as VectorDrawable
         fetchPlayer()
         observeViewModel()
 
@@ -79,6 +81,7 @@ class PlayerFragment : Fragment() {
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
         }
         clickListeners()
+        addingToPlaylistStateObserver(bottomSheetBehavior)
     }
 
     override fun onPause() {
@@ -91,6 +94,22 @@ class PlayerFragment : Fragment() {
         viewModel.pausePlayer()
         if (context is BottomNavigationController) {
             (context as BottomNavigationController).hideBottomNavigation()
+        }
+    }
+
+    private fun addingToPlaylistStateObserver(bottomSheetBehavior: BottomSheetBehavior<LinearLayout>) {
+        viewModel.addingState.observe(requireActivity()) { state ->
+            viewModel.selectedPlaylistName.value?.let { playlistName ->
+                val message = when (state) {
+                    AddToPlaylist.ADDED -> {
+                        bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+                        getString(R.string.added_to_playlist, playlistName)
+                    }
+
+                    else -> getString(R.string.track_exist_in_playlist, playlistName)
+                }
+                Tools.showSnackbar(binding.root, message, requireContext())
+            }
         }
     }
 
@@ -192,16 +211,6 @@ class PlayerFragment : Fragment() {
             }
         }
 
-        viewModel.addingState.observe(requireActivity()) { state ->
-            viewModel.selectedPlaylistName.value?.let { playlistName ->
-                val message = when (state) {
-                    AddToPlaylist.ADDED -> getString(R.string.added_to_playlist, playlistName)
-                    else -> getString(R.string.track_exist_in_playlist, playlistName)
-                }
-                Tools.showSnackbar(binding.root, message, requireContext())
-            }
-        }
-
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerView.adapter = playlistAdapter
     }
@@ -210,12 +219,22 @@ class PlayerFragment : Fragment() {
         when (state) {
             PlayerState.STATE_PLAYING -> showPauseBtn()
             PlayerState.STATE_PAUSED, PlayerState.STATE_PREPARED -> {
-                vectorDrawable?.setTint(ContextCompat.getColor(requireContext(), R.color.elements_color))
+                vectorDrawable?.setTint(
+                    ContextCompat.getColor(
+                        requireContext(),
+                        R.color.elements_color
+                    )
+                )
                 showPlayBtn()
             }
 
             PlayerState.STATE_DEFAULT -> {
-                vectorDrawable?.setTint(ContextCompat.getColor(requireContext(), R.color.prepaing_play_button))
+                vectorDrawable?.setTint(
+                    ContextCompat.getColor(
+                        requireContext(),
+                        R.color.prepaing_play_button
+                    )
+                )
                 showOnPrepareMessage()
             }
         }
@@ -223,7 +242,11 @@ class PlayerFragment : Fragment() {
 
     private fun showOnPrepareMessage() {
         binding.playButton.setOnClickListener {
-            Tools.showSnackbar(binding.root, getString(R.string.player_in_progress), requireActivity())
+            Tools.showSnackbar(
+                binding.root,
+                getString(R.string.player_in_progress),
+                requireActivity()
+            )
         }
         binding.playButton.setImageResource(R.drawable.play_button)
     }
