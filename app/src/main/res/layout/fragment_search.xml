@@ -54,7 +54,7 @@
             tools:ignore="ContentDescription,ObsoleteLayoutParam,RtlSymmetry" />
 
         <ImageView
-            android:id="@+id/clear_icon"
+            android:id="@+id/iv_clear"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="end"
@@ -77,7 +77,7 @@
         tools:ignore="RtlSymmetry">
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/tracklist_recycler"
+            android:id="@+id/rv_tracklist"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:clipToPadding="false"
@@ -95,7 +95,7 @@
             android:visibility="gone" />
 
         <LinearLayout
-            android:id="@+id/placeholderError"
+            android:id="@+id/ll_placeholder_error"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
@@ -105,7 +105,7 @@
             tools:visibility="visible">
 
             <ImageView
-                android:id="@+id/placeholder_image"
+                android:id="@+id/img_placeholder"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -114,7 +114,7 @@
                 tools:src="@drawable/no_internet_img" />
 
             <TextView
-                android:id="@+id/placeholder_message"
+                android:id="@+id/tv_placeholder_message"
                 style="@style/StylePlaceholderStatusMessage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -123,7 +123,7 @@
                 tools:text="@string/app_name" />
 
             <Button
-                android:id="@+id/refresh_button"
+                android:id="@+id/btn_refresh"
                 style="@style/ButtonStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -157,7 +157,7 @@
                     android:textSize="19sp" />
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/history_recycler_view"
+                    android:id="@+id/rv_history"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_marginBottom="@dimen/dimen_24dp"
@@ -166,7 +166,7 @@
                     tools:listitem="@layout/item_track" />
 
                 <Button
-                    android:id="@+id/button_clear_history"
+                    android:id="@+id/btn_clear_history"
                     style="@style/ButtonStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

@@ -6,8 +6,6 @@ sealed class Resource<T>(val data: T? = null, val errorType: LoadingStatus? = nu
 }
 
 enum class LoadingStatus {
-    FAILED_SEARCH,
-    SUCCESS,
     NO_INTERNET,
     SERVER_ERROR
 }

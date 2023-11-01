@@ -5,12 +5,13 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentFavoriteTracksBinding
 import com.example.playlistmaker.domain.media.models.FavoriteTracksState
 import com.example.playlistmaker.domain.search.models.Track
 import com.example.playlistmaker.ui.media.view_model.FavoriteTracksViewModel
-import com.example.playlistmaker.ui.player.activity.PlayerActivity
 import com.example.playlistmaker.ui.search.adapters.TrackAdapter
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -24,7 +25,7 @@ class FavoriteTracksFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentFavoriteTracksBinding.inflate(inflater, container, false)
         viewModel.state.observe(viewLifecycleOwner) {
             renderState(it)
@@ -47,19 +48,21 @@ class FavoriteTracksFragment : Fragment() {
         if (_binding != null) {
             adapter = TrackAdapter {
                 if (viewModel.clickDebounce()) {
-                    PlayerActivity.newIntent(requireContext(), it)
-                        .apply { startActivity(this) }
+                    val bundle = Bundle().apply {
+                        putParcelable("track", it)
+                    }
+                    findNavController().navigate(R.id.action_global_to_playerFragment, bundle)
                 }
             }
-            binding.favouriteTrackRecyclerView.adapter = adapter
+            binding.rvFavouriteTracks.adapter = adapter
         }
     }
 
     private fun initRecyclerView() {
         initAdapters()
-        binding.favouriteTrackRecyclerView.layoutManager = LinearLayoutManager(requireContext())
-        binding.favouriteTrackRecyclerView.adapter = adapter
-        binding.favouriteTrackRecyclerView.itemAnimator = null
+        binding.rvFavouriteTracks.layoutManager = LinearLayoutManager(requireContext())
+        binding.rvFavouriteTracks.adapter = adapter
+        binding.rvFavouriteTracks.itemAnimator = null
     }
 
     private fun renderState(state: FavoriteTracksState) {
@@ -70,12 +73,12 @@ class FavoriteTracksFragment : Fragment() {
     }
 
     private fun showEmpty() {
-        binding.placeholder.visibility = View.VISIBLE
+        binding.llPlaceholder.visibility = View.VISIBLE
         binding.favouriteTrackList.visibility = View.INVISIBLE
     }
 
     private fun showTracks(favoriteTracksList: List<Track>) {
-        binding.placeholder.visibility = View.GONE
+        binding.llPlaceholder.visibility = View.GONE
         binding.favouriteTrackList.visibility = View.VISIBLE
         adapter.trackList = ArrayList(favoriteTracksList)
         adapter.notifyDataSetChanged()

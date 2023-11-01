@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.domain.db.FavoriteTracksInteractor
 import com.example.playlistmaker.domain.media.models.FavoriteTracksState
+import com.example.playlistmaker.utils.Tools
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -22,7 +23,7 @@ class FavoriteTracksViewModel(private val favoriteTracksInteractor: FavoriteTrac
         if (isClickAllowed) {
             isClickAllowed = false
             viewModelScope.launch {
-                delay(CLICK_DEBOUNCE_DELAY)
+                delay(Tools.CLICK_DEBOUNCE_DELAY_MS)
                 isClickAllowed = true
             }
         }
@@ -36,9 +37,5 @@ class FavoriteTracksViewModel(private val favoriteTracksInteractor: FavoriteTrac
                 else _state.postValue(FavoriteTracksState.Content(it))
             }
         }
-    }
-
-    companion object {
-        private const val CLICK_DEBOUNCE_DELAY = 500L
     }
 }
