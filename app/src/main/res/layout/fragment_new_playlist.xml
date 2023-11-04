@@ -85,7 +85,6 @@
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/et_title"
             style="@style/TextInputEditTextStyle"
-            android:textSize="@dimen/text_16sp"
             app:layout_constraintEnd_toEndOf="@id/right_text_guideline"
             app:layout_constraintStart_toStartOf="@id/left_text_guideline"
             app:layout_constraintTop_toBottomOf="@+id/iv_pl_cover" />
@@ -113,7 +112,6 @@
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/description_edit"
             style="@style/TextInputEditTextStyle"
-            android:textSize="@dimen/text_16sp"
             app:layout_constraintEnd_toEndOf="@id/right_text_guideline"
             app:layout_constraintStart_toStartOf="@id/left_text_guideline"
             app:layout_constraintTop_toBottomOf="@+id/iv_pl_cover" />

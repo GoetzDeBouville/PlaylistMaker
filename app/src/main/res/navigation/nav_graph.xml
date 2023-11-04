@@ -35,8 +35,15 @@
         android:name="com.example.playlistmaker.ui.player.fragment.PlayerFragment"
         android:label="PlayerFragment"
         tools:layout="@layout/fragment_player"/>
+    <fragment
+        android:id="@+id/singlePlaylist"
+        tools:layout="@layout/fragment_single_playlist"
+        android:name="com.example.playlistmaker.ui.singleplaylist.SinglePlaylist"
+        android:label="SinglePlaylist" />
     <action android:id="@+id/action_global_to_newPlaylistFragment"
         app:destination="@id/newPlaylistFragment" />
     <action android:id="@+id/action_global_to_playerFragment"
         app:destination="@id/playerFragment" />
+    <action android:id="@+id/action_global_to_singlePlaylist"
+        app:destination="@id/singlePlaylist" />
 </navigation>

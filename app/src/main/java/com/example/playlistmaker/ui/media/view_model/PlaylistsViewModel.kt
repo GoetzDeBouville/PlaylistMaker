@@ -6,11 +6,26 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.domain.db.PlaylistInteractor
 import com.example.playlistmaker.domain.media.models.PlaylistState
+import com.example.playlistmaker.utils.Tools
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class PlaylistsViewModel (private val playlistInteractor: PlaylistInteractor) : ViewModel() {
     private val _state = MutableLiveData<PlaylistState>()
     val state: LiveData<PlaylistState> = _state
+    private var isClickAllowed = true
+
+    fun clickDebounce(): Boolean {
+        val current = isClickAllowed
+        if (isClickAllowed) {
+            isClickAllowed = false
+            viewModelScope.launch {
+                delay(Tools.CLICK_DEBOUNCE_DELAY_MS)
+                isClickAllowed = true
+            }
+        }
+        return current
+    }
 
     fun getPlaylists() {
         viewModelScope.launch {

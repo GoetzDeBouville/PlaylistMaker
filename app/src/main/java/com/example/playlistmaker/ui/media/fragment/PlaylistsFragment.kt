@@ -18,7 +18,7 @@ class PlaylistsFragment : Fragment() {
     private var _binding: FragmentPlaylistsBinding? = null
     private val binding get() = _binding!!
     private val viewModel: PlaylistsViewModel by viewModel()
-    private val adapter = PlaylistsAdapter()
+    private var adapter = PlaylistsAdapter()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -36,7 +36,7 @@ class PlaylistsFragment : Fragment() {
         }
 
         viewModel.getPlaylists()
-
+        initAdapters()
         viewModel.state.observe(viewLifecycleOwner) {
             if(it is PlaylistState.Content) {
                 binding.ivPlaceholder.visibility = View.GONE
@@ -61,7 +61,19 @@ class PlaylistsFragment : Fragment() {
         viewModel.getPlaylists()
     }
 
+    private fun initAdapters() {
+        adapter = PlaylistsAdapter {
+            if(viewModel.clickDebounce()) {
+                val bundle = Bundle().apply {
+                    putParcelable(PLAYLIST_KEY, it)
+                }
+                findNavController().navigate(R.id.action_global_to_singlePlaylist, bundle)
+            }
+        }
+    }
+
     companion object {
         fun newInstance() = PlaylistsFragment()
+        const val PLAYLIST_KEY = "playlist"
     }
 }
