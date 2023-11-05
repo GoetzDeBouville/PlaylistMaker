@@ -4,11 +4,8 @@ import android.content.Context
 import android.view.View
 import android.widget.TextView
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.R
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 object Tools {
     const val CLICK_DEBOUNCE_DELAY_MS = 500L

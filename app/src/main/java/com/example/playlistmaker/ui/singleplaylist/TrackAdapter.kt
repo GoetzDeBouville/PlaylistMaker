@@ -1,26 +1,28 @@
 package com.example.playlistmaker.ui.singleplaylist
 
-import android.app.AlertDialog
-import android.app.Dialog
 import android.content.Context
 import android.content.Context.VIBRATOR_SERVICE
 import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.os.VibratorManager
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat.getSystemService
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ItemTrackBinding
+import com.example.playlistmaker.domain.media.models.Playlist
 import com.example.playlistmaker.domain.search.models.Track
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
-class TrackAdapter(private var onClickedTrack: ((Track) -> Unit)? = null) :
+class TrackAdapter(
+    private val playlistId: Int,
+    private var onClickedTrack: ((Track) -> Unit)? = null,
+    private val onDeleteTrack: ((Int, Track) -> Unit)? = null
+) :
     RecyclerView.Adapter<TrackAdapter.TrackViewHolder>() {
     class TrackViewHolder(private val binding: ItemTrackBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -38,7 +40,7 @@ class TrackAdapter(private var onClickedTrack: ((Track) -> Unit)? = null) :
             }
         }
     }
-    private var vibrator: Vibrator? = null
+
     var trackList = ArrayList<Track>()
     override fun getItemCount() = trackList.size
 
@@ -51,23 +53,25 @@ class TrackAdapter(private var onClickedTrack: ((Track) -> Unit)? = null) :
 
         holder.itemView.setOnLongClickListener {
             val context = it.context
-            vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as? Vibrator
-            val vibrationEffect = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                VibrationEffect.createOneShot(
-                    50,
-                    VibrationEffect.DEFAULT_AMPLITUDE
-                )
-            } else {
+            val vibrationEffect =
                 VibrationEffect.createOneShot(50, VibrationEffect.DEFAULT_AMPLITUDE)
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                val vibratorManager =
+                    context.getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager
+                vibratorManager.defaultVibrator.vibrate(vibrationEffect)
+            } else {
+                @Suppress("DEPRECATION")
+                val vibrator = context.getSystemService(VIBRATOR_SERVICE) as Vibrator
+                vibrator.vibrate(vibrationEffect)
             }
-            vibrator?.vibrate(vibrationEffect)
             MaterialAlertDialogBuilder(it.context)
-                .setTitle("Хотите удалить трек?") // Заголовок диалога
-                .setPositiveButton("Да") { dialog, id ->
-                    // Обработка нажатия на кнопку "Да"
+                .setTitle("Хотите удалить трек?")
+                .setPositiveButton("Да") { _, _ ->
+                    onDeleteTrack?.invoke(playlistId, trackList[position])
+                    Log.i("DELETE_TRACKadapter", "id = ${trackList[position].trackId}")
                 }
-                .setNegativeButton("Нет") { dialog, id ->
-                    // Обработка нажатия на кнопку "Нет"
+                .setNegativeButton("Нет") { _, id ->
                 }
                 .create()
                 .show()
@@ -83,5 +87,4 @@ class TrackAdapter(private var onClickedTrack: ((Track) -> Unit)? = null) :
         )
         return TrackViewHolder(binding)
     }
-
 }

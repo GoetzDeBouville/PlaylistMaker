@@ -10,7 +10,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
 import java.util.concurrent.TimeUnit
 
-class PlaylistInteractorImpl(private val playlistRepository: PlaylistRepository) : PlaylistInteractor {
+class PlaylistInteractorImpl(private val playlistRepository: PlaylistRepository) :
+    PlaylistInteractor {
     override suspend fun addNewPlaylist(playlist: Playlist) {
         playlistRepository.addNewPlaylist(playlist)
     }
@@ -27,7 +28,7 @@ class PlaylistInteractorImpl(private val playlistRepository: PlaylistRepository)
         return playlistRepository.getTracks(playlistId)
     }
 
-    override suspend fun playlistDuration(tracks: List<Track>) : String {
+    override suspend fun playlistDuration(tracks: List<Track>): String {
         val durationMillis = tracks.sumOf { it.trackTimeMillis ?: 0 }
         val durationMinutes = TimeUnit.MILLISECONDS.toMinutes(durationMillis)
         return Tools.durationTextFormater(durationMinutes.toInt())
@@ -35,6 +36,10 @@ class PlaylistInteractorImpl(private val playlistRepository: PlaylistRepository)
 
     override suspend fun removePlaylist(playlist: Playlist) {
         playlistRepository.removePlaylist(playlist)
+    }
+
+    override suspend fun removeSavedTrackFromPlaylist(playlist: Playlist, track: Track) {
+        playlistRepository.removeSavedTrackFromPlaylist(playlist, track)
     }
 
     override suspend fun updatePlaylist(playlist: Playlist) {

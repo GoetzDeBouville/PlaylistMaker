@@ -19,6 +19,7 @@ import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentSinglePlaylistBinding
 import com.example.playlistmaker.domain.media.models.Playlist
 import com.example.playlistmaker.domain.media.models.PlaylistTracksState
+import com.example.playlistmaker.domain.search.models.Track
 import com.example.playlistmaker.ui.main.BottomNavigationController
 import com.example.playlistmaker.ui.media.fragment.PlaylistsFragment
 import com.example.playlistmaker.ui.search.fragment.SearchFragment
@@ -31,7 +32,7 @@ class SinglePlaylist : Fragment() {
     private val binding get() = _binding!!
     private var playlist: Playlist? = null
     private val viewModel: SinglePlaylistViewModel by viewModel()
-    private var adapter = TrackAdapter()
+    private lateinit var adapter: TrackAdapter
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -50,7 +51,6 @@ class SinglePlaylist : Fragment() {
 
     override fun onDetach() {
         super.onDetach()
-        playlist = null
         if (context is BottomNavigationController) {
             (context as BottomNavigationController).showBottomNavigation()
         }
@@ -122,20 +122,30 @@ class SinglePlaylist : Fragment() {
                 .transform(CenterCrop())
                 .into(ivCoverPh)
             tvTitle.text = playlist?.title
-            tvAmount.text = playlist?.trackAmount?.let { Tools.amountTextFormater(it.toInt()) }
+            tvDescription.text = playlist?.description
+//            tvAmount.text = playlist?.trackAmount?.let { Tools.amountTextFormater(it.toInt()) }
         }
     }
 
     private fun initAdapter() {
-        adapter = TrackAdapter {
-            if(viewModel.clickDebounce()) {
-                val bundle = Bundle().apply {
-                    putParcelable(SearchFragment.TRACK_KEY, it)
+        adapter = TrackAdapter(
+
+            playlistId = playlist?.id ?: 0,
+            onClickedTrack = { track ->
+                if (viewModel.clickDebounce()) {
+                    val bundle = Bundle().apply {
+                        putParcelable(SearchFragment.TRACK_KEY, track)
+                    }
+                    findNavController().navigate(R.id.action_global_to_playerFragment, bundle)
                 }
-                findNavController().navigate(R.id.action_global_to_playerFragment, bundle)
+            },
+            onDeleteTrack = { _, track ->
+                Log.i("DELETE_TRACK", "trackId = ${track.trackId}")
+                onDeleteTrack(track)
             }
-        }
+        )
     }
+
 
     private fun listeners() {
         binding.ivArrowBack.setOnClickListener {
@@ -143,13 +153,19 @@ class SinglePlaylist : Fragment() {
         }
     }
 
+    private fun onDeleteTrack(track: Track) {
+        viewModel.removeTrackFromPlaylist(playlist!!, track)
+        viewModel.getTracks(playlist!!.id)
+    }
+
     private fun viewModelObserver() {
         viewModel.playlistState.observe(viewLifecycleOwner) {
-            if(it is PlaylistTracksState.Content) {
+            if (it is PlaylistTracksState.Content) {
                 adapter.trackList.clear()
                 Log.i("SinglePL!", "${it.trackList}")
                 adapter.trackList.addAll(it.trackList)
                 viewModel.calculatePlaylistDuration(it.trackList)
+                viewModel.calculatetracksNumber(it.trackList.size)
                 adapter.notifyDataSetChanged()
             } else {
                 // TODO
@@ -158,6 +174,9 @@ class SinglePlaylist : Fragment() {
 
         viewModel.playlistDuration.observe(viewLifecycleOwner) {
             binding.tvDuration.text = it
+        }
+        viewModel.tracksNumber.observe(viewLifecycleOwner) {
+            binding.tvAmount.text = it
         }
     }
 }

@@ -52,7 +52,7 @@
             tools:text="[Title]" />
 
         <TextView
-            android:id="@+id/tv_year"
+            android:id="@+id/tv_description"
             style="@style/PlaylistTextStyle"
             android:layout_marginStart="@dimen/dimen_16dp"
             android:layout_marginTop="@dimen/dimen_8dp"
@@ -70,7 +70,7 @@
             android:gravity="center_vertical"
             android:orientation="horizontal"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_year">
+            app:layout_constraintTop_toBottomOf="@+id/tv_description">
 
             <TextView
                 android:id="@+id/tv_duration"
