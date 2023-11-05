@@ -3,6 +3,7 @@ package com.example.playlistmaker.ui.singleplaylist
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -10,19 +11,24 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.annotation.RequiresApi
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentSinglePlaylistBinding
 import com.example.playlistmaker.domain.media.models.Playlist
+import com.example.playlistmaker.domain.media.models.PlaylistTracksState
 import com.example.playlistmaker.ui.main.BottomNavigationController
 import com.example.playlistmaker.ui.media.fragment.PlaylistsFragment
+import com.example.playlistmaker.ui.search.fragment.SearchFragment
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SinglePlaylist : Fragment() {
     private var _binding: FragmentSinglePlaylistBinding? = null
     private val binding get() = _binding!!
     private var playlist: Playlist? = null
+    private val viewModel: SinglePlaylistViewModel by viewModel()
     private var adapter = TrackAdapter()
 
     override fun onAttach(context: Context) {
@@ -60,14 +66,21 @@ class SinglePlaylist : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         playlist = arguments?.getParcelable(PlaylistsFragment.PLAYLIST_KEY)
 
+        initAdapter()
+        binding.recyclerView.layoutManager = LinearLayoutManager(context)
+        binding.recyclerView.adapter = adapter
+
         val bottomSheetContainer = binding.llBottomSheet
         val bottomSheetBehavior: BottomSheetBehavior<LinearLayout> =
             BottomSheetBehavior.from(bottomSheetContainer).apply {
+                isHideable = false
                 state = BottomSheetBehavior.STATE_COLLAPSED
             }
         bottomSheetObserver(bottomSheetBehavior, binding.overlay)
         fetchPalylist()
         listeners()
+        viewModelObserver()
+        viewModel.getTracks(playlist!!.id)
     }
 
     private fun bottomSheetObserver(
@@ -100,9 +113,33 @@ class SinglePlaylist : Fragment() {
         }
     }
 
+    private fun initAdapter() {
+        adapter = TrackAdapter {
+            if(viewModel.clickDebounce()) {
+                val bundle = Bundle().apply {
+                    putParcelable(SearchFragment.TRACK_KEY, it)
+                }
+                findNavController().navigate(R.id.action_global_to_playerFragment, bundle)
+            }
+        }
+    }
+
     private fun listeners() {
         binding.ivArrowBack.setOnClickListener {
             findNavController().navigateUp()
+        }
+    }
+
+    private fun viewModelObserver() {
+        viewModel.playlistState.observe(viewLifecycleOwner) {
+            if(it is PlaylistTracksState.Content) {
+                adapter.trackList.clear()
+                Log.i("SinglePL!", "${it.trackList}")
+                adapter.trackList.addAll(it.trackList)
+                adapter.notifyDataSetChanged()
+            } else {
+                // TODO
+            }
         }
     }
 }

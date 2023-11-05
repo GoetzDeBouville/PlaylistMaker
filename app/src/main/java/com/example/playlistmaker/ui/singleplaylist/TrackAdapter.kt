@@ -1,13 +1,17 @@
 package com.example.playlistmaker.ui.singleplaylist
 
+import android.app.AlertDialog
+import android.app.Dialog
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ItemTrackBinding
 import com.example.playlistmaker.domain.search.models.Track
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class TrackAdapter(private var onClickedTrack: ((Track) -> Unit)? = null) :
     RecyclerView.Adapter<TrackAdapter.TrackViewHolder>() {
@@ -28,7 +32,7 @@ class TrackAdapter(private var onClickedTrack: ((Track) -> Unit)? = null) :
         }
     }
 
-    private var trackList = ArrayList<Track>()
+    var trackList = ArrayList<Track>()
     override fun getItemCount() = trackList.size
 
     override fun onBindViewHolder(holder: TrackViewHolder, position: Int) {
@@ -36,6 +40,20 @@ class TrackAdapter(private var onClickedTrack: ((Track) -> Unit)? = null) :
 
         holder.itemView.setOnClickListener {
             onClickedTrack?.invoke(trackList[position])
+        }
+
+        holder.itemView.setOnLongClickListener {
+            MaterialAlertDialogBuilder(it.context)
+                .setTitle("Хотите удалить трек?") // Заголовок диалога
+                .setPositiveButton("Да") { dialog, id ->
+                    // Обработка нажатия на кнопку "Да"
+                }
+                .setNegativeButton("Нет") { dialog, id ->
+                    // Обработка нажатия на кнопку "Нет"
+                }
+                .create()
+                .show()
+            true
         }
     }
 
@@ -47,4 +65,5 @@ class TrackAdapter(private var onClickedTrack: ((Track) -> Unit)? = null) :
         )
         return TrackViewHolder(binding)
     }
+
 }

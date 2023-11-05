@@ -7,6 +7,8 @@ import com.example.playlistmaker.db.dao.PlaylistTracksDao
 import com.example.playlistmaker.db.dao.SavedTrackDao
 import com.example.playlistmaker.db.entity.PlaylistEntity
 import com.example.playlistmaker.db.entity.PlaylistTracksEntity
+import com.example.playlistmaker.db.entity.SavedTrackEntity
+import com.example.playlistmaker.db.entity.TrackEntity
 import com.example.playlistmaker.domain.db.PlaylistRepository
 import com.example.playlistmaker.domain.media.models.Playlist
 import com.example.playlistmaker.domain.search.models.Track
@@ -51,6 +53,18 @@ class PlaylistRepositoryImpl(
         }.flowOn(Dispatchers.IO)
     }
 
+    override fun getTracks(playlistId: Int): Flow<List<Track>> {
+        return flow {
+            val savedTracks = mutableListOf<SavedTrackEntity>()
+            val playlistTrackList = appDatabase.playlistTracksDao().getTracksByPlaylistId(playlistId)
+            playlistTrackList.forEach {
+                appDatabase.savedTracksDao().getTrackById(it.trackId)
+                    ?.let { it1 -> savedTracks.add(it1) }
+            }
+            emit(convertTracksFromEntity(savedTracks))
+        }.flowOn(Dispatchers.IO)
+    }
+
     override suspend fun removePlaylist(playlist: Playlist) {
         val playlistEntity = playlistDbConverter.map(playlist)
         appDatabase.playlistDao().removePlaylist(playlistEntity.id)
@@ -61,8 +75,14 @@ class PlaylistRepositoryImpl(
     }
 
     private fun convertFromEntity(playlists: List<PlaylistEntity>): List<Playlist> {
-        return playlists.map { track ->
-            playlistDbConverter.map(track)
+        return playlists.map {
+            playlistDbConverter.map(it)
+        }
+    }
+
+    private fun convertTracksFromEntity(tracks: List<SavedTrackEntity>): List<Track> {
+        return tracks.map { track ->
+            savedTrackDbConverter.map(track)
         }
     }
 
