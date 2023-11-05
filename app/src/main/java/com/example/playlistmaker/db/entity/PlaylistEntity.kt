@@ -12,7 +12,6 @@ data class PlaylistEntity(
     val title: String?,
     val description: String?,
     val imagePath: String?,
-    var trackIds: String?,
     @ColumnInfo(defaultValue = "0")
     var trackAmount: Int = 0
 )

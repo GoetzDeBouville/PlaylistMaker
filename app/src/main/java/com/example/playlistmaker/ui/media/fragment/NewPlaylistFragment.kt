@@ -113,7 +113,6 @@ class NewPlaylistFragment : Fragment() {
                     title = binding.etTitle.text.toString(),
                     description = binding.descriptionEdit.text.toString(),
                     imagePath = imagePath,
-                    trackIds = "",
                     trackAmount = 0
                 )
                 viewModel.savePlayList(playlist)

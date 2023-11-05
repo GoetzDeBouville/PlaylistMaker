@@ -181,8 +181,13 @@ class SinglePlaylist : Fragment() {
             } else {
                 adapter.trackList.clear()
                 viewModel.calculatetracksNumber(0)
+                trackCount = 0
                 viewModel.calculatePlaylistDuration(emptyList())
                 adapter.notifyDataSetChanged()
+                Tools.showSnackbar(binding.root,
+                    getString(R.string.empty_playlist_toast),
+                    requireContext()
+                )
             }
         }
 

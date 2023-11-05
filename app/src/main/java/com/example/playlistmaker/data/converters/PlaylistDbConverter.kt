@@ -11,7 +11,6 @@ class PlaylistDbConverter {
             title = playlist.title,
             description = playlist.description,
             imagePath = playlist.imagePath.toString(),
-            trackIds = playlist.trackIds,
             trackAmount = playlist.trackAmount
         )
     }
@@ -22,7 +21,6 @@ class PlaylistDbConverter {
             title = playlist.title!!,
             description = playlist.description,
             imagePath = playlist.imagePath?.toUri(),
-            trackIds = playlist.trackIds,
             trackAmount = playlist.trackAmount
         )
     }
