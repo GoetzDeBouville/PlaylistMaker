@@ -1,12 +1,5 @@
 package com.example.playlistmaker.ui.singleplaylist
 
-import android.content.Context
-import android.content.Context.VIBRATOR_SERVICE
-import android.os.Build
-import android.os.VibrationEffect
-import android.os.Vibrator
-import android.os.VibratorManager
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -14,8 +7,8 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ItemTrackBinding
-import com.example.playlistmaker.domain.media.models.Playlist
 import com.example.playlistmaker.domain.search.models.Track
+import com.example.playlistmaker.utils.Tools
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class TrackAdapter(
@@ -52,24 +45,12 @@ class TrackAdapter(
         }
 
         holder.itemView.setOnLongClickListener {
-            val context = it.context
-            val vibrationEffect =
-                VibrationEffect.createOneShot(50, VibrationEffect.DEFAULT_AMPLITUDE)
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                val vibratorManager =
-                    context.getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager
-                vibratorManager.defaultVibrator.vibrate(vibrationEffect)
-            } else {
-                @Suppress("DEPRECATION")
-                val vibrator = context.getSystemService(VIBRATOR_SERVICE) as Vibrator
-                vibrator.vibrate(vibrationEffect)
-            }
+            Tools.vibroManager(it.context, 50)
             MaterialAlertDialogBuilder(it.context)
                 .setTitle("Хотите удалить трек?")
+                .setMessage("")
                 .setPositiveButton("Да") { _, _ ->
                     onDeleteTrack?.invoke(playlistId, trackList[position])
-                    Log.i("DELETE_TRACKadapter", "id = ${trackList[position].trackId}")
                 }
                 .setNegativeButton("Нет") { _, id ->
                 }

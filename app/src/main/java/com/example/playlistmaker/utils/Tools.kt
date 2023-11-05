@@ -1,6 +1,10 @@
 package com.example.playlistmaker.utils
 
 import android.content.Context
+import android.os.Build
+import android.os.VibrationEffect
+import android.os.Vibrator
+import android.os.VibratorManager
 import android.view.View
 import android.widget.TextView
 import androidx.core.content.ContextCompat
@@ -50,6 +54,21 @@ object Tools {
             lastDigit == 1 -> "$duration минута"
             lastDigit in 2..4 -> "$duration минуты"
             else -> "$duration минут"
+        }
+    }
+
+    fun vibroManager(context: Context, duration: Long) {
+        val vibrationEffect =
+            VibrationEffect.createOneShot(duration, VibrationEffect.DEFAULT_AMPLITUDE)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            val vibratorManager =
+                context.getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager
+            vibratorManager.defaultVibrator.vibrate(vibrationEffect)
+        } else {
+            @Suppress("DEPRECATION")
+            val vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+            vibrator.vibrate(vibrationEffect)
         }
     }
 }

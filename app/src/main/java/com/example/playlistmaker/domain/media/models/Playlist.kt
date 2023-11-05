@@ -13,3 +13,4 @@ data class Playlist(
     val trackIds: String?,
     var trackAmount: Int
 ) : Parcelable
+//TODO удалить не используемое поле trackIds

@@ -8,20 +8,26 @@ import com.example.playlistmaker.domain.db.PlaylistInteractor
 import com.example.playlistmaker.domain.media.models.Playlist
 import com.example.playlistmaker.domain.media.models.PlaylistTracksState
 import com.example.playlistmaker.domain.search.models.Track
+import com.example.playlistmaker.domain.sharing.SharingInteractor
 import com.example.playlistmaker.utils.Tools
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Locale
 
-class SinglePlaylistViewModel(private val playlistInteractor: PlaylistInteractor): ViewModel() {
+class SinglePlaylistViewModel(
+    private val playlistInteractor: PlaylistInteractor,
+    private val sharingInteractor: SharingInteractor
+) : ViewModel() {
     private val _playlistState = MutableLiveData<PlaylistTracksState>()
-    val playlistState : LiveData<PlaylistTracksState>
+    val playlistState: LiveData<PlaylistTracksState>
         get() = _playlistState
     private val _playlistDuration = MutableLiveData<String>()
     val playlistDuration: LiveData<String>
         get() = _playlistDuration
 
     private val _tracksNumber = MutableLiveData<String>()
-    val tracksNumber : LiveData<String>
+    val tracksNumber: LiveData<String>
         get() = _tracksNumber
 
     private var isClickAllowed = true
@@ -37,7 +43,6 @@ class SinglePlaylistViewModel(private val playlistInteractor: PlaylistInteractor
         }
         return current
     }
-
 
     fun getTracks(playlistId: Int) {
         viewModelScope.launch {
@@ -57,7 +62,7 @@ class SinglePlaylistViewModel(private val playlistInteractor: PlaylistInteractor
         }
     }
 
-    fun calculatetracksNumber(num : Int) {
+    fun calculatetracksNumber(num: Int) {
         viewModelScope.launch {
             _tracksNumber.postValue(Tools.amountTextFormater(num))
         }
@@ -67,5 +72,17 @@ class SinglePlaylistViewModel(private val playlistInteractor: PlaylistInteractor
         viewModelScope.launch {
             playlistInteractor.removeSavedTrackFromPlaylist(playlist, track)
         }
+    }
+
+    fun sharePlaylist(playlist: Playlist, tracks: List<Track>) {
+        var text = "${playlist.title}\n${Tools.amountTextFormater(tracks.size)}\n"
+        val stringBuilder = StringBuilder()
+        tracks.forEachIndexed { index, track ->
+            stringBuilder.append("${index + 1}. ").append("${track.artistName} - ").append("${track.trackName} ").append(
+                SimpleDateFormat("mm:ss", Locale.getDefault()).format(track.trackTimeMillis)
+            ).append("\n")
+        }
+        text += stringBuilder
+        sharingInteractor.sharePlaylist(text)
     }
 }

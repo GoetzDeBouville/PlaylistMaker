@@ -1,6 +1,5 @@
 package com.example.playlistmaker.data.db
 
-import android.util.Log
 import com.example.playlistmaker.data.converters.PlaylistDbConverter
 import com.example.playlistmaker.data.converters.SavedTrackDbConverter
 import com.example.playlistmaker.db.AppDatabase
@@ -9,21 +8,19 @@ import com.example.playlistmaker.db.dao.SavedTrackDao
 import com.example.playlistmaker.db.entity.PlaylistEntity
 import com.example.playlistmaker.db.entity.PlaylistTracksEntity
 import com.example.playlistmaker.db.entity.SavedTrackEntity
-import com.example.playlistmaker.db.entity.TrackEntity
 import com.example.playlistmaker.domain.db.PlaylistRepository
 import com.example.playlistmaker.domain.media.models.Playlist
 import com.example.playlistmaker.domain.search.models.Track
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 
 class PlaylistRepositoryImpl(
     private val appDatabase: AppDatabase,
     private val playlistDbConverter: PlaylistDbConverter,
-    private val playlistTracksDao: PlaylistTracksDao,
     private val savedTrackDbConverter: SavedTrackDbConverter,
-    private val savedTrackDao: SavedTrackDao
 ) : PlaylistRepository {
     override suspend fun addNewPlaylist(playlist: Playlist) {
         val playlistEntity = playlistDbConverter.map(playlist).copy()
@@ -44,7 +41,9 @@ class PlaylistRepositoryImpl(
 
             val playlistTrack = PlaylistTracksEntity(playlist.id, track.trackId)
             appDatabase.playlistTracksDao().insertPlaylistTrack(playlistTrack)
-            playlist.trackAmount++
+            val trackList = getTracks(playlist.id).first()
+            playlist.trackAmount = trackList.size
+
             updatePlaylist(playlist)
             emit(true)
         }
@@ -76,7 +75,8 @@ class PlaylistRepositoryImpl(
 
     override suspend fun removeSavedTrackFromPlaylist(playlist: Playlist, track: Track) {
         appDatabase.playlistTracksDao().removeTrackFromPlaylistTrack(playlist.id, track.trackId)
-        playlist.trackAmount--
+        val trackList = getTracks(playlist.id).first()
+        playlist.trackAmount = trackList.size
         updatePlaylist(playlist)
         if (appDatabase.playlistTracksDao().getTracksById(track.trackId).isEmpty()) {
             appDatabase.savedTracksDao().removeSavedTrack(track.trackId)

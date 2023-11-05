@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.res.Resources
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -32,6 +31,8 @@ class SinglePlaylist : Fragment() {
     private val binding get() = _binding!!
     private var playlist: Playlist? = null
     private val viewModel: SinglePlaylistViewModel by viewModel()
+    private var trackCount: Int = 0
+    private lateinit var tracks : List<Track>
     private lateinit var adapter: TrackAdapter
 
     override fun onAttach(context: Context) {
@@ -123,13 +124,11 @@ class SinglePlaylist : Fragment() {
                 .into(ivCoverPh)
             tvTitle.text = playlist?.title
             tvDescription.text = playlist?.description
-//            tvAmount.text = playlist?.trackAmount?.let { Tools.amountTextFormater(it.toInt()) }
         }
     }
 
     private fun initAdapter() {
         adapter = TrackAdapter(
-
             playlistId = playlist?.id ?: 0,
             onClickedTrack = { track ->
                 if (viewModel.clickDebounce()) {
@@ -140,7 +139,6 @@ class SinglePlaylist : Fragment() {
                 }
             },
             onDeleteTrack = { _, track ->
-                Log.i("DELETE_TRACK", "trackId = ${track.trackId}")
                 onDeleteTrack(track)
             }
         )
@@ -150,6 +148,18 @@ class SinglePlaylist : Fragment() {
     private fun listeners() {
         binding.ivArrowBack.setOnClickListener {
             findNavController().navigateUp()
+        }
+        binding.ivShare.setOnClickListener {
+            if (trackCount == 0) {
+                Tools.vibroManager(requireContext(), 50)
+                Tools.showSnackbar(
+                    binding.root,
+                    getString(R.string.empty_playlist),
+                    requireContext()
+                )
+            } else {
+                viewModel.sharePlaylist(playlist!!, tracks)
+            }
         }
     }
 
@@ -162,13 +172,17 @@ class SinglePlaylist : Fragment() {
         viewModel.playlistState.observe(viewLifecycleOwner) {
             if (it is PlaylistTracksState.Content) {
                 adapter.trackList.clear()
-                Log.i("SinglePL!", "${it.trackList}")
                 adapter.trackList.addAll(it.trackList)
                 viewModel.calculatePlaylistDuration(it.trackList)
-                viewModel.calculatetracksNumber(it.trackList.size)
+                trackCount = it.trackList.size
+                tracks = it.trackList.toMutableList()
+                viewModel.calculatetracksNumber(trackCount)
                 adapter.notifyDataSetChanged()
             } else {
-                // TODO
+                adapter.trackList.clear()
+                viewModel.calculatetracksNumber(0)
+                viewModel.calculatePlaylistDuration(emptyList())
+                adapter.notifyDataSetChanged()
             }
         }
 
