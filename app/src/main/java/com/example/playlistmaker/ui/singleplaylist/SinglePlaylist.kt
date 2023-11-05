@@ -1,6 +1,7 @@
 package com.example.playlistmaker.ui.singleplaylist
 
 import android.content.Context
+import android.content.res.Resources
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -21,6 +22,7 @@ import com.example.playlistmaker.domain.media.models.PlaylistTracksState
 import com.example.playlistmaker.ui.main.BottomNavigationController
 import com.example.playlistmaker.ui.media.fragment.PlaylistsFragment
 import com.example.playlistmaker.ui.search.fragment.SearchFragment
+import com.example.playlistmaker.utils.Tools
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -71,16 +73,28 @@ class SinglePlaylist : Fragment() {
         binding.recyclerView.adapter = adapter
 
         val bottomSheetContainer = binding.llBottomSheet
+
         val bottomSheetBehavior: BottomSheetBehavior<LinearLayout> =
             BottomSheetBehavior.from(bottomSheetContainer).apply {
                 isHideable = false
                 state = BottomSheetBehavior.STATE_COLLAPSED
             }
+
         bottomSheetObserver(bottomSheetBehavior, binding.overlay)
         fetchPalylist()
         listeners()
         viewModelObserver()
         viewModel.getTracks(playlist!!.id)
+
+        binding.ivShare.post {
+            val location = IntArray(2)
+            binding.ivShare.getLocationInWindow(location)
+            val shareBottom = location[1] + binding.ivShare.height
+            val screenHeight = Resources.getSystem().displayMetrics.heightPixels
+            val peekHeight = screenHeight - shareBottom + 40
+
+            bottomSheetBehavior.peekHeight = peekHeight
+        }
     }
 
     private fun bottomSheetObserver(
@@ -108,8 +122,7 @@ class SinglePlaylist : Fragment() {
                 .transform(CenterCrop())
                 .into(ivCoverPh)
             tvTitle.text = playlist?.title
-            tvDuration.text = "duration"
-            tvAmount.text = playlist?.trackAmount.toString()
+            tvAmount.text = playlist?.trackAmount?.let { Tools.amountTextFormater(it.toInt()) }
         }
     }
 
@@ -136,10 +149,15 @@ class SinglePlaylist : Fragment() {
                 adapter.trackList.clear()
                 Log.i("SinglePL!", "${it.trackList}")
                 adapter.trackList.addAll(it.trackList)
+                viewModel.calculatePlaylistDuration(it.trackList)
                 adapter.notifyDataSetChanged()
             } else {
                 // TODO
             }
+        }
+
+        viewModel.playlistDuration.observe(viewLifecycleOwner) {
+            binding.tvDuration.text = it
         }
     }
 }

@@ -4,12 +4,16 @@ import android.content.Context
 import android.view.View
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.R
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 object Tools {
     const val CLICK_DEBOUNCE_DELAY_MS = 500L
     const val SEARCH_DEBOUNCE_DELAY_MS = 2000L
+
     fun showSnackbar(
         view: View,
         message: String,
@@ -37,6 +41,18 @@ object Tools {
             lastDigit == 1 -> "$amount трек"
             lastDigit in 2..4 -> "$amount трека"
             else -> "$amount треков"
+        }
+    }
+
+    fun durationTextFormater(duration: Int): String {
+        val lastDigit = duration % 10
+        val lastTwoDigits = duration % 100
+
+        return when {
+            lastTwoDigits in 11..14 -> "$duration минут"
+            lastDigit == 1 -> "$duration минута"
+            lastDigit in 2..4 -> "$duration минуты"
+            else -> "$duration минут"
         }
     }
 }

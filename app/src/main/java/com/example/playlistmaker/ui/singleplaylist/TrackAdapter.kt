@@ -2,8 +2,15 @@ package com.example.playlistmaker.ui.singleplaylist
 
 import android.app.AlertDialog
 import android.app.Dialog
+import android.content.Context
+import android.content.Context.VIBRATOR_SERVICE
+import android.os.Build
+import android.os.VibrationEffect
+import android.os.Vibrator
+import android.os.VibratorManager
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -31,7 +38,7 @@ class TrackAdapter(private var onClickedTrack: ((Track) -> Unit)? = null) :
             }
         }
     }
-
+    private var vibrator: Vibrator? = null
     var trackList = ArrayList<Track>()
     override fun getItemCount() = trackList.size
 
@@ -43,6 +50,17 @@ class TrackAdapter(private var onClickedTrack: ((Track) -> Unit)? = null) :
         }
 
         holder.itemView.setOnLongClickListener {
+            val context = it.context
+            vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as? Vibrator
+            val vibrationEffect = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                VibrationEffect.createOneShot(
+                    50,
+                    VibrationEffect.DEFAULT_AMPLITUDE
+                )
+            } else {
+                VibrationEffect.createOneShot(50, VibrationEffect.DEFAULT_AMPLITUDE)
+            }
+            vibrator?.vibrate(vibrationEffect)
             MaterialAlertDialogBuilder(it.context)
                 .setTitle("Хотите удалить трек?") // Заголовок диалога
                 .setPositiveButton("Да") { dialog, id ->
