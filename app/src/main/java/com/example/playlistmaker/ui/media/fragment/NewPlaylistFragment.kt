@@ -2,7 +2,6 @@ package com.example.playlistmaker.ui.media.fragment
 
 import android.animation.ArgbEvaluator
 import android.animation.ValueAnimator
-import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
@@ -28,7 +27,6 @@ import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentNewPlaylistBinding
 import com.example.playlistmaker.domain.media.models.NewPlaylistState
 import com.example.playlistmaker.domain.media.models.Playlist
-import com.example.playlistmaker.ui.main.BottomNavigationController
 import com.example.playlistmaker.ui.media.view_model.NewPlaylistViewModel
 import com.example.playlistmaker.utils.Tools
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -38,12 +36,12 @@ import kotlinx.coroutines.launch
 import java.io.File
 import java.io.FileOutputStream
 
-class NewPlaylistFragment : Fragment() {
-    private var _binding: FragmentNewPlaylistBinding? = null
-    private val binding get() = _binding!!
+open class NewPlaylistFragment : Fragment() {
+    protected open var _bindingPl: FragmentNewPlaylistBinding? = null
+    private val binding get() = _bindingPl!!
     private val viewModel: NewPlaylistViewModel by viewModel()
 
-    private var imagePath: Uri? = null
+    protected var imagePath: Uri? = null
 
     private val pickMedia =
         registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
@@ -64,8 +62,13 @@ class NewPlaylistFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentNewPlaylistBinding.inflate(inflater, container, false)
+        _bindingPl = FragmentNewPlaylistBinding.inflate(inflater, container, false)
         return binding.root
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _bindingPl = null
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -75,13 +78,12 @@ class NewPlaylistFragment : Fragment() {
                 showDialog()
             }
         }
-
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
         obserViewModel()
         actionListeners()
     }
 
-    private fun actionListeners() {
+    protected open fun actionListeners() {
         binding.ivArrowBack.setOnClickListener {
             showDialog()
         }
@@ -97,7 +99,7 @@ class NewPlaylistFragment : Fragment() {
                 val playlist = Playlist(
                     0,
                     title = binding.etTitle.text.toString(),
-                    description = binding.descriptionEdit.text.toString(),
+                    description = binding.etDescription.text.toString(),
                     imagePath = imagePath,
                     trackAmount = 0
                 )
@@ -177,7 +179,7 @@ class NewPlaylistFragment : Fragment() {
 
     private fun showDialog() {
         if (binding.etTitle.text.toString()
-                .isNotEmpty() || binding.descriptionEdit.text.toString()
+                .isNotEmpty() || binding.etDescription.text.toString()
                 .isNotEmpty() || (imagePath != null)
         ) {
             MaterialAlertDialogBuilder(requireContext())

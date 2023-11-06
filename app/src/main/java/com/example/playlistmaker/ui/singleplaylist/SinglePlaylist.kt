@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.annotation.RequiresApi
+import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
@@ -19,7 +20,6 @@ import com.example.playlistmaker.databinding.FragmentSinglePlaylistBinding
 import com.example.playlistmaker.domain.media.models.Playlist
 import com.example.playlistmaker.domain.media.models.PlaylistTracksState
 import com.example.playlistmaker.domain.search.models.Track
-import com.example.playlistmaker.ui.media.fragment.PlaylistsFragment
 import com.example.playlistmaker.ui.search.fragment.SearchFragment
 import com.example.playlistmaker.utils.Tools
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -43,10 +43,15 @@ class SinglePlaylist : Fragment() {
         return binding.root
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        playlist = arguments?.getParcelable(PlaylistsFragment.PLAYLIST_KEY)
+        playlist = arguments?.getParcelable(Tools.PLAYLIST_DATA)
 
         initAdapter()
         binding.recyclerView.layoutManager = LinearLayoutManager(context)
@@ -85,6 +90,11 @@ class SinglePlaylist : Fragment() {
             bottomSheetMenu.state = BottomSheetBehavior.STATE_COLLAPSED
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        fetchPalylist()
     }
 
     private fun bottomSheetObserver(
@@ -185,7 +195,10 @@ class SinglePlaylist : Fragment() {
                 }
                 .create()
                 .show()
-            true
+        }
+
+        binding.tvEditInfo.setOnClickListener {
+            findNavController().navigate(R.id.action_singlePlaylist_to_editPlaylistFragment, bundleOf(Tools.PLAYLIST_DATA to playlist))
         }
     }
 

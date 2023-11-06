@@ -14,6 +14,7 @@ import com.google.android.material.snackbar.Snackbar
 object Tools {
     const val CLICK_DEBOUNCE_DELAY_MS = 500L
     const val SEARCH_DEBOUNCE_DELAY_MS = 2000L
+    const val PLAYLIST_DATA = "playlist"
 
     fun showSnackbar(
         view: View,

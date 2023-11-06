@@ -12,6 +12,7 @@ import com.example.playlistmaker.databinding.FragmentPlaylistsBinding
 import com.example.playlistmaker.domain.media.models.PlaylistState
 import com.example.playlistmaker.ui.media.adapters.PlaylistsAdapter
 import com.example.playlistmaker.ui.media.view_model.PlaylistsViewModel
+import com.example.playlistmaker.utils.Tools
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class PlaylistsFragment : Fragment() {
@@ -26,6 +27,11 @@ class PlaylistsFragment : Fragment() {
     ): View {
         _binding = FragmentPlaylistsBinding.inflate(inflater, container, false)
         return binding.root
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -65,7 +71,7 @@ class PlaylistsFragment : Fragment() {
         adapter = PlaylistsAdapter {
             if(viewModel.clickDebounce()) {
                 val bundle = Bundle().apply {
-                    putParcelable(PLAYLIST_KEY, it)
+                    putParcelable(Tools.PLAYLIST_DATA, it)
                 }
                 findNavController().navigate(R.id.action_global_to_singlePlaylist, bundle)
             }
@@ -74,6 +80,5 @@ class PlaylistsFragment : Fragment() {
 
     companion object {
         fun newInstance() = PlaylistsFragment()
-        const val PLAYLIST_KEY = "playlist"
     }
 }

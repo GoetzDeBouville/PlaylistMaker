@@ -39,11 +39,24 @@
         android:id="@+id/singlePlaylist"
         tools:layout="@layout/fragment_single_playlist"
         android:name="com.example.playlistmaker.ui.singleplaylist.SinglePlaylist"
-        android:label="SinglePlaylist" />
+        android:label="SinglePlaylist" >
+        <action
+            android:id="@+id/action_singlePlaylist_to_editPlaylistFragment"
+            app:destination="@id/editPlaylistFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
     <action android:id="@+id/action_global_to_newPlaylistFragment"
         app:destination="@id/newPlaylistFragment" />
     <action android:id="@+id/action_global_to_playerFragment"
         app:destination="@id/playerFragment" />
     <action android:id="@+id/action_global_to_singlePlaylist"
         app:destination="@id/singlePlaylist" />
+    <fragment
+        android:id="@+id/editPlaylistFragment"
+        tools:layout="@layout/fragment_new_playlist"
+        android:name="com.example.playlistmaker.ui.media.fragment.EditPlaylistFragment"
+        android:label="EditPlaylistFragment" />
 </navigation>

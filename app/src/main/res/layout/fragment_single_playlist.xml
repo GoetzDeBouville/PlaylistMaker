@@ -186,7 +186,8 @@
                 android:id="@+id/iv_pl_cover"
                 android:layout_width="45dp"
                 android:layout_height="45dp"
-                android:src="@drawable/empty_poster" />
+                android:src="@drawable/empty_poster"
+                android:contentDescription="@string/description" />
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -226,20 +227,6 @@
             android:layout_marginTop="@dimen/dimen_8dp"
             android:paddingVertical="@dimen/dimen_20dp"
             android:text="@string/share" />
-
-        <TextView
-            android:id="@+id/tv_add_tracks"
-            style="@style/BottomSheetMenuText"
-            android:layout_marginStart="@dimen/dimen_16dp"
-            android:paddingVertical="@dimen/dimen_20dp"
-            android:text="@string/add_tracks" />
-
-        <TextView
-            android:id="@+id/tv_edit_playlist"
-            style="@style/BottomSheetMenuText"
-            android:layout_marginStart="@dimen/dimen_16dp"
-            android:paddingVertical="@dimen/dimen_20dp"
-            android:text="@string/edit_playlist" />
 
         <TextView
             android:id="@+id/tv_edit_info"
