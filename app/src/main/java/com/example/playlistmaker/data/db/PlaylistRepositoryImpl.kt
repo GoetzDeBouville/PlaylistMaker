@@ -1,6 +1,5 @@
 package com.example.playlistmaker.data.db
 
-import android.util.Log
 import com.example.playlistmaker.data.converters.PlaylistDbConverter
 import com.example.playlistmaker.data.converters.SavedTrackDbConverter
 import com.example.playlistmaker.db.AppDatabase
@@ -73,17 +72,7 @@ class PlaylistRepositoryImpl(
     }
 
     override suspend fun removePlaylist(playlist: Playlist) {
-        Log.i("removePlaylist", "id = ${playlist.id}")
-        val playlistEntity = playlistDbConverter.map(playlist)
-        val tracks = getTracks(playlist.id).first()
-        Log.i("removePlaylist", "tracks = $tracks")
-        tracks.forEach { track ->
-            Log.i("removePlaylist", "trackId = ${track.trackId}")
-            if (getTrackRelations(track.trackId) < 2) {
-                removeSavedTrackFromPlaylist(playlist, track)
-            }
-        }
-        appDatabase.playlistDao().removePlaylist(playlistEntity.id)
+        appDatabase.playlistDao().removePlaylist(playlist.id)
     }
 
 
