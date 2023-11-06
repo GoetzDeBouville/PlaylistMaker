@@ -37,8 +37,8 @@ import java.io.File
 import java.io.FileOutputStream
 
 open class NewPlaylistFragment : Fragment() {
-    protected open var _bindingPl: FragmentNewPlaylistBinding? = null
-    private val binding get() = _bindingPl!!
+    private var _binding: FragmentNewPlaylistBinding? = null
+    protected open val binding get() = _binding!!
     private val viewModel: NewPlaylistViewModel by viewModel()
 
     protected var imagePath: Uri? = null
@@ -62,13 +62,13 @@ open class NewPlaylistFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _bindingPl = FragmentNewPlaylistBinding.inflate(inflater, container, false)
+        _binding = FragmentNewPlaylistBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        _bindingPl = null
+        _binding = null
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

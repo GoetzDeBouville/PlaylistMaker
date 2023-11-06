@@ -47,12 +47,12 @@ class TrackAdapter(
         holder.itemView.setOnLongClickListener {
             Tools.vibroManager(it.context, 50)
             MaterialAlertDialogBuilder(it.context)
-                .setTitle("Хотите удалить трек?")
+                .setTitle(R.string.confirming_deletion_track)
                 .setMessage("")
-                .setPositiveButton("Да") { _, _ ->
+                .setPositiveButton(R.string.delete) { _, _ ->
                     onDeleteTrack?.invoke(playlistId, trackList[position])
                 }
-                .setNegativeButton("Нет") { _, id ->
+                .setNegativeButton(R.string.cancel) { _, id ->
                 }
                 .create()
                 .show()

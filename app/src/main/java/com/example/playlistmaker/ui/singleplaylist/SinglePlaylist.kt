@@ -32,7 +32,7 @@ class SinglePlaylist : Fragment() {
     private var playlist: Playlist? = null
     private val viewModel: SinglePlaylistViewModel by viewModel()
     private var trackCount: Int = 0
-    private lateinit var tracks : List<Track>
+    private lateinit var tracks: List<Track>
     private lateinit var adapter: TrackAdapter
 
     override fun onCreateView(
@@ -66,10 +66,12 @@ class SinglePlaylist : Fragment() {
         bottomSheetObserver(bottomSheetBehavior, binding.overlay)
 
         val bottomSheetMenuContainer = binding.llBottomSheetMenu
+
         val bottomSheetMenu: BottomSheetBehavior<LinearLayout> =
             BottomSheetBehavior.from(bottomSheetMenuContainer).apply {
                 state = BottomSheetBehavior.STATE_HIDDEN
             }
+        bottomSheetMenu.state = BottomSheetBehavior.STATE_HIDDEN
         bottomSheetObserver(bottomSheetMenu, binding.overlay)
 
         fetchPalylist()
@@ -86,6 +88,21 @@ class SinglePlaylist : Fragment() {
 
             bottomSheetBehavior.peekHeight = peekHeight
         }
+
+        binding.tvTitle.post {
+            val location = IntArray(2)
+            binding.tvTitle.getLocationInWindow(location)
+            val titleBottom = location[1] + binding.tvTitle.height
+            val screenHeight = Resources.getSystem().displayMetrics.heightPixels
+            val peekHeight = screenHeight - titleBottom + 40
+
+            bottomSheetMenu.peekHeight = peekHeight
+
+            val layoutParams = bottomSheetMenuContainer.layoutParams
+            layoutParams.height = peekHeight
+            bottomSheetMenuContainer.layoutParams = layoutParams
+        }
+
         binding.ivActionBtn.setOnClickListener {
             bottomSheetMenu.state = BottomSheetBehavior.STATE_COLLAPSED
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
@@ -170,7 +187,7 @@ class SinglePlaylist : Fragment() {
                 viewModel.sharePlaylist(playlist!!, tracks)
             }
         }
-        binding.tvShare.setOnClickListener{
+        binding.tvShare.setOnClickListener {
             if (trackCount == 0) {
                 Tools.vibroManager(requireContext(), 50)
                 Tools.showSnackbar(
@@ -185,20 +202,23 @@ class SinglePlaylist : Fragment() {
 
         binding.tvDeletePlaylist.setOnClickListener {
             MaterialAlertDialogBuilder(it.context)
-                .setTitle("Хотите удалить плейлист «${playlist!!.title}»?")
+                .setTitle(getString(R.string.confirming_deletion_playlist, playlist!!.title))
                 .setMessage("")
-                .setPositiveButton("Да") { _, _ ->
+                .setPositiveButton(getString(R.string.delete)) { _, _ ->
                     viewModel.removePlaylist(playlist!!)
                     findNavController().navigateUp()
                 }
-                .setNegativeButton("Нет") { _, id ->
+                .setNegativeButton(getString(R.string.cancel)) { _, id ->
                 }
                 .create()
                 .show()
         }
 
         binding.tvEditInfo.setOnClickListener {
-            findNavController().navigate(R.id.action_singlePlaylist_to_editPlaylistFragment, bundleOf(Tools.PLAYLIST_DATA to playlist))
+            findNavController().navigate(
+                R.id.action_singlePlaylist_to_editPlaylistFragment,
+                bundleOf(Tools.PLAYLIST_DATA to playlist)
+            )
         }
     }
 
@@ -223,7 +243,8 @@ class SinglePlaylist : Fragment() {
                 trackCount = 0
                 viewModel.calculatePlaylistDuration(emptyList())
                 adapter.notifyDataSetChanged()
-                Tools.showSnackbar(binding.root,
+                Tools.showSnackbar(
+                    binding.root,
                     getString(R.string.empty_playlist_toast),
                     requireContext()
                 )

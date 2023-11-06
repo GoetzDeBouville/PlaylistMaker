@@ -13,6 +13,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
 import com.example.playlistmaker.domain.media.models.Playlist
 import com.example.playlistmaker.ui.media.view_model.EditPlaylistViewModel
@@ -22,14 +23,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class EditPlaylistFragment : NewPlaylistFragment() {
-    private val binding get() = _bindingPl!!
     private val viewModel: EditPlaylistViewModel by viewModel()
     private var playlist: Playlist? = null
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _bindingPl = null
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -99,11 +94,13 @@ class EditPlaylistFragment : NewPlaylistFragment() {
     private fun fetchFragment(playlist: Playlist) {
         binding.tvBtnText.text = getString(R.string.save)
         binding.tvHeaderTitle.text = getString(R.string.edit)
+
         with(binding) {
+            val cornerRadius = resources.getDimensionPixelSize(R.dimen.dimen_8dp)
             Glide.with(this@EditPlaylistFragment)
                 .load(playlist.imagePath)
-                .placeholder(R.drawable.ic_cover_ph)
-                .transform(CenterCrop())
+                .placeholder(R.drawable.ic_component_ph)
+                .transform(CenterCrop(), RoundedCorners(cornerRadius))
                 .into(ivPlCover)
             etTitle.setText(playlist.title)
             etDescription.setText(playlist.description)

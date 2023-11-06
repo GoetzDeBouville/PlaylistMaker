@@ -55,13 +55,10 @@ class PlaylistRepositoryImpl(
 
     override fun getTracks(playlistId: Int): Flow<List<Track>> {
         return flow {
-            val savedTracks = mutableListOf<SavedTrackEntity>()
-            val playlistTrackList =
-                appDatabase.playlistTracksDao().getTracksByPlaylistId(playlistId)
-            playlistTrackList.forEach {
-                appDatabase.savedTracksDao().getTrackById(it.trackId)
-                    ?.let { it1 -> savedTracks.add(it1) }
-            }
+            val playlistTrackList = appDatabase.playlistTracksDao().getTracksByPlaylistId(playlistId)
+            val savedTracks = playlistTrackList
+                .mapNotNull { appDatabase.savedTracksDao().getTrackById(it.trackId) }
+                .sortedByDescending { it.timeStamp }
             emit(convertTracksFromEntity(savedTracks))
         }.flowOn(Dispatchers.IO)
     }

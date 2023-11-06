@@ -80,7 +80,7 @@ class SinglePlaylistViewModel(
     }
 
     fun sharePlaylist(playlist: Playlist, tracks: List<Track>) {
-        var text = "${playlist.title}\n${Tools.amountTextFormater(tracks.size)}\n"
+        var text = "${playlist.title} ${playlist.description}\n${Tools.amountTextFormater(tracks.size)}\n"
         val stringBuilder = StringBuilder()
         tracks.forEachIndexed { index, track ->
             stringBuilder.append("${index + 1}. ").append("${track.artistName} - ").append("${track.trackName} ").append(

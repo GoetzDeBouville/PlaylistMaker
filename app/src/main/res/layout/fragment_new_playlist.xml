@@ -30,10 +30,11 @@
     <ImageView
         android:id="@+id/iv_pl_cover"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_marginTop="@dimen/dimen_24dp"
         android:contentDescription="@string/description"
         android:src="@drawable/ic_component_ph"
+        app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintEnd_toStartOf="@id/right_guideline"
         app:layout_constraintStart_toEndOf="@id/left_guideline"
         app:layout_constraintTop_toBottomOf="@id/iv_arrow_back" />
