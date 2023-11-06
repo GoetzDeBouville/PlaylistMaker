@@ -68,6 +68,11 @@ class SinglePlaylistViewModel(
         }
     }
 
+    fun removePlaylist(playlist: Playlist) {
+        viewModelScope.launch {
+            playlistInteractor.removePlaylist(playlist)
+        }
+    }
     fun removeTrackFromPlaylist(playlist: Playlist, track: Track) {
         viewModelScope.launch {
             playlistInteractor.removeSavedTrackFromPlaylist(playlist, track)

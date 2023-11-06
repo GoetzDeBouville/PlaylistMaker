@@ -9,7 +9,7 @@ import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ActivityMainBinding
 import com.example.playlistmaker.ui.main.BottomNavigationController
 
-class MainActivity : AppCompatActivity(), BottomNavigationController {
+class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -21,13 +21,22 @@ class MainActivity : AppCompatActivity(), BottomNavigationController {
         val navController = navHostFragment.navController
 
         binding.bottomNavigationView.setupWithNavController(navController)
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            when (destination.id) {
+                R.id.newPlaylistFragment -> hideBottomNavigation()
+                R.id.playerFragment -> hideBottomNavigation()
+                R.id.playlistsFragment -> hideBottomNavigation()
+                R.id.singlePlaylist -> hideBottomNavigation()
+                else -> showBottomNavigation()
+            }
+        }
     }
 
-    override fun hideBottomNavigation() {
+    private fun hideBottomNavigation() {
         binding.bottomNavigationView.visibility = View.GONE
     }
 
-    override fun showBottomNavigation() {
+    private fun showBottomNavigation() {
         binding.bottomNavigationView.visibility = View.VISIBLE
     }
 }

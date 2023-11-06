@@ -60,26 +60,12 @@ class NewPlaylistFragment : Fragment() {
             }
         }
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        if (context is BottomNavigationController) {
-            context.hideBottomNavigation()
-        }
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentNewPlaylistBinding.inflate(inflater, container, false)
         return binding.root
-    }
-
-    override fun onDetach() {
-        super.onDetach()
-        if (context is BottomNavigationController) {
-            (context as BottomNavigationController).showBottomNavigation()
-        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

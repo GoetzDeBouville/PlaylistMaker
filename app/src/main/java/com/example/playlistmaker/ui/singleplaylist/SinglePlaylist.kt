@@ -1,6 +1,5 @@
 package com.example.playlistmaker.ui.singleplaylist
 
-import android.content.Context
 import android.content.res.Resources
 import android.os.Build
 import android.os.Bundle
@@ -14,16 +13,17 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentSinglePlaylistBinding
 import com.example.playlistmaker.domain.media.models.Playlist
 import com.example.playlistmaker.domain.media.models.PlaylistTracksState
 import com.example.playlistmaker.domain.search.models.Track
-import com.example.playlistmaker.ui.main.BottomNavigationController
 import com.example.playlistmaker.ui.media.fragment.PlaylistsFragment
 import com.example.playlistmaker.ui.search.fragment.SearchFragment
 import com.example.playlistmaker.utils.Tools
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SinglePlaylist : Fragment() {
@@ -35,33 +35,12 @@ class SinglePlaylist : Fragment() {
     private lateinit var tracks : List<Track>
     private lateinit var adapter: TrackAdapter
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        if (context is BottomNavigationController) {
-            context.hideBottomNavigation()
-        }
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentSinglePlaylistBinding.inflate(inflater, container, false)
         return binding.root
-    }
-
-    override fun onDetach() {
-        super.onDetach()
-        if (context is BottomNavigationController) {
-            (context as BottomNavigationController).showBottomNavigation()
-        }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        if (context is BottomNavigationController) {
-            (context as BottomNavigationController).hideBottomNavigation()
-        }
     }
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
@@ -77,11 +56,17 @@ class SinglePlaylist : Fragment() {
 
         val bottomSheetBehavior: BottomSheetBehavior<LinearLayout> =
             BottomSheetBehavior.from(bottomSheetContainer).apply {
-                isHideable = false
                 state = BottomSheetBehavior.STATE_COLLAPSED
             }
-
         bottomSheetObserver(bottomSheetBehavior, binding.overlay)
+
+        val bottomSheetMenuContainer = binding.llBottomSheetMenu
+        val bottomSheetMenu: BottomSheetBehavior<LinearLayout> =
+            BottomSheetBehavior.from(bottomSheetMenuContainer).apply {
+                state = BottomSheetBehavior.STATE_HIDDEN
+            }
+        bottomSheetObserver(bottomSheetMenu, binding.overlay)
+
         fetchPalylist()
         listeners()
         viewModelObserver()
@@ -95,6 +80,10 @@ class SinglePlaylist : Fragment() {
             val peekHeight = screenHeight - shareBottom + 40
 
             bottomSheetBehavior.peekHeight = peekHeight
+        }
+        binding.ivActionBtn.setOnClickListener {
+            bottomSheetMenu.state = BottomSheetBehavior.STATE_COLLAPSED
+            bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
         }
     }
 
@@ -124,6 +113,16 @@ class SinglePlaylist : Fragment() {
                 .into(ivCoverPh)
             tvTitle.text = playlist?.title
             tvDescription.text = playlist?.description
+
+            val cornerRadius =
+                requireContext().resources.getDimensionPixelSize(R.dimen.dimen_8dp)
+
+            Glide.with(this@SinglePlaylist)
+                .load(playlist?.imagePath)
+                .placeholder(R.drawable.empty_poster)
+                .transform(CenterCrop(), RoundedCorners(cornerRadius))
+                .into(ivPlCover)
+            tvBsMenuTitle.text = "${playlist?.title} ${playlist?.description}"
         }
     }
 
@@ -161,6 +160,33 @@ class SinglePlaylist : Fragment() {
                 viewModel.sharePlaylist(playlist!!, tracks)
             }
         }
+        binding.tvShare.setOnClickListener{
+            if (trackCount == 0) {
+                Tools.vibroManager(requireContext(), 50)
+                Tools.showSnackbar(
+                    binding.root,
+                    getString(R.string.empty_playlist),
+                    requireContext()
+                )
+            } else {
+                viewModel.sharePlaylist(playlist!!, tracks)
+            }
+        }
+
+        binding.tvDeletePlaylist.setOnClickListener {
+            MaterialAlertDialogBuilder(it.context)
+                .setTitle("Хотите удалить плейлист «${playlist!!.title}»?")
+                .setMessage("")
+                .setPositiveButton("Да") { _, _ ->
+                    viewModel.removePlaylist(playlist!!)
+                    findNavController().navigateUp()
+                }
+                .setNegativeButton("Нет") { _, id ->
+                }
+                .create()
+                .show()
+            true
+        }
     }
 
     private fun onDeleteTrack(track: Track) {
@@ -196,6 +222,7 @@ class SinglePlaylist : Fragment() {
         }
         viewModel.tracksNumber.observe(viewLifecycleOwner) {
             binding.tvAmount.text = it
+            binding.tvBsMenuAmount.text = it
         }
     }
 }

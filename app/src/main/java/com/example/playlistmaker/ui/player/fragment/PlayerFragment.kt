@@ -39,13 +39,6 @@ class PlayerFragment : Fragment() {
         viewModel.addTrackToPlayList(selectedPlaylist, track!!)
     }
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        if (context is BottomNavigationController) {
-            context.hideBottomNavigation()
-        }
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -53,13 +46,6 @@ class PlayerFragment : Fragment() {
     ): View {
         _binding = FragmentPlayerBinding.inflate(inflater, container, false)
         return binding.root
-    }
-
-    override fun onDetach() {
-        super.onDetach()
-        if (context is BottomNavigationController) {
-            (context as BottomNavigationController).showBottomNavigation()
-        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -93,9 +79,6 @@ class PlayerFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         viewModel.pausePlayer()
-        if (context is BottomNavigationController) {
-            (context as BottomNavigationController).hideBottomNavigation()
-        }
     }
 
     private fun addingToPlaylistStateObserver(bottomSheetBehavior: BottomSheetBehavior<LinearLayout>) {
