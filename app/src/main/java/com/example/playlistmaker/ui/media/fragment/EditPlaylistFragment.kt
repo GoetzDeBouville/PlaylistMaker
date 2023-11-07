@@ -64,7 +64,7 @@ class EditPlaylistFragment : NewPlaylistFragment() {
 
                 findNavController().popBackStack()
                 findNavController().popBackStack()
-                findNavController().navigate(R.id.singlePlaylist, bundleOf(Tools.PLAYLIST_DATA to playlist))
+                findNavController().navigate(R.id.action_global_to_singlePlaylist, bundleOf(Tools.PLAYLIST_DATA to playlist))
             } else {
                 viewLifecycleOwner.lifecycleScope.launch {
                     val colorAnimator =
