@@ -155,7 +155,7 @@ class SinglePlaylist : Fragment() {
 
     private fun initAdapter() {
         adapter = TrackAdapter(
-            playlistId = playlist?.id ?: 0,
+            playlist = playlist!!,
             onClickedTrack = { track ->
                 if (viewModel.clickDebounce()) {
                     val bundle = Bundle().apply {
@@ -166,6 +166,9 @@ class SinglePlaylist : Fragment() {
             },
             onDeleteTrack = { _, track ->
                 onDeleteTrack(track)
+            },
+            onUpdatePlaylist = { playlist ->
+                updatePlaylist(playlist)
             }
         )
     }
@@ -225,6 +228,10 @@ class SinglePlaylist : Fragment() {
     private fun onDeleteTrack(track: Track) {
         viewModel.removeTrackFromPlaylist(playlist!!, track)
         viewModel.getTracks(playlist!!.id)
+    }
+
+    private fun updatePlaylist(playlist: Playlist) {
+        viewModel.updatePlaylist(playlist)
     }
 
     private fun viewModelObserver() {

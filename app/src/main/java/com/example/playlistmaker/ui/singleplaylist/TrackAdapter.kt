@@ -7,14 +7,16 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ItemTrackBinding
+import com.example.playlistmaker.domain.media.models.Playlist
 import com.example.playlistmaker.domain.search.models.Track
 import com.example.playlistmaker.utils.Tools
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class TrackAdapter(
-    private val playlistId: Int,
+    private val playlist: Playlist,
     private var onClickedTrack: ((Track) -> Unit)? = null,
-    private val onDeleteTrack: ((Int, Track) -> Unit)? = null
+    private val onDeleteTrack: ((Int, Track) -> Unit)? = null,
+    private val onUpdatePlaylist: ((Playlist) -> Unit)? = null
 ) :
     RecyclerView.Adapter<TrackAdapter.TrackViewHolder>() {
     class TrackViewHolder(private val binding: ItemTrackBinding) :
@@ -50,7 +52,8 @@ class TrackAdapter(
                 .setTitle(R.string.confirming_deletion_track)
                 .setMessage("")
                 .setPositiveButton(R.string.delete) { _, _ ->
-                    onDeleteTrack?.invoke(playlistId, trackList[position])
+                    onDeleteTrack?.invoke(playlist.id, trackList[position])
+                    onUpdatePlaylist?.invoke(playlist)
                 }
                 .setNegativeButton(R.string.cancel) { _, id ->
                 }

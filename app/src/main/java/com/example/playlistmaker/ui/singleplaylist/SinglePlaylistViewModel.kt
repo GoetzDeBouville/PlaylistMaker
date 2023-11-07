@@ -48,9 +48,7 @@ class SinglePlaylistViewModel(
         viewModelScope.launch {
             playlistInteractor.getTracks(playlistId).collect {
                 if (it.isEmpty()) _playlistState.postValue(PlaylistTracksState.Empty)
-                else {
-                    _playlistState.postValue(PlaylistTracksState.Content(it))
-                }
+                else _playlistState.postValue(PlaylistTracksState.Content(it))
             }
         }
     }
@@ -65,6 +63,13 @@ class SinglePlaylistViewModel(
     fun calculatetracksNumber(num: Int) {
         viewModelScope.launch {
             _tracksNumber.postValue(Tools.amountTextFormater(num))
+        }
+    }
+
+    fun updatePlaylist(playlist: Playlist) {
+        viewModelScope.launch {
+            playlistInteractor.updatePlaylist(playlist)
+            getTracks(playlist.id)
         }
     }
 
