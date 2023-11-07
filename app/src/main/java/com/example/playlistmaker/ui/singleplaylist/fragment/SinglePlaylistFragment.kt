@@ -1,4 +1,4 @@
-package com.example.playlistmaker.ui.singleplaylist
+package com.example.playlistmaker.ui.singleplaylist.fragment
 
 import android.content.res.Resources
 import android.os.Build
@@ -21,12 +21,14 @@ import com.example.playlistmaker.domain.media.models.Playlist
 import com.example.playlistmaker.domain.media.models.PlaylistTracksState
 import com.example.playlistmaker.domain.search.models.Track
 import com.example.playlistmaker.ui.search.fragment.SearchFragment
+import com.example.playlistmaker.ui.singleplaylist.viewmodel.SinglePlaylistViewModel
+import com.example.playlistmaker.ui.singleplaylist.adapter.TrackAdapter
 import com.example.playlistmaker.utils.Tools
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class SinglePlaylist : Fragment() {
+class SinglePlaylistFragment : Fragment() {
     private var _binding: FragmentSinglePlaylistBinding? = null
     private val binding get() = _binding!!
     private var playlist: Playlist? = null
@@ -133,7 +135,7 @@ class SinglePlaylist : Fragment() {
 
     private fun fetchPalylist() {
         with(binding) {
-            Glide.with(this@SinglePlaylist)
+            Glide.with(this@SinglePlaylistFragment)
                 .load(playlist?.imagePath)
                 .placeholder(R.drawable.ic_cover_ph)
                 .transform(CenterCrop())
@@ -144,12 +146,12 @@ class SinglePlaylist : Fragment() {
             val cornerRadius =
                 requireContext().resources.getDimensionPixelSize(R.dimen.dimen_8dp)
 
-            Glide.with(this@SinglePlaylist)
+            Glide.with(this@SinglePlaylistFragment)
                 .load(playlist?.imagePath)
                 .placeholder(R.drawable.empty_poster)
                 .transform(CenterCrop(), RoundedCorners(cornerRadius))
                 .into(ivPlCover)
-            tvBsMenuTitle.text = "${playlist?.title} ${playlist?.description}"
+            tvBsMenuTitle.text = getString(R.string.playlist_title_description, playlist?.title, playlist?.description)
         }
     }
 

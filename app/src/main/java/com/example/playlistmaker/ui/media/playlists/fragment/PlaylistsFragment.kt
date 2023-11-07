@@ -1,4 +1,4 @@
-package com.example.playlistmaker.ui.media.fragment
+package com.example.playlistmaker.ui.media.playlists.fragment
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -10,8 +10,8 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentPlaylistsBinding
 import com.example.playlistmaker.domain.media.models.PlaylistState
-import com.example.playlistmaker.ui.media.adapters.PlaylistsAdapter
-import com.example.playlistmaker.ui.media.view_model.PlaylistsViewModel
+import com.example.playlistmaker.ui.media.playlists.viewmodel.PlaylistsViewModel
+import com.example.playlistmaker.ui.media.playlists.adapter.PlaylistsAdapter
 import com.example.playlistmaker.utils.Tools
 import org.koin.androidx.viewmodel.ext.android.viewModel
 

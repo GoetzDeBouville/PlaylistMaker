@@ -1,4 +1,4 @@
-package com.example.playlistmaker.ui.media.fragment
+package com.example.playlistmaker.ui.media.editplaylist.fragment
 
 import android.animation.ArgbEvaluator
 import android.animation.ValueAnimator
@@ -16,7 +16,8 @@ import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
 import com.example.playlistmaker.domain.media.models.Playlist
-import com.example.playlistmaker.ui.media.view_model.EditPlaylistViewModel
+import com.example.playlistmaker.ui.media.editplaylist.viewmodel.EditPlaylistViewModel
+import com.example.playlistmaker.ui.media.newplaylist.fragment.NewPlaylistFragment
 import com.example.playlistmaker.utils.Tools
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import kotlinx.coroutines.delay

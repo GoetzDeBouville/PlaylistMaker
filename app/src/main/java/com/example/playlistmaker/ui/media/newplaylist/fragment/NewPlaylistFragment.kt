@@ -1,4 +1,4 @@
-package com.example.playlistmaker.ui.media.fragment
+package com.example.playlistmaker.ui.media.newplaylist.fragment
 
 import android.animation.ArgbEvaluator
 import android.animation.ValueAnimator
@@ -27,7 +27,7 @@ import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentNewPlaylistBinding
 import com.example.playlistmaker.domain.media.models.NewPlaylistState
 import com.example.playlistmaker.domain.media.models.Playlist
-import com.example.playlistmaker.ui.media.view_model.NewPlaylistViewModel
+import com.example.playlistmaker.ui.media.newplaylist.viewmodel.NewPlaylistViewModel
 import com.example.playlistmaker.utils.Tools
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koin.androidx.viewmodel.ext.android.viewModel

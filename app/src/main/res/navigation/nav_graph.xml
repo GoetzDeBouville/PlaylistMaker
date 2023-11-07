@@ -11,7 +11,7 @@
         tools:layout="@layout/fragment_settings" />
     <fragment
         android:id="@+id/mediaFragment"
-        android:name="com.example.playlistmaker.ui.media.fragment.MediaFragment"
+        android:name="com.example.playlistmaker.ui.media.mediafragment.MediaFragment"
         android:label="fragment_media"
         tools:layout="@layout/fragment_media" />
     <fragment
@@ -21,12 +21,12 @@
         tools:layout="@layout/fragment_search" />
     <fragment
         android:id="@+id/newPlaylistFragment"
-        android:name="com.example.playlistmaker.ui.media.fragment.NewPlaylistFragment"
+        android:name="com.example.playlistmaker.ui.media.newplaylist.fragment.NewPlaylistFragment"
         android:label="fragment_new_playlist"
         tools:layout="@layout/fragment_new_playlist" />
     <fragment
         android:id="@+id/playlistsFragment"
-        android:name="com.example.playlistmaker.ui.media.fragment.PlaylistsFragment"
+        android:name="com.example.playlistmaker.ui.media.playlists.fragment.PlaylistsFragment"
         android:label="fragment_favorite_tracks"
         tools:layout="@layout/fragment_favorite_tracks" />
     <fragment
@@ -36,7 +36,7 @@
         tools:layout="@layout/fragment_player" />
     <fragment
         android:id="@+id/singlePlaylist"
-        android:name="com.example.playlistmaker.ui.singleplaylist.SinglePlaylist"
+        android:name="com.example.playlistmaker.ui.singleplaylist.fragment.SinglePlaylistFragment"
         android:label="SinglePlaylist"
         tools:layout="@layout/fragment_single_playlist">
         <action
@@ -62,7 +62,7 @@
         app:popExitAnim="@anim/slide_out_right" />
     <fragment
         android:id="@+id/editPlaylistFragment"
-        android:name="com.example.playlistmaker.ui.media.fragment.EditPlaylistFragment"
+        android:name="com.example.playlistmaker.ui.media.editplaylist.fragment.EditPlaylistFragment"
         android:label="EditPlaylistFragment"
         tools:layout="@layout/fragment_new_playlist" />
 

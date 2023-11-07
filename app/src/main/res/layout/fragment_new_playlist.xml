@@ -5,7 +5,7 @@
     style="@style/ScreenBackGround"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.media.fragment.NewPlaylistFragment">
+    tools:context=".ui.media.newplaylist.fragment.NewPlaylistFragment">
 
     <ImageView
         android:id="@+id/iv_arrow_back"

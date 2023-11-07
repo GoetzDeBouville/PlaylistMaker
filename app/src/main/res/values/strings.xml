@@ -63,5 +63,6 @@
     <string name="delete">Удалить</string>
     <string name="save">Сохранить</string>
     <string name="edit">Редактировать</string>
+    <string name="playlist_title_description">%1$s %2$s</string>
 
 </resources>

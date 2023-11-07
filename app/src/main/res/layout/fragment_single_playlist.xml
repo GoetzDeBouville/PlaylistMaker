@@ -9,7 +9,7 @@
         style="@style/ScreenBackGround"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".ui.singleplaylist.SinglePlaylist">
+        tools:context=".ui.singleplaylist.fragment.SinglePlaylistFragment">
 
         <View
             android:id="@+id/constraint_overlay"
