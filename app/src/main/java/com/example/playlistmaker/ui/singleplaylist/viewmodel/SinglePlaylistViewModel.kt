@@ -1,5 +1,6 @@
 package com.example.playlistmaker.ui.singleplaylist.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -34,14 +35,22 @@ class SinglePlaylistViewModel(
 
     fun calculatePlaylistDuration(tracks: List<Track>) {
         viewModelScope.launch {
-            val duration = playlistInteractor.playlistDuration(tracks)
-            _playlistDuration.postValue(duration)
+            try {
+                val duration = playlistInteractor.playlistDuration(tracks)
+                _playlistDuration.postValue(duration)
+            } catch (e: Exception) {
+                Log.e("Coroutine Exception", e.stackTraceToString())
+            }
         }
     }
 
     fun calculateTracksNumber(num: Int) {
         viewModelScope.launch {
-            _tracksNumber.postValue(Tools.amountTextFormater(num))
+            try {
+                _tracksNumber.postValue(Tools.amountTextFormater(num))
+            } catch (e: Exception) {
+                Log.e("Coroutine Exception", e.stackTraceToString())
+            }
         }
     }
 
@@ -50,8 +59,12 @@ class SinglePlaylistViewModel(
         if (isClickAllowed) {
             isClickAllowed = false
             viewModelScope.launch {
-                delay(Tools.CLICK_DEBOUNCE_DELAY_MS)
-                isClickAllowed = true
+                try {
+                    delay(Tools.CLICK_DEBOUNCE_DELAY_MS)
+                    isClickAllowed = true
+                } catch (e: Exception) {
+                    Log.e("Coroutine Exception", e.stackTraceToString())
+                }
             }
         }
         return current
@@ -59,31 +72,46 @@ class SinglePlaylistViewModel(
 
     fun getTracks(playlistId: Int) {
         viewModelScope.launch {
-            playlistInteractor.getTracks(playlistId).collect {
-                if (it.isEmpty()) _playlistState.postValue(PlaylistTracksState.Empty)
-                else _playlistState.postValue(PlaylistTracksState.Content(it))
+            try {
+                playlistInteractor.getTracks(playlistId).collect {
+                    if (it.isEmpty()) _playlistState.postValue(PlaylistTracksState.Empty)
+                    else _playlistState.postValue(PlaylistTracksState.Content(it))
+                }
+            } catch (e: Exception) {
+                Log.e("Coroutine Exception", e.stackTraceToString())
             }
         }
     }
 
     fun removePlaylist(playlist: Playlist) {
         viewModelScope.launch {
-            playlistInteractor.removePlaylist(playlist)
+            try {
+                playlistInteractor.removePlaylist(playlist)
+            } catch (e: Exception) {
+                Log.e("Coroutine Exception", e.stackTraceToString())
+            }
         }
     }
+
     fun removeTrackFromPlaylist(playlist: Playlist, track: Track) {
         viewModelScope.launch {
-            playlistInteractor.removeSavedTrackFromPlaylist(playlist, track)
+            try {
+                playlistInteractor.removeSavedTrackFromPlaylist(playlist, track)
+            } catch (e: Exception) {
+                Log.e("Coroutine Exception", e.stackTraceToString())
+            }
         }
     }
 
     fun sharePlaylist(playlist: Playlist, tracks: List<Track>) {
-        var text = "${playlist.title} ${playlist.description}\n${Tools.amountTextFormater(tracks.size)}\n"
+        var text =
+            "${playlist.title} ${playlist.description}\n${Tools.amountTextFormater(tracks.size)}\n"
         val stringBuilder = StringBuilder()
         tracks.forEachIndexed { index, track ->
-            stringBuilder.append("${index + 1}. ").append("${track.artistName} - ").append("${track.trackName} ").append(
-                SimpleDateFormat("mm:ss", Locale.getDefault()).format(track.trackTimeMillis)
-            ).append("\n")
+            stringBuilder.append("${index + 1}. ").append("${track.artistName} - ")
+                .append("${track.trackName} ").append(
+                    SimpleDateFormat("mm:ss", Locale.getDefault()).format(track.trackTimeMillis)
+                ).append("\n")
         }
         text += stringBuilder
         sharingInteractor.sharePlaylist(text)
@@ -91,8 +119,12 @@ class SinglePlaylistViewModel(
 
     fun updatePlaylist(playlist: Playlist) {
         viewModelScope.launch {
-            playlistInteractor.updatePlaylist(playlist)
-            getTracks(playlist.id)
+            try {
+                playlistInteractor.updatePlaylist(playlist)
+                getTracks(playlist.id)
+            } catch (e: Exception) {
+                Log.e("Coroutine Exception", e.stackTraceToString())
+            }
         }
     }
 }

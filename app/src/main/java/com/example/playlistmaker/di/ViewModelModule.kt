@@ -7,8 +7,8 @@ import com.example.playlistmaker.ui.media.editplaylist.viewmodel.EditPlaylistVie
 import com.example.playlistmaker.ui.media.favoritetracks.viewmodel.FavoriteTracksViewModel
 import com.example.playlistmaker.ui.media.newplaylist.viewmodel.NewPlaylistViewModel
 import com.example.playlistmaker.ui.media.playlists.viewmodel.PlaylistsViewModel
-import com.example.playlistmaker.ui.player.view_model.PlayerViewModel
-import com.example.playlistmaker.ui.search.view_model.SearchViewModel
+import com.example.playlistmaker.ui.player.viewmodel.PlayerViewModel
+import com.example.playlistmaker.ui.search.viewmodel.SearchViewModel
 import com.example.playlistmaker.ui.settings.view_model.SettingsViewModel
 import com.example.playlistmaker.ui.singleplaylist.viewmodel.SinglePlaylistViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel

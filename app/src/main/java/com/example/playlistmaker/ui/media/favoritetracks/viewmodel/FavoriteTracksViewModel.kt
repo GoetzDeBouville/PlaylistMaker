@@ -1,5 +1,6 @@
 package com.example.playlistmaker.ui.media.favoritetracks.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -32,9 +33,13 @@ class FavoriteTracksViewModel(private val favoriteTracksInteractor: FavoriteTrac
 
     fun getFavoriteTracks() {
         viewModelScope.launch {
-            favoriteTracksInteractor.getFavoriteTracks().collect {
-                if (it.isEmpty()) _state.postValue(FavoriteTracksState.Empty)
-                else _state.postValue(FavoriteTracksState.Content(it))
+            try {
+                favoriteTracksInteractor.getFavoriteTracks().collect {
+                    if (it.isEmpty()) _state.postValue(FavoriteTracksState.Empty)
+                    else _state.postValue(FavoriteTracksState.Content(it))
+                }
+            } catch (e: Exception) {
+                Log.e("Coroutine Exception", e.stackTraceToString())
             }
         }
     }

@@ -1,5 +1,6 @@
 package com.example.playlistmaker.ui.media.newplaylist.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -14,7 +15,11 @@ open class NewPlaylistViewModel(private val playlistInteractor: PlaylistInteract
     open val state: LiveData<NewPlaylistState> = _state
     open fun savePlayList(playlist: Playlist) {
         viewModelScope.launch {
-            playlistInteractor.addNewPlaylist(playlist)
+            try {
+                playlistInteractor.addNewPlaylist(playlist)
+            } catch (e: Exception) {
+                Log.e("Coroutine Exception", e.stackTraceToString())
+            }
         }
     }
 

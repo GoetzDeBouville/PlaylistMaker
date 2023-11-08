@@ -1,5 +1,6 @@
 package com.example.playlistmaker.ui.media.editplaylist.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.domain.db.PlaylistInteractor
 import com.example.playlistmaker.domain.media.models.Playlist
@@ -11,7 +12,11 @@ class EditPlaylistViewModel(
 ) : NewPlaylistViewModel(playlistInteractor) {
     fun updatePlaylist(playlist: Playlist) {
         viewModelScope.launch {
-            playlistInteractor.updatePlaylist(playlist)
+            try {
+                playlistInteractor.updatePlaylist(playlist)
+            } catch (e: Exception) {
+                Log.e("Coroutine Exception", e.stackTraceToString())
+            }
         }
     }
 }

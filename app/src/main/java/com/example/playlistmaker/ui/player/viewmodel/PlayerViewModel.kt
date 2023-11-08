@@ -1,5 +1,6 @@
-package com.example.playlistmaker.ui.player.view_model
+package com.example.playlistmaker.ui.player.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -48,7 +49,11 @@ class PlayerViewModel(
 
     init {
         viewModelScope.launch {
-            _isFavorite.value = favoriteTracksInteractor.isFavoriteTrack(track)
+            try {
+                _isFavorite.value = favoriteTracksInteractor.isFavoriteTrack(track)
+            } catch (e: Exception) {
+                Log.e("Coroutine Exception", e.stackTraceToString())
+            }
         }
 
         playerInteractor.getPlayerState(object : PlayerStateObserver {
@@ -69,30 +74,42 @@ class PlayerViewModel(
     fun addTrackToPlayList(playlist: Playlist, track: Track) {
         _selectedPlaylistName.postValue(playlist.title)
         viewModelScope.launch {
-            playlistInteractor.addTrackToPlayList(playlist, track).collect {
-                if (it) _addingState.postValue(AddToPlaylist.ADDED)
-                else _addingState.postValue(AddToPlaylist.NOT_ADDED)
+            try {
+                playlistInteractor.addTrackToPlayList(playlist, track).collect {
+                    if (it) _addingState.postValue(AddToPlaylist.ADDED)
+                    else _addingState.postValue(AddToPlaylist.NOT_ADDED)
+                }
+            } catch (e: Exception) {
+                Log.e("Coroutine Exception", e.stackTraceToString())
             }
         }
     }
 
     fun getPlaylists() {
         viewModelScope.launch {
-            playlistInteractor.getPlaylists().collect {
-                if (it.isEmpty()) _playlistState.postValue(PlaylistState.Empty)
-                else _playlistState.postValue(PlaylistState.Content(it))
+            try {
+                playlistInteractor.getPlaylists().collect {
+                    if (it.isEmpty()) _playlistState.postValue(PlaylistState.Empty)
+                    else _playlistState.postValue(PlaylistState.Content(it))
+                }
+            } catch (e: Exception) {
+                Log.e("Coroutine Exception", e.stackTraceToString())
             }
         }
     }
 
     fun onFavoriteTrackClicked() {
         viewModelScope.launch {
-            if (_isFavorite.value == true) {
-                favoriteTracksInteractor.removeFromFavoriteTrackList(track)
-                _isFavorite.postValue(false)
-            } else {
-                favoriteTracksInteractor.addToFavoriteTrackList(track)
-                _isFavorite.postValue(true)
+            try {
+                if (_isFavorite.value == true) {
+                    favoriteTracksInteractor.removeFromFavoriteTrackList(track)
+                    _isFavorite.postValue(false)
+                } else {
+                    favoriteTracksInteractor.addToFavoriteTrackList(track)
+                    _isFavorite.postValue(true)
+                }
+            } catch (e: Exception) {
+                Log.e("Coroutine Exception", e.stackTraceToString())
             }
         }
     }

@@ -7,7 +7,6 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ActivityMainBinding
-import com.example.playlistmaker.ui.main.BottomNavigationController
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -27,6 +26,7 @@ class MainActivity : AppCompatActivity() {
                 R.id.playerFragment -> hideBottomNavigation()
                 R.id.playlistsFragment -> hideBottomNavigation()
                 R.id.singlePlaylist -> hideBottomNavigation()
+                R.id.editPlaylistFragment -> hideBottomNavigation()
                 else -> showBottomNavigation()
             }
         }

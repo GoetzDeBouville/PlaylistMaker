@@ -1,5 +1,6 @@
 package com.example.playlistmaker.ui.media.playlists.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -10,7 +11,7 @@ import com.example.playlistmaker.utils.Tools
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-class PlaylistsViewModel (private val playlistInteractor: PlaylistInteractor) : ViewModel() {
+class PlaylistsViewModel(private val playlistInteractor: PlaylistInteractor) : ViewModel() {
     private val _state = MutableLiveData<PlaylistState>()
     val state: LiveData<PlaylistState> = _state
     private var isClickAllowed = true
@@ -29,9 +30,13 @@ class PlaylistsViewModel (private val playlistInteractor: PlaylistInteractor) : 
 
     fun getPlaylists() {
         viewModelScope.launch {
-            playlistInteractor.getPlaylists().collect {
-                if (it.isEmpty()) _state.postValue(PlaylistState.Empty)
-                else _state.postValue(PlaylistState.Content(it))
+            try {
+                playlistInteractor.getPlaylists().collect {
+                    if (it.isEmpty()) _state.postValue(PlaylistState.Empty)
+                    else _state.postValue(PlaylistState.Content(it))
+                }
+            } catch (e: Exception) {
+                Log.e("Coroutine Exception", e.stackTraceToString())
             }
         }
     }

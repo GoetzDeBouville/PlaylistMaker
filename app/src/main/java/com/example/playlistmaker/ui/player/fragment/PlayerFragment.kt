@@ -1,6 +1,5 @@
 package com.example.playlistmaker.ui.player.fragment
 
-import android.content.Context
 import android.graphics.drawable.VectorDrawable
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -20,9 +19,8 @@ import com.example.playlistmaker.domain.media.models.AddToPlaylist
 import com.example.playlistmaker.domain.media.models.PlaylistState
 import com.example.playlistmaker.domain.player.models.PlayerState
 import com.example.playlistmaker.domain.search.models.Track
-import com.example.playlistmaker.ui.main.BottomNavigationController
 import com.example.playlistmaker.ui.player.adapter.PlaylistAdapter
-import com.example.playlistmaker.ui.player.view_model.PlayerViewModel
+import com.example.playlistmaker.ui.player.viewmodel.PlayerViewModel
 import com.example.playlistmaker.ui.search.fragment.SearchFragment
 import com.example.playlistmaker.utils.Tools
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -57,7 +55,7 @@ class PlayerFragment : Fragment() {
             }
         bottomSheetObserver(bottomSheetBehavior, binding.overlay)
 
-        track = arguments?.getParcelable<Track>(SearchFragment.TRACK_KEY)
+        track = arguments?.getParcelable(SearchFragment.TRACK_KEY)
         viewModel.getPlaylists()
         vectorDrawable =
             ContextCompat.getDrawable(requireContext(), R.drawable.play_button) as VectorDrawable

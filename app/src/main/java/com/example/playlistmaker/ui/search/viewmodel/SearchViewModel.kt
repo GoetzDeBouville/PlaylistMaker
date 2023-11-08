@@ -1,5 +1,6 @@
-package com.example.playlistmaker.ui.search.view_model
+package com.example.playlistmaker.ui.search.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -40,8 +41,12 @@ class SearchViewModel(
         if (isClickAllowed) {
             isClickAllowed = false
             viewModelScope.launch {
-                delay(Tools.CLICK_DEBOUNCE_DELAY_MS)
-                isClickAllowed = true
+                try {
+                    delay(Tools.CLICK_DEBOUNCE_DELAY_MS)
+                    isClickAllowed = true
+                } catch (e: Exception) {
+                    Log.e("Coroutine Exception", e.stackTraceToString())
+                }
             }
         }
         return current
@@ -59,8 +64,12 @@ class SearchViewModel(
 
             searchJob?.cancel()
             searchJob = viewModelScope.launch {
-                delay(Tools.SEARCH_DEBOUNCE_DELAY_MS)
-                searchRequest(searchText)
+                try {
+                    delay(Tools.SEARCH_DEBOUNCE_DELAY_MS)
+                    searchRequest(searchText)
+                } catch (e: Exception) {
+                    Log.e("Coroutine Exception", e.stackTraceToString())
+                }
             }
         }
     }
@@ -69,10 +78,14 @@ class SearchViewModel(
         if (newSearchText.isNotEmpty()) {
             renderState(SearchState.Loading)
             viewModelScope.launch {
-                searchInteractor.searchTracks(newSearchText)
-                    .collect { pair ->
-                        processResult(pair.first, pair.second)
-                    }
+                try {
+                    searchInteractor.searchTracks(newSearchText)
+                        .collect { pair ->
+                            processResult(pair.first, pair.second)
+                        }
+                } catch (e: Exception) {
+                    Log.e("Coroutine Exception", e.stackTraceToString())
+                }
             }
         }
     }
