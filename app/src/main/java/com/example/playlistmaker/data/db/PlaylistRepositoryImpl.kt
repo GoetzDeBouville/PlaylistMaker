@@ -40,9 +40,9 @@ class PlaylistRepositoryImpl(
             val playlistTrack = PlaylistTracksEntity(playlist.id, track.trackId)
             appDatabase.playlistTracksDao().insertPlaylistTrack(playlistTrack)
             val trackList = getTracks(playlist.id).first()
-            playlist.trackAmount = trackList.size
+            val updatePlaylist = playlist.copy(trackAmount = trackList.size)
 
-            updatePlaylist(playlist)
+            updatePlaylist(updatePlaylist)
             emit(true)
         }
 
@@ -76,8 +76,8 @@ class PlaylistRepositoryImpl(
     override suspend fun removeSavedTrackFromPlaylist(playlist: Playlist, track: Track) {
         appDatabase.playlistTracksDao().removeTrackFromPlaylistTrack(playlist.id, track.trackId)
         val trackList = getTracks(playlist.id).first()
-        playlist.trackAmount = trackList.size
-        updatePlaylist(playlist)
+        val updatedPlaylist = playlist.copy(trackAmount = trackList.size)
+        updatePlaylist(updatedPlaylist)
         if (appDatabase.playlistTracksDao().getTracksById(track.trackId).isEmpty()) {
             appDatabase.savedTracksDao().removeSavedTrack(track.trackId)
         }

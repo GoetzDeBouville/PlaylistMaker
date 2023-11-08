@@ -10,5 +10,5 @@ data class Playlist(
     val title: String,
     val description: String?,
     val imagePath: Uri?,
-    var trackAmount: Int
+    val trackAmount: Int
 ) : Parcelable

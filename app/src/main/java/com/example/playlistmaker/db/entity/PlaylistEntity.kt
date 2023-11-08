@@ -13,5 +13,5 @@ data class PlaylistEntity(
     val description: String?,
     val imagePath: String?,
     @ColumnInfo(defaultValue = "0")
-    var trackAmount: Int = 0
+    val trackAmount: Int = 0
 )
