@@ -34,7 +34,7 @@ class SinglePlaylistFragment : Fragment() {
     private var playlist: Playlist? = null
     private val viewModel: SinglePlaylistViewModel by viewModel()
     private var trackCount: Int = 0
-    private lateinit var tracks: List<Track>
+    private var tracks: List<Track> = emptyList()
     private lateinit var adapter: TrackAdapter
 
     override fun onCreateView(
@@ -61,11 +61,11 @@ class SinglePlaylistFragment : Fragment() {
 
         val bottomSheetContainer = binding.llBottomSheet
 
-        val bottomSheetBehavior: BottomSheetBehavior<LinearLayout> =
+        val bottomSheetTracksContainer: BottomSheetBehavior<LinearLayout> =
             BottomSheetBehavior.from(bottomSheetContainer).apply {
                 state = BottomSheetBehavior.STATE_COLLAPSED
             }
-        bottomSheetObserver(bottomSheetBehavior, binding.overlay)
+        bottomSheetObserver(bottomSheetTracksContainer, binding.overlay)
 
         val bottomSheetMenuContainer = binding.llBottomSheetMenu
 
@@ -82,32 +82,16 @@ class SinglePlaylistFragment : Fragment() {
         viewModel.getTracks(playlist!!.id)
 
         binding.ivShare.post {
-            val location = IntArray(2)
-            binding.ivShare.getLocationInWindow(location)
-            val shareBottom = location[1] + binding.ivShare.height
-            val screenHeight = Resources.getSystem().displayMetrics.heightPixels
-            val peekHeight = screenHeight - shareBottom + 40
-
-            bottomSheetBehavior.peekHeight = peekHeight
+            bottomSheetTracksContainer.peekHeight = calcHeight(binding.ivShare)
         }
 
         binding.tvTitle.post {
-            val location = IntArray(2)
-            binding.tvTitle.getLocationInWindow(location)
-            val titleBottom = location[1] + binding.tvTitle.height
-            val screenHeight = Resources.getSystem().displayMetrics.heightPixels
-            val peekHeight = screenHeight - titleBottom + 40
-
-            bottomSheetMenu.peekHeight = peekHeight
-
-            val layoutParams = bottomSheetMenuContainer.layoutParams
-            layoutParams.height = peekHeight
-            bottomSheetMenuContainer.layoutParams = layoutParams
+            bottomSheetMenu.peekHeight = calcHeight(binding.tvTitle)
         }
 
         binding.ivActionBtn.setOnClickListener {
             bottomSheetMenu.state = BottomSheetBehavior.STATE_COLLAPSED
-            bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+            bottomSheetTracksContainer.state = BottomSheetBehavior.STATE_HIDDEN
         }
     }
 
@@ -131,6 +115,16 @@ class SinglePlaylistFragment : Fragment() {
                 overlay.alpha = slideOffset
             }
         })
+    }
+
+    private fun calcHeight(view: View) : Int {
+        val location = IntArray(2)
+        view.getLocationOnScreen(location)
+        val viewHeight = location[1] + view.height
+        val screenHeight = Resources.getSystem().displayMetrics.heightPixels
+        val extraSpacing = resources.getDimensionPixelSize(R.dimen.dimen_12dp)
+
+        return (screenHeight - viewHeight - extraSpacing)
     }
 
     private fun fetchPalylist() {
@@ -213,7 +207,7 @@ class SinglePlaylistFragment : Fragment() {
                     viewModel.removePlaylist(playlist!!)
                     findNavController().navigateUp()
                 }
-                .setNegativeButton(getString(R.string.cancel)) { _, id ->
+                .setNegativeButton(getString(R.string.cancel)) { _, _ ->
                 }
                 .create()
                 .show()
@@ -244,11 +238,11 @@ class SinglePlaylistFragment : Fragment() {
                 viewModel.calculatePlaylistDuration(it.trackList)
                 trackCount = it.trackList.size
                 tracks = it.trackList.toMutableList()
-                viewModel.calculatetracksNumber(trackCount)
+                viewModel.calculateTracksNumber(trackCount)
                 adapter.notifyDataSetChanged()
             } else {
                 adapter.trackList.clear()
-                viewModel.calculatetracksNumber(0)
+                viewModel.calculateTracksNumber(0)
                 trackCount = 0
                 viewModel.calculatePlaylistDuration(emptyList())
                 adapter.notifyDataSetChanged()

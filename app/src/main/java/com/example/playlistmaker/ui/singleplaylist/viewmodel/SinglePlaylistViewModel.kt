@@ -32,6 +32,19 @@ class SinglePlaylistViewModel(
 
     private var isClickAllowed = true
 
+    fun calculatePlaylistDuration(tracks: List<Track>) {
+        viewModelScope.launch {
+            val duration = playlistInteractor.playlistDuration(tracks)
+            _playlistDuration.postValue(duration)
+        }
+    }
+
+    fun calculateTracksNumber(num: Int) {
+        viewModelScope.launch {
+            _tracksNumber.postValue(Tools.amountTextFormater(num))
+        }
+    }
+
     fun clickDebounce(): Boolean {
         val current = isClickAllowed
         if (isClickAllowed) {
@@ -50,26 +63,6 @@ class SinglePlaylistViewModel(
                 if (it.isEmpty()) _playlistState.postValue(PlaylistTracksState.Empty)
                 else _playlistState.postValue(PlaylistTracksState.Content(it))
             }
-        }
-    }
-
-    fun calculatePlaylistDuration(tracks: List<Track>) {
-        viewModelScope.launch {
-            val duration = playlistInteractor.playlistDuration(tracks)
-            _playlistDuration.postValue(duration)
-        }
-    }
-
-    fun calculatetracksNumber(num: Int) {
-        viewModelScope.launch {
-            _tracksNumber.postValue(Tools.amountTextFormater(num))
-        }
-    }
-
-    fun updatePlaylist(playlist: Playlist) {
-        viewModelScope.launch {
-            playlistInteractor.updatePlaylist(playlist)
-            getTracks(playlist.id)
         }
     }
 
@@ -94,5 +87,12 @@ class SinglePlaylistViewModel(
         }
         text += stringBuilder
         sharingInteractor.sharePlaylist(text)
+    }
+
+    fun updatePlaylist(playlist: Playlist) {
+        viewModelScope.launch {
+            playlistInteractor.updatePlaylist(playlist)
+            getTracks(playlist.id)
+        }
     }
 }
