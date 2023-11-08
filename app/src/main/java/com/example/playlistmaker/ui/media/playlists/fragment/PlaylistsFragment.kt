@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentPlaylistsBinding
 import com.example.playlistmaker.domain.media.models.PlaylistState
+import com.example.playlistmaker.ui.media.playlists.adapter.GridSpacingItemDecoration
 import com.example.playlistmaker.ui.media.playlists.viewmodel.PlaylistsViewModel
 import com.example.playlistmaker.ui.media.playlists.adapter.PlaylistsAdapter
 import com.example.playlistmaker.utils.Tools
@@ -60,6 +61,7 @@ class PlaylistsFragment : Fragment() {
 
         binding.recyclerView.layoutManager = GridLayoutManager(requireContext(),2)
         binding.recyclerView.adapter = adapter
+        binding.recyclerView.addItemDecoration(GridSpacingItemDecoration(2, resources.getDimensionPixelSize(R.dimen.dimen_8dp), true))
     }
 
     override fun onResume() {
