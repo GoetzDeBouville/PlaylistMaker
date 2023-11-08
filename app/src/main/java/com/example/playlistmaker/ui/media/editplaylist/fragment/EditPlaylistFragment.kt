@@ -4,7 +4,6 @@ import android.animation.ArgbEvaluator
 import android.animation.ValueAnimator
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.core.content.ContextCompat
@@ -31,13 +30,12 @@ class EditPlaylistFragment : NewPlaylistFragment() {
         super.onViewCreated(view, savedInstanceState)
         playlist = arguments?.getParcelable(Tools.PLAYLIST_DATA)
         imagePath = playlist?.imagePath
-        Log.i("EditPlaylistFragment", "playlist = $playlist")
         val callback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 findNavController().navigateUp()
             }
         }
-        fetchFragment(playlist!!)
+        playlist?.let { fetchFragment(it) }
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
         actionListeners()
     }
@@ -52,20 +50,21 @@ class EditPlaylistFragment : NewPlaylistFragment() {
         binding.cvCreateButton.setOnClickListener {
             val blueButton = ContextCompat.getColor(requireContext(), R.color.blue_text)
 
-            Log.i("EditPlaylistFragment", "imagePath = $imagePath")
             if (binding.cvCreateButton.cardBackgroundColor.defaultColor == blueButton) {
-                val playlist = Playlist(
-                    playlist!!.id,
-                    title = binding.etTitle.text.toString(),
-                    description = binding.etDescription.text.toString(),
-                    imagePath = imagePath,
-                    trackAmount = playlist!!.trackAmount
-                )
-                viewModel.updatePlaylist(playlist)
+                playlist?.let {
+                    val updatedPlaylist = Playlist(
+                        id = it.id,
+                        title = binding.etTitle.text.toString(),
+                        description = binding.etDescription.text.toString(),
+                        imagePath = imagePath,
+                        trackAmount = it.trackAmount
+                    )
+                    viewModel.updatePlaylist(updatedPlaylist)
 
-                findNavController().popBackStack()
-                findNavController().popBackStack()
-                findNavController().navigate(R.id.action_global_to_singlePlaylist, bundleOf(Tools.PLAYLIST_DATA to playlist))
+                    findNavController().popBackStack()
+                    findNavController().popBackStack()
+                    findNavController().navigate(R.id.action_global_to_singlePlaylist, bundleOf(Tools.PLAYLIST_DATA to updatedPlaylist))
+                } ?: return@setOnClickListener
             } else {
                 viewLifecycleOwner.lifecycleScope.launch {
                     val colorAnimator =
