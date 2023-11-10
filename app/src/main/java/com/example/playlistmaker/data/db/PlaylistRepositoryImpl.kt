@@ -3,24 +3,22 @@ package com.example.playlistmaker.data.db
 import com.example.playlistmaker.data.converters.PlaylistDbConverter
 import com.example.playlistmaker.data.converters.SavedTrackDbConverter
 import com.example.playlistmaker.db.AppDatabase
-import com.example.playlistmaker.db.dao.PlaylistTracksDao
-import com.example.playlistmaker.db.dao.SavedTrackDao
 import com.example.playlistmaker.db.entity.PlaylistEntity
 import com.example.playlistmaker.db.entity.PlaylistTracksEntity
+import com.example.playlistmaker.db.entity.SavedTrackEntity
 import com.example.playlistmaker.domain.db.PlaylistRepository
 import com.example.playlistmaker.domain.media.models.Playlist
 import com.example.playlistmaker.domain.search.models.Track
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 
 class PlaylistRepositoryImpl(
     private val appDatabase: AppDatabase,
     private val playlistDbConverter: PlaylistDbConverter,
-    private val playlistTracksDao: PlaylistTracksDao,
     private val savedTrackDbConverter: SavedTrackDbConverter,
-    private val savedTrackDao: SavedTrackDao
 ) : PlaylistRepository {
     override suspend fun addNewPlaylist(playlist: Playlist) {
         val playlistEntity = playlistDbConverter.map(playlist).copy()
@@ -29,7 +27,9 @@ class PlaylistRepositoryImpl(
 
     override suspend fun addTrackToPlayList(playlist: Playlist, track: Track): Flow<Boolean> =
         flow {
-            if (appDatabase.playlistTracksDao().getPlaylistTracksById(playlist.id, track.trackId).isNotEmpty()) {
+            if (appDatabase.playlistTracksDao().getPlaylistTracksById(playlist.id, track.trackId)
+                    .isNotEmpty()
+            ) {
                 emit(false)
                 return@flow
             }
@@ -39,8 +39,10 @@ class PlaylistRepositoryImpl(
 
             val playlistTrack = PlaylistTracksEntity(playlist.id, track.trackId)
             appDatabase.playlistTracksDao().insertPlaylistTrack(playlistTrack)
-            playlist.trackAmount++
-            updatePlaylist(playlist)
+            val trackList = getTracks(playlist.id).first()
+            val updatePlaylist = playlist.copy(trackAmount = trackList.size)
+
+            updatePlaylist(updatePlaylist)
             emit(true)
         }
 
@@ -51,9 +53,34 @@ class PlaylistRepositoryImpl(
         }.flowOn(Dispatchers.IO)
     }
 
+    override fun getTracks(playlistId: Int): Flow<List<Track>> {
+        return flow {
+            val playlistTrackList = appDatabase.playlistTracksDao().getTracksByPlaylistId(playlistId)
+            val savedTracks = playlistTrackList
+                .mapNotNull { appDatabase.savedTracksDao().getTrackById(it.trackId) }
+                .sortedByDescending { it.timeStamp }
+            emit(convertTracksFromEntity(savedTracks))
+        }.flowOn(Dispatchers.IO)
+    }
+
+    override suspend fun getTrackRelations(trackId: Int): Int {
+        val playlistTrackList = appDatabase.playlistTracksDao().getTracksById(trackId)
+        return playlistTrackList.size
+    }
+
     override suspend fun removePlaylist(playlist: Playlist) {
-        val playlistEntity = playlistDbConverter.map(playlist)
-        appDatabase.playlistDao().removePlaylist(playlistEntity.id)
+        appDatabase.playlistDao().removePlaylist(playlist.id)
+    }
+
+
+    override suspend fun removeSavedTrackFromPlaylist(playlist: Playlist, track: Track) {
+        appDatabase.playlistTracksDao().removeTrackFromPlaylistTrack(playlist.id, track.trackId)
+        val trackList = getTracks(playlist.id).first()
+        val updatedPlaylist = playlist.copy(trackAmount = trackList.size)
+        updatePlaylist(updatedPlaylist)
+        if (appDatabase.playlistTracksDao().getTracksById(track.trackId).isEmpty()) {
+            appDatabase.savedTracksDao().removeSavedTrack(track.trackId)
+        }
     }
 
     override suspend fun updatePlaylist(playlist: Playlist) {
@@ -61,32 +88,14 @@ class PlaylistRepositoryImpl(
     }
 
     private fun convertFromEntity(playlists: List<PlaylistEntity>): List<Playlist> {
-        return playlists.map { track ->
-            playlistDbConverter.map(track)
+        return playlists.map {
+            playlistDbConverter.map(it)
         }
     }
 
-    suspend fun getTracksByPlaylistId(playlistId: Int): Flow<List<Track>> = flow {
-        val playlistTrackEntities = playlistTracksDao.getTracksByPlaylistId(playlistId)
-
-        val trackList = mutableListOf<Track>()
-
-        for (entity in playlistTrackEntities) {
-            val savedTrackEntity = savedTrackDao.getTrackById(entity.trackId)
-            if (savedTrackEntity != null) {
-                trackList.add(savedTrackDbConverter.map(savedTrackEntity))
-            }
-        }
-        emit(trackList)
-    }
-
-    suspend fun removeSavedTrackFromPlaylist(playlist: Playlist, track: Track) {
-        playlistTracksDao.removeTrackFromPlaylistTrack(playlist.id, track.trackId)
-        playlist.trackAmount--
-        updatePlaylist(playlist)
-
-        if (playlistTracksDao.getTracksById(track.trackId).isEmpty()) {
-            savedTrackDao.removeSavedTrack(track.trackId)
+    private fun convertTracksFromEntity(tracks: List<SavedTrackEntity>): List<Track> {
+        return tracks.map { track ->
+            savedTrackDbConverter.map(track)
         }
     }
 }

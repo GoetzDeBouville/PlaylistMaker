@@ -5,18 +5,20 @@
     style="@style/ScreenBackGround"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.media.fragment.NewPlaylistFragment">
+    tools:context=".ui.media.newplaylist.fragment.NewPlaylistFragment">
 
     <ImageView
         android:id="@+id/iv_arrow_back"
         style="@style/SettingsHeaderIconStyle"
         android:layout_marginTop="@dimen/dimen_4dp"
+        android:contentDescription="@string/description"
         android:padding="@dimen/dimen_20dp"
         android:src="@drawable/arrow_back"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
+        android:id="@+id/tv_header_title"
         style="@style/SettingsHeaderTextStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -28,9 +30,11 @@
     <ImageView
         android:id="@+id/iv_pl_cover"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_marginTop="@dimen/dimen_24dp"
+        android:contentDescription="@string/description"
         android:src="@drawable/ic_component_ph"
+        app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintEnd_toStartOf="@id/right_guideline"
         app:layout_constraintStart_toEndOf="@id/left_guideline"
         app:layout_constraintTop_toBottomOf="@id/iv_arrow_back" />
@@ -85,7 +89,6 @@
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/et_title"
             style="@style/TextInputEditTextStyle"
-            android:textSize="@dimen/text_16sp"
             app:layout_constraintEnd_toEndOf="@id/right_text_guideline"
             app:layout_constraintStart_toStartOf="@id/left_text_guideline"
             app:layout_constraintTop_toBottomOf="@+id/iv_pl_cover" />
@@ -111,9 +114,8 @@
         app:layout_constraintTop_toBottomOf="@id/ti_title">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/description_edit"
+            android:id="@+id/et_description"
             style="@style/TextInputEditTextStyle"
-            android:textSize="@dimen/text_16sp"
             app:layout_constraintEnd_toEndOf="@id/right_text_guideline"
             app:layout_constraintStart_toStartOf="@id/left_text_guideline"
             app:layout_constraintTop_toBottomOf="@+id/iv_pl_cover" />
@@ -132,6 +134,7 @@
         tools:backgroundTint="@color/text_gray">
 
         <TextView
+            android:id="@+id/tv_btn_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"

@@ -21,6 +21,10 @@ class SharingInteractorImpl(
         externalNavigator.shareApp(getShareAppLink(), getShareAppTitle())
     }
 
+    override fun sharePlaylist(playlistData: String) {
+        externalNavigator.sharePlaylist(playlistData)
+    }
+
     private fun getNoAppText(): String {
         return contentProvider.getNoAppText()
     }
