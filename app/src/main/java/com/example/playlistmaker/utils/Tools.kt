@@ -1,6 +1,7 @@
 package com.example.playlistmaker.utils
 
 import android.content.Context
+import android.graphics.Color
 import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
@@ -38,6 +39,14 @@ object Tools {
             lastDigit in 2..4 -> "$duration минуты"
             else -> "$duration минут"
         }
+    }
+
+    fun isBackgroundColorLight(color: Int): Boolean {
+        val red = Color.red(color)
+        val green = Color.green(color)
+        val blue = Color.blue(color)
+        val luminance = (0.2126 * red + 0.7152 * green + 0.0722 * blue).toFloat()
+        return luminance > 160
     }
 
     fun showSnackbar(
