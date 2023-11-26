@@ -11,8 +11,8 @@ import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import coil.load
+import coil.transform.RoundedCornersTransformation
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentPlayerBinding
 import com.example.playlistmaker.domain.media.models.AddToPlaylist
@@ -127,31 +127,24 @@ class PlayerFragment : Fragment() {
         }
     }
 
-    private fun fetchPlayer() {
-        with(binding) {
-            Glide.with(this@PlayerFragment)
-                .load(track?.getArtwork512())
-                .placeholder(R.drawable.poster_placeholder)
-                .transform(
-                    RoundedCorners(
-                        resources.getDimensionPixelSize(R.dimen.album_cover_corner_radius)
-                    )
-                )
-                .into(albumPosterImage)
-            trackName.text = track?.trackName
-            trackArtist.text = track?.artistName
-            textDurationValue.text = track?.timeFormater()
-            if (track?.collectionName != null) {
-                textAlbumValue.text = track?.collectionName
-            } else {
-                textAlbumValue.visibility = View.INVISIBLE
-                textAlbum.visibility = View.INVISIBLE
-            }
-            textGenreValue.text = track?.primaryGenreName
-            textCountryValue.text = track?.country
-            textYearValue.text = track?.releaseDate
-            textYearValue.text = track?.yearFormater()
+    private fun fetchPlayer() = with(binding) {
+        albumPosterImage.load(track?.getArtwork512()) {
+            placeholder(R.drawable.poster_placeholder)
+            transformations(RoundedCornersTransformation(resources.getDimensionPixelSize(R.dimen.album_cover_corner_radius).toFloat()))
         }
+        trackName.text = track?.trackName
+        trackArtist.text = track?.artistName
+        textDurationValue.text = track?.timeFormater()
+        if (track?.collectionName != null) {
+            textAlbumValue.text = track?.collectionName
+        } else {
+            textAlbumValue.visibility = View.INVISIBLE
+            textAlbum.visibility = View.INVISIBLE
+        }
+        textGenreValue.text = track?.primaryGenreName
+        textCountryValue.text = track?.country
+        textYearValue.text = track?.releaseDate
+        textYearValue.text = track?.yearFormater()
     }
 
     private fun manageLikeButtonState(isFavorite: Boolean) {

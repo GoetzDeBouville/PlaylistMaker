@@ -20,9 +20,8 @@ import androidx.core.net.toUri
 import androidx.core.widget.doOnTextChanged
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.bitmap.CenterCrop
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import coil.load
+import coil.transform.RoundedCornersTransformation
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentNewPlaylistBinding
 import com.example.playlistmaker.domain.media.models.NewPlaylistState
@@ -49,10 +48,9 @@ open class NewPlaylistFragment : Fragment() {
                 val cornerRadius =
                     requireContext().resources.getDimensionPixelSize(R.dimen.dimen_8dp)
 
-                Glide.with(requireContext())
-                    .load(uri)
-                    .transform(CenterCrop(), RoundedCorners(cornerRadius))
-                    .into(binding.ivPlCover)
+                binding.ivPlCover.load(uri) {
+                    transformations(RoundedCornersTransformation(cornerRadius.toFloat()))
+                }
 
                 saveImageToInternalStorage(uri)
             }

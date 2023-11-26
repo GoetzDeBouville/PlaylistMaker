@@ -316,6 +316,7 @@
         android:visibility="gone" />
 
     <LinearLayout
+        tools:visibility="gone"
         android:id="@+id/ll_standard_bottom_sheet"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
