@@ -29,10 +29,7 @@ Stack:
 ## Screenshots
 
 <img src="./screenshots/001.jpg" width="240" height="480"> <img src="./screenshots/002.jpg" width="240" height="480">
-<img src="./screenshots/003.jpg" width="240" height="480"> <img src="./screenshots/004.jpg" width="240" height="480">
-
-<a href="https://www.facebook.com/double.conscience"><img height="40" width="40" align="center" alt="GoetzDeBouville" src="./assets/facebook_ic.png" /></a>
-
+<img src="./screenshots/004.jpg" width="240" height="480"> <img src="./screenshots/003.jpg" width="240" height="480">
 
 ## Getting Started 🛠
 
