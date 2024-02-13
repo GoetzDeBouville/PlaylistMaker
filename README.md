@@ -10,7 +10,7 @@ Implemented options to search tracks, create/edit/delete playlists, change the a
 Stack: 
 - [Android Studio](https://developer.android.com/studio/intro)
 - Coroutines + Flow
-- Arcitecture: MVVM, Single Activity + Android Navigation,
+- Arcitecture: MVVM+LiveData, Single Activity + Android Navigation,
 - DB: Room Persistent Library
 - Network: Retrofit2,
 - Mediaplayer
@@ -43,9 +43,9 @@ Stack:
 
 2. Open the project in Android Studio.
 
-3. Set up your Android device/emulator/simulator.
+4. Set up your Android device/emulator/simulator.
 
-4. Build and run the project.
+5. Build and run the project.
 
 
 ## Contributing :writing_hand:
