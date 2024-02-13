@@ -21,7 +21,8 @@ Stack:
 
 Screencast 
 
-https://www.youtube.com/watch?v=lTojN-d4ipk&ab_channel=Zinchenko
+[![](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=youtube&logoColor=red)](https://www.youtube.com/watch?v=lTojN-d4ipk&ab_channel=Zinchenko)
+
 
 ## Getting Started 🛠
 
