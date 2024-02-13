@@ -7,7 +7,7 @@ PlaylistMaker app using [iTunes Search API](https://developer.apple.com/library/
 The app is dedicated to searching tracks in itunes and creating playlists.
 Implemented options to search tracks, create/edit/delete playlists, change the application theme
 
-Stack: 
+### Stack: 
 - [Android Studio](https://developer.android.com/studio/intro)
 - Coroutines + Flow
 - Arcitecture: MVVM+LiveData, Single Activity + Android Navigation,
