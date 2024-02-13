@@ -21,14 +21,14 @@ Stack:
 
 Screencast 
 
-[![](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=youtube&logoColor=red)](https://www.youtube.com/watch?v=lTojN-d4ipk&ab_channel=Zinchenko)
+[![](https://img.shields.io/badge/YouTube-0077B5?style=for-the-badge&logo=youtube&logoColor=red)](https://www.youtube.com/watch?v=lTojN-d4ipk&ab_channel=Zinchenko)
 
 
 ## Getting Started 🛠
 
 1. Clone this repository to your local machine.
     ```text
-    git clone https://github.com/ibenabdallah/the-movie-db.git
+    git clone https://github.com/GoetzDeBouville/PlaylistMaker.git
     ```
 
 2. Open the project in Android Studio.
