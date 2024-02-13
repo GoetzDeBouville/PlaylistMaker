@@ -18,9 +18,17 @@ Stack:
 - File
 - Coil
 
-Screencast 
+## Screencast 
 
 [![](https://img.shields.io/badge/YouTube-0077B5?style=for-the-badge&logo=youtube&logoColor=red)](https://www.youtube.com/watch?v=lTojN-d4ipk&ab_channel=Zinchenko)
+
+![000screncast](/screenshots/000screncast.gif)
+![001screncast](/screenshots/001screncast.gif)
+![002screncast](/screenshots/002screncast.gif)
+
+## Screenshots
+
+<a href="https://www.facebook.com/double.conscience"><img height="40" width="40" align="center" alt="GoetzDeBouville" src="./assets/facebook_ic.png" /></a>
 
 
 ## Getting Started 🛠
