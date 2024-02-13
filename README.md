@@ -25,11 +25,14 @@ Stack:
 <img src="./screenshots/000screncast.gif" width="240" height="480">    <img src="./screenshots/001screencast.gif" width="240" height="480">    
 <img src="./screenshots/002screencast.gif" width="240" height="480">
 
-
 ## Screenshots
 
 <img src="./screenshots/001.jpg" width="240" height="480"> <img src="./screenshots/002.jpg" width="240" height="480">
 <img src="./screenshots/004.jpg" width="240" height="480"> <img src="./screenshots/003.jpg" width="240" height="480">
+<img src="./screenshots/0031.jpg" width="240" height="480"> <img src="./screenshots/0040.jpg" width="240" height="480">
+<img src="./screenshots/0041.jpg" width="240" height="480"> <img src="./screenshots/0042.jpg" width="240" height="480">
+<img src="./screenshots/005.jpg" width="240" height="480"> <img src="./screenshots/006.jpg" width="240" height="480">
+<img src="./screenshots/007.jpg" width="240" height="480"> <img src="./screenshots/008.jpg" width="240" height="480">
 
 ## Getting Started 🛠
 
