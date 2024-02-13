@@ -54,7 +54,7 @@ Contributions are welcome! If you find any issues or have suggestions for improv
 
 <p align="left">
 
-<a href="https://www.linkedin.com/in/aleksey-zinchenko-9b3760252/" target="blank"><img height="40" width="40" align="center" src="./assets/linkedin_ic.png" alt="aleksey-zinchenko-9b3760252" /></a>
-<a href="https://t.me/heoderer" target="blank"><img height="40" width="40" align="center" src="./assets/tg_ic.webp" alt="heoderer" /></a>
-<a href="https://www.facebook.com/double.conscience"><img height="40" width="40" align="center" alt="GoetzDeBouville" src="./assets/facebook_ic.png" /></a>
+[![](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/aleksey-zinchenko-9b3760252/)
+[![](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=telegram&logoColor=white)](https://t.me/heoderer)
+[![](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=facebook&logoColor=white)](https://www.facebook.com/double.conscience)
 </p>
