@@ -24,9 +24,9 @@ Stack:
 
 <img src="./screenshots/000screncast.gif" width="240" height="480">
 <br>
-<img src="./screenshots/001screncast.gif" width="240" height="480">
+<img src="./screenshots/001screencast.gif" width="240" height="480">
 <br>
-<img src="./screenshots/002screncast.gif" width="240" height="480">
+<img src="./screenshots/002screencast.gif" width="240" height="480">
 
 
 ## Screenshots
