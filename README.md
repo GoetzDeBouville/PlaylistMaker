@@ -17,7 +17,7 @@ Stack:
 - Mediaplayer
 - DI - Koin
 - File
-- Coil![image](https://github.com/GoetzDeBouville/PlaylistMaker/assets/31970713/e1edbe2b-fbab-47f8-a9d1-08f4e9ba1994)
+- Coil
 
 Screencast 
 
@@ -50,12 +50,11 @@ Contributions are welcome! If you find any issues or have suggestions for improv
 </a>
 
 
-
 ### Contact with me  :man_shrugging:
 
 <p align="left">
 
 [![](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/aleksey-zinchenko-9b3760252/)
-[![](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=telegram&logoColor=white)](https://t.me/heoderer)
-[![](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=facebook&logoColor=white)](https://www.facebook.com/double.conscience)
+[![](https://img.shields.io/badge/Telegram-0077B5?style=for-the-badge&logo=telegram&logoColor=white)](https://t.me/heoderer)
+[![](https://img.shields.io/badge/Facebook-0077B5?style=for-the-badge&logo=facebook&logoColor=white)](https://www.facebook.com/double.conscience)
 </p>
