@@ -24,7 +24,7 @@ Stack:
 
 ![000screncast](/screenshots/000screncast.gif)
 ![001screncast](/screenshots/001screncast.gif)
-![002screncast](/screenshots/002screncast.gif)
+![002screncast](./screenshots/002screncast.gif)
 
 ## Screenshots
 
