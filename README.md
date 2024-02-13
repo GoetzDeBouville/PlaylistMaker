@@ -23,10 +23,10 @@ Stack:
 [![](https://img.shields.io/badge/YouTube-0077B5?style=for-the-badge&logo=youtube&logoColor=red)](https://www.youtube.com/watch?v=lTojN-d4ipk&ab_channel=Zinchenko)
 
 <img src="./screenshots/000screncast.gif" width="240" height="480">
-
-<img src="./screenshots/001screncast.gif" width="240" height="320">
-
-<img src="./screenshots/002screncast.gif" width="480" height="640">
+<br>
+<img src="./screenshots/001screncast.gif" width="240" height="480">
+<br>
+<img src="./screenshots/002screncast.gif" width="240" height="480">
 
 
 ## Screenshots
