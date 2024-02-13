@@ -22,12 +22,14 @@ Stack:
 
 [![](https://img.shields.io/badge/YouTube-0077B5?style=for-the-badge&logo=youtube&logoColor=red)](https://www.youtube.com/watch?v=lTojN-d4ipk&ab_channel=Zinchenko)
 
-<img src="./screenshots/000screncast.gif" width="240" height="480">    <img src="./screenshots/001screencast.gif" width="240" height="480">    <img src="./screenshots/002screencast.gif" width="240" height="480">
+<img src="./screenshots/000screncast.gif" width="240" height="480">    <img src="./screenshots/001screencast.gif" width="240" height="480">    
+<img src="./screenshots/002screencast.gif" width="240" height="480">
 
 
 ## Screenshots
 
-![002screncast](./screenshots/002screncast.gif)
+<img src="./screenshots/001.jpg" width="240" height="480"> <img src="./screenshots/002.jpg" width="240" height="480">
+<img src="./screenshots/003.jpg" width="240" height="480"> <img src="./screenshots/004.jpg" width="240" height="480">
 
 <a href="https://www.facebook.com/double.conscience"><img height="40" width="40" align="center" alt="GoetzDeBouville" src="./assets/facebook_ic.png" /></a>
 
