@@ -21,6 +21,8 @@ import com.example.playlistmaker.ui.player.adapter.PlaylistAdapter
 import com.example.playlistmaker.ui.player.viewmodel.PlayerViewModel
 import com.example.playlistmaker.ui.search.fragment.SearchFragment
 import com.example.playlistmaker.utils.Tools
+import com.example.playlistmaker.utils.applyBlurEffect
+import com.example.playlistmaker.utils.clearBlurEffect
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.gson.Gson
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -201,13 +203,20 @@ class PlayerFragment : Fragment() {
 
     private fun renderPlayerState(state: PlayerState) = with(binding) {
         when (state) {
-            PlayerState.STATE_PLAYING -> playbackController.isClickable = true
+            PlayerState.STATE_PLAYING -> {
+                playbackController.isClickable = true
+                playbackController.clearBlurEffect()
+            }
             PlayerState.STATE_PAUSED, PlayerState.STATE_PREPARED -> {
+                playbackController.clearBlurEffect()
                 playbackController.isClickable = true
                 playbackController.setStatusPause()
             }
 
-            PlayerState.STATE_DEFAULT -> playbackController.isClickable = false
+            PlayerState.STATE_DEFAULT -> {
+                playbackController.applyBlurEffect()
+                playbackController.isClickable = false
+            }
         }
     }
 }
