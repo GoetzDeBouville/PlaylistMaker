@@ -59,10 +59,14 @@ class PlaybackControlView @JvmOverloads constructor(
         setMeasuredDimension(size, size)
     }
 
+    override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
+        super.onSizeChanged(w, h, oldw, oldh)
+        imageRect = RectF(0f, 0f, measuredWidth.toFloat(), measuredHeight.toFloat())
+    }
+
     override fun onDraw(canvas: Canvas) {
         if (imageBitmap != null) {
-            val rect = RectF(0f, 0f, measuredWidth.toFloat(), measuredHeight.toFloat())
-            canvas.drawBitmap(imageBitmap, null, rect, null)
+            canvas.drawBitmap(imageBitmap, null, imageRect, null)
         }
     }
 }
