@@ -3,7 +3,6 @@ package com.example.playlistmaker.ui.player.viewmodel
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.core.ui.BaseViewModel
 import com.example.playlistmaker.domain.db.FavoriteTracksInteractor
@@ -120,7 +119,6 @@ class PlayerViewModel(
     }
 
     fun playbackControl() {
-        Log.i("MyLog", "playbackControl lounched")
         when (playerState.value) {
             PlayerState.STATE_PLAYING -> pausePlayer()
             PlayerState.STATE_PREPARED, PlayerState.STATE_PAUSED -> startPlayer()

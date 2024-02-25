@@ -55,7 +55,7 @@ class PlayerImpl(track: Track) : Player {
                 mediaPlayer.setOnCompletionListener {
                     currentTrackTime = 0L
                     startTime = 0L
-                    playerState = PlayerState.STATE_PREPARED
+                    playerState = PlayerState.STATE_PAUSED
                     notifyPlayerStateChanged(playerState)
                     callback(false)
                 }
@@ -74,7 +74,7 @@ class PlayerImpl(track: Track) : Player {
     override fun setCurrentTrackTime(time: Long) {
         currentTrackTime = time
     }
-    
+
     override fun startPlayer() {
         try {
             if (!mediaPlayer.isPlaying) mediaPlayer.start()
