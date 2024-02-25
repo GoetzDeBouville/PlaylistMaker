@@ -1,13 +1,11 @@
 package com.example.playlistmaker.ui.player.fragment
 
-import android.graphics.drawable.VectorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.appcompat.content.res.AppCompatResources
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -24,6 +22,7 @@ import com.example.playlistmaker.ui.player.viewmodel.PlayerViewModel
 import com.example.playlistmaker.ui.search.fragment.SearchFragment
 import com.example.playlistmaker.utils.Tools
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.gson.Gson
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
@@ -31,11 +30,11 @@ class PlayerFragment : Fragment() {
     private var _binding: FragmentPlayerBinding? = null
     private val binding get() = _binding!!
     private val viewModel: PlayerViewModel by viewModel { parametersOf(track) }
-    private var vectorDrawable: VectorDrawable? = null
     private var track: Track? = null
     private val playlistAdapter = PlaylistAdapter { selectedPlaylist ->
         viewModel.addTrackToPlayList(selectedPlaylist, track!!)
     }
+    var bottomSheetBehavior: BottomSheetBehavior<LinearLayout>? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -49,24 +48,22 @@ class PlayerFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val bottomSheetContainer = binding.llStandardBottomSheet
-        val bottomSheetBehavior: BottomSheetBehavior<LinearLayout> =
+        bottomSheetBehavior =
             BottomSheetBehavior.from(bottomSheetContainer).apply {
                 state = BottomSheetBehavior.STATE_HIDDEN
             }
-        bottomSheetObserver(bottomSheetBehavior, binding.overlay)
+        bottomSheetObserver(bottomSheetBehavior!!, binding.overlay)
 
-        track = arguments?.getParcelable(SearchFragment.TRACK_KEY)
+        val trackJson = arguments?.getString(SearchFragment.TRACK_KEY)
+        val gson = Gson()
+        track = gson.fromJson(trackJson, Track::class.java)
         viewModel.getPlaylists()
-        vectorDrawable =
-            ContextCompat.getDrawable(requireContext(), R.drawable.play_button) as VectorDrawable
+
         fetchPlayer()
         observeViewModel()
 
-        binding.btnAddToPlaylist.setOnClickListener {
-            bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
-        }
         clickListeners()
-        addingToPlaylistStateObserver(bottomSheetBehavior)
+        addingToPlaylistStateObserver(bottomSheetBehavior!!)
     }
 
     override fun onPause() {
@@ -77,6 +74,11 @@ class PlayerFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         viewModel.pausePlayer()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        bottomSheetBehavior = null
     }
 
     private fun addingToPlaylistStateObserver(bottomSheetBehavior: BottomSheetBehavior<LinearLayout>) {
@@ -112,18 +114,21 @@ class PlayerFragment : Fragment() {
         })
     }
 
-    private fun clickListeners() {
-        binding.ivArrowBack.setOnClickListener {
+    private fun clickListeners() = with(binding) {
+        ivArrowBack.setOnClickListener {
             requireActivity().supportFragmentManager.popBackStack()
         }
-        binding.playbackController.setOnClickListener {
+        playbackController.setOnClickListener {
             viewModel.playbackControl()
         }
-        binding.ivLikeButton.setOnClickListener {
+        ivLikeButton.setOnClickListener {
             viewModel.onFavoriteTrackClicked()
         }
-        binding.btnBottomSheet.setOnClickListener {
+        btnBottomSheet.setOnClickListener {
             findNavController().navigate(R.id.action_global_to_newPlaylistFragment)
+        }
+        btnAddToPlaylist.setOnClickListener {
+            bottomSheetBehavior?.state = BottomSheetBehavior.STATE_COLLAPSED
         }
     }
 
@@ -171,7 +176,7 @@ class PlayerFragment : Fragment() {
 
     private fun observeViewModel() {
         viewModel.playerState.observe(requireActivity()) {
-            renderState(it)
+            renderPlayerState(it)
         }
 
         viewModel.timeProgress.observe(requireActivity()) {
@@ -194,7 +199,7 @@ class PlayerFragment : Fragment() {
         binding.recyclerView.adapter = playlistAdapter
     }
 
-    private fun renderState(state: PlayerState) = with(binding) {
+    private fun renderPlayerState(state: PlayerState) = with(binding) {
         when (state) {
             PlayerState.STATE_PLAYING -> playbackController.isClickable = true
             PlayerState.STATE_PAUSED, PlayerState.STATE_PREPARED -> {

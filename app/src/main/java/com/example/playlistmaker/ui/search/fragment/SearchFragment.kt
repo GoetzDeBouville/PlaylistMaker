@@ -18,6 +18,7 @@ import com.example.playlistmaker.domain.search.models.SearchState
 import com.example.playlistmaker.domain.search.models.Track
 import com.example.playlistmaker.ui.search.adapters.TrackAdapter
 import com.example.playlistmaker.ui.search.viewmodel.SearchViewModel
+import com.google.gson.Gson
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchFragment : Fragment() {
@@ -71,8 +72,10 @@ class SearchFragment : Fragment() {
         trackAdapter = TrackAdapter {
             if (viewModel.clickDebounce()) {
                 viewModel.saveTrack(it)
+                val gson = Gson()
+                val trackJson = gson.toJson(it)
                 val bundle = Bundle().apply {
-                    putParcelable(TRACK_KEY, it)
+                    putString(TRACK_KEY, trackJson)
                 }
                 findNavController().navigate(R.id.action_global_to_playerFragment, bundle)
             }
@@ -81,8 +84,10 @@ class SearchFragment : Fragment() {
             if (viewModel.clickDebounce()) {
                 viewModel.saveTrack(it)
                 viewModel.showHistory()
+                val gson = Gson()
+                val trackJson = gson.toJson(it)
                 val bundle = Bundle().apply {
-                    putParcelable(TRACK_KEY, it)
+                    putString(TRACK_KEY, trackJson)
                 }
                 findNavController().navigate(R.id.action_global_to_playerFragment, bundle)
             }

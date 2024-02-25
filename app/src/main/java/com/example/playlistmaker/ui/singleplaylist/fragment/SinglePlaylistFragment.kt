@@ -25,6 +25,7 @@ import com.example.playlistmaker.ui.singleplaylist.adapter.TrackAdapter
 import com.example.playlistmaker.utils.Tools
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.gson.Gson
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SinglePlaylistFragment : Fragment() {
@@ -143,11 +144,6 @@ class SinglePlaylistFragment : Fragment() {
                 placeholder(R.drawable.empty_poster)
                 transformations(RoundedCornersTransformation(cornerRadius.toFloat()))
             }
-//            Glide.with(this@SinglePlaylistFragment)
-//                .load(playlist?.imagePath)
-//                .placeholder(R.drawable.empty_poster)
-//                .transform(CenterCrop(), RoundedCorners(cornerRadius))
-//                .into(ivPlCover)
             tvBsMenuTitle.text = getString(R.string.playlist_title_description, playlist?.title, playlist?.description)
         }
     }
@@ -157,8 +153,10 @@ class SinglePlaylistFragment : Fragment() {
             playlist = playlist!!,
             onClickedTrack = { track ->
                 if (viewModel.clickDebounce()) {
+                    val gson = Gson()
+                    val trackJson = gson.toJson(track)
                     val bundle = Bundle().apply {
-                        putParcelable(SearchFragment.TRACK_KEY, track)
+                        putString(SearchFragment.TRACK_KEY, trackJson)
                     }
                     findNavController().navigate(R.id.action_global_to_playerFragment, bundle)
                 }
