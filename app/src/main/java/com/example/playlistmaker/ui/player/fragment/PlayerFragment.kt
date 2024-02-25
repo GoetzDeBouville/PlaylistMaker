@@ -117,20 +117,23 @@ class PlayerFragment : Fragment() {
     }
 
     private fun clickListeners() = with(binding) {
-        ivArrowBack.setOnClickListener {
-            requireActivity().supportFragmentManager.popBackStack()
-        }
-        playbackController.setOnClickListener {
-            viewModel.playbackControl()
-        }
-        ivLikeButton.setOnClickListener {
-            viewModel.onFavoriteTrackClicked()
-        }
-        btnBottomSheet.setOnClickListener {
-            findNavController().navigate(R.id.action_global_to_newPlaylistFragment)
-        }
-        btnAddToPlaylist.setOnClickListener {
-            bottomSheetBehavior?.state = BottomSheetBehavior.STATE_COLLAPSED
+        val listener = onClickListener()
+        ivArrowBack.setOnClickListener(listener)
+        playbackController.setOnClickListener(listener)
+        ivLikeButton.setOnClickListener(listener)
+        btnBottomSheet.setOnClickListener(listener)
+        btnAddToPlaylist.setOnClickListener(listener)
+    }
+
+    private fun onClickListener() = View.OnClickListener {
+        with(binding) {
+            when (it) {
+                ivArrowBack -> requireActivity().supportFragmentManager.popBackStack()
+                playbackController -> viewModel.playbackControl()
+                ivLikeButton -> viewModel.onFavoriteTrackClicked()
+                btnBottomSheet -> findNavController().navigate(R.id.action_global_to_newPlaylistFragment)
+                btnAddToPlaylist -> bottomSheetBehavior?.state = BottomSheetBehavior.STATE_COLLAPSED
+            }
         }
     }
 
@@ -207,6 +210,7 @@ class PlayerFragment : Fragment() {
                 playbackController.isClickable = true
                 playbackController.clearBlurEffect()
             }
+
             PlayerState.STATE_PAUSED, PlayerState.STATE_PREPARED -> {
                 playbackController.clearBlurEffect()
                 playbackController.isClickable = true
