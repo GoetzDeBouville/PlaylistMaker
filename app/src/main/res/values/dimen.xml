@@ -31,4 +31,6 @@
     <dimen name="dimen_88dp">88dp</dimen>
     <dimen name="dimen_120dp">120dp</dimen>
 
+
+    <dimen name="circularProgressViewMinSize">80dp</dimen>
 </resources>
