@@ -69,13 +69,13 @@ class PlaybackButtonView @JvmOverloads constructor(
     }
 
     override fun onDraw(canvas: Canvas) {
-        if (imageBitmap != null) {
-            canvas.drawBitmap(imageBitmap!!, null, imageRect, null)
+        imageBitmap?.let {
+            canvas.drawBitmap(it, null, imageRect, null)
         }
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
-        if(isClickable) {
+        if (isClickable) {
             when (event.action) {
                 MotionEvent.ACTION_DOWN -> return true
                 MotionEvent.ACTION_UP -> {
