@@ -2,13 +2,13 @@ package com.example.playlistmaker.ui.player.fragment
 
 import android.graphics.drawable.VectorDrawable
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import coil.load
@@ -116,7 +116,7 @@ class PlayerFragment : Fragment() {
         binding.ivArrowBack.setOnClickListener {
             requireActivity().supportFragmentManager.popBackStack()
         }
-        binding.ivPlayButton.setOnClickListener {
+        binding.playbackController.setOnClickListener {
             viewModel.playbackControl()
         }
         binding.ivLikeButton.setOnClickListener {
@@ -130,7 +130,11 @@ class PlayerFragment : Fragment() {
     private fun fetchPlayer() = with(binding) {
         albumPosterImage.load(track?.getArtwork512()) {
             placeholder(R.drawable.poster_placeholder)
-            transformations(RoundedCornersTransformation(resources.getDimensionPixelSize(R.dimen.album_cover_corner_radius).toFloat()))
+            transformations(
+                RoundedCornersTransformation(
+                    resources.getDimensionPixelSize(R.dimen.album_cover_corner_radius).toFloat()
+                )
+            )
         }
         trackName.text = track?.trackName
         trackArtist.text = track?.artistName
@@ -190,53 +194,15 @@ class PlayerFragment : Fragment() {
         binding.recyclerView.adapter = playlistAdapter
     }
 
-    private fun renderState(state: PlayerState) {
+    private fun renderState(state: PlayerState) = with(binding) {
         when (state) {
-            PlayerState.STATE_PLAYING -> showPauseBtn()
+            PlayerState.STATE_PLAYING -> playbackController.isClickable = true
             PlayerState.STATE_PAUSED, PlayerState.STATE_PREPARED -> {
-                vectorDrawable?.setTint(
-                    ContextCompat.getColor(
-                        requireContext(),
-                        R.color.elements_color
-                    )
-                )
-                showPlayBtn()
+                playbackController.isClickable = true
+                playbackController.setStatusPause()
             }
 
-            PlayerState.STATE_DEFAULT -> {
-                vectorDrawable?.setTint(
-                    ContextCompat.getColor(
-                        requireContext(),
-                        R.color.prepaing_play_button
-                    )
-                )
-                showOnPrepareMessage()
-            }
+            PlayerState.STATE_DEFAULT -> playbackController.isClickable = false
         }
-    }
-
-    private fun showOnPrepareMessage() {
-        binding.ivPlayButton.setOnClickListener {
-            Tools.showSnackbar(
-                binding.root,
-                getString(R.string.player_in_progress),
-                requireActivity()
-            )
-        }
-        binding.ivPlayButton.setImageResource(R.drawable.play_button)
-    }
-
-    private fun showPauseBtn() {
-        binding.ivPlayButton.setOnClickListener {
-            viewModel.playbackControl()
-        }
-        binding.ivPlayButton.setImageResource(R.drawable.pause_button)
-    }
-
-    private fun showPlayBtn() {
-        binding.ivPlayButton.setOnClickListener {
-            viewModel.playbackControl()
-        }
-        binding.ivPlayButton.setImageResource(R.drawable.play_button)
     }
 }

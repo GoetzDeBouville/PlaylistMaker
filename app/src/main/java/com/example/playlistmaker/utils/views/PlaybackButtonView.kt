@@ -79,6 +79,7 @@ class PlaybackButtonView @JvmOverloads constructor(
             MotionEvent.ACTION_DOWN -> return true
             MotionEvent.ACTION_UP -> {
                 updatePlaybackState()
+                performClick()
                 return true
             }
         }
@@ -87,6 +88,18 @@ class PlaybackButtonView @JvmOverloads constructor(
 
     private fun updatePlaybackState() {
         isPlaying = !isPlaying
+        imageBitmap = if (isPlaying) pauseBitmap else playBitmap
+        invalidate()
+    }
+
+    fun setStatusPlay() {
+        isPlaying = true
+        imageBitmap = if (isPlaying) pauseBitmap else playBitmap
+        invalidate()
+    }
+
+    fun setStatusPause() {
+        isPlaying = false
         imageBitmap = if (isPlaying) pauseBitmap else playBitmap
         invalidate()
     }

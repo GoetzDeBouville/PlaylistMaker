@@ -41,6 +41,8 @@ class PlayerImpl(track: Track) : Player {
 
     override fun preparePlayer(track: Track, callback: (Boolean) -> Unit) {
         if (track.previewUrl != null) {
+            playerState = PlayerState.STATE_DEFAULT
+            notifyPlayerStateChanged(playerState)
             try {
                 mediaPlayer = MediaPlayer()
                 mediaPlayer.setDataSource(track.previewUrl)

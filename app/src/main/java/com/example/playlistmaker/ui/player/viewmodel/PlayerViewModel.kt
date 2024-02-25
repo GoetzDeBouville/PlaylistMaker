@@ -47,6 +47,9 @@ class PlayerViewModel(
 
     private val _timer = MutableLiveData<String>(CURRENT_TIME)
 
+    val timeProgress: LiveData<String>
+        get() = _timer
+
     init {
         viewModelScope.launch {
             try {
@@ -62,9 +65,6 @@ class PlayerViewModel(
             }
         })
     }
-
-    val timeProgress: LiveData<String>
-        get() = _timer
 
     override fun onCleared() {
         super.onCleared()
@@ -119,6 +119,7 @@ class PlayerViewModel(
     }
 
     fun playbackControl() {
+        Log.i("MyLog", "playbackControl lounched")
         when (playerState.value) {
             PlayerState.STATE_PLAYING -> pausePlayer()
             PlayerState.STATE_PREPARED, PlayerState.STATE_PAUSED -> startPlayer()
