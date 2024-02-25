@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.playlistmaker.core.ui.BaseViewModel
 import com.example.playlistmaker.domain.db.FavoriteTracksInteractor
 import com.example.playlistmaker.domain.db.PlaylistInteractor
 import com.example.playlistmaker.domain.media.models.AddToPlaylist
@@ -47,6 +48,9 @@ class PlayerViewModel(
 
     private val _timer = MutableLiveData<String>(CURRENT_TIME)
 
+    val timeProgress: LiveData<String>
+        get() = _timer
+
     init {
         viewModelScope.launch {
             try {
@@ -62,9 +66,6 @@ class PlayerViewModel(
             }
         })
     }
-
-    val timeProgress: LiveData<String>
-        get() = _timer
 
     override fun onCleared() {
         super.onCleared()

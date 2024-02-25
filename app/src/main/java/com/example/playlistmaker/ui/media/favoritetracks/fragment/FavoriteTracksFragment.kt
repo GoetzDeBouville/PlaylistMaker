@@ -13,6 +13,8 @@ import com.example.playlistmaker.domain.media.models.FavoriteTracksState
 import com.example.playlistmaker.domain.search.models.Track
 import com.example.playlistmaker.ui.media.favoritetracks.viewmodel.FavoriteTracksViewModel
 import com.example.playlistmaker.ui.search.adapters.TrackAdapter
+import com.example.playlistmaker.ui.search.fragment.SearchFragment
+import com.google.gson.Gson
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class FavoriteTracksFragment : Fragment() {
@@ -48,8 +50,10 @@ class FavoriteTracksFragment : Fragment() {
         if (_binding != null) {
             adapter = TrackAdapter {
                 if (viewModel.clickDebounce()) {
+                    val gson = Gson()
+                    val trackJson = gson.toJson(it)
                     val bundle = Bundle().apply {
-                        putParcelable("track", it)
+                        putString(SearchFragment.TRACK_KEY, trackJson)
                     }
                     findNavController().navigate(R.id.action_global_to_playerFragment, bundle)
                 }

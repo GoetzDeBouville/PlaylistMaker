@@ -1,19 +1,14 @@
 package com.example.playlistmaker.ui.player.fragment
 
-import android.graphics.drawable.VectorDrawable
-import android.os.Bundle
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.appcompat.content.res.AppCompatResources
-import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import coil.load
+import coil.transform.RoundedCornersTransformation
 import com.example.playlistmaker.R
+import com.example.playlistmaker.core.ui.BaseFragment
 import com.example.playlistmaker.databinding.FragmentPlayerBinding
 import com.example.playlistmaker.domain.media.models.AddToPlaylist
 import com.example.playlistmaker.domain.media.models.PlaylistState
@@ -23,50 +18,34 @@ import com.example.playlistmaker.ui.player.adapter.PlaylistAdapter
 import com.example.playlistmaker.ui.player.viewmodel.PlayerViewModel
 import com.example.playlistmaker.ui.search.fragment.SearchFragment
 import com.example.playlistmaker.utils.Tools
+import com.example.playlistmaker.utils.applyBlurEffect
+import com.example.playlistmaker.utils.clearBlurEffect
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.gson.Gson
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
-class PlayerFragment : Fragment() {
-    private var _binding: FragmentPlayerBinding? = null
-    private val binding get() = _binding!!
-    private val viewModel: PlayerViewModel by viewModel { parametersOf(track) }
-    private var vectorDrawable: VectorDrawable? = null
+class PlayerFragment :
+    BaseFragment<FragmentPlayerBinding, PlayerViewModel>(FragmentPlayerBinding::inflate) {
+    override val viewModel: PlayerViewModel by viewModel { parametersOf(track) }
     private var track: Track? = null
     private val playlistAdapter = PlaylistAdapter { selectedPlaylist ->
         viewModel.addTrackToPlayList(selectedPlaylist, track!!)
     }
+    var bottomSheetBehavior: BottomSheetBehavior<LinearLayout>? = null
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        _binding = FragmentPlayerBinding.inflate(inflater, container, false)
-        return binding.root
+    override fun initViews() {
+        getTrack()
+        fetchPlayer()
+        initBottomSheet()
+        viewModel.getPlaylists()
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        val bottomSheetContainer = binding.llStandardBottomSheet
-        val bottomSheetBehavior: BottomSheetBehavior<LinearLayout> =
-            BottomSheetBehavior.from(bottomSheetContainer).apply {
-                state = BottomSheetBehavior.STATE_HIDDEN
-            }
-        bottomSheetObserver(bottomSheetBehavior, binding.overlay)
-
-        track = arguments?.getParcelable(SearchFragment.TRACK_KEY)
-        viewModel.getPlaylists()
-        vectorDrawable =
-            ContextCompat.getDrawable(requireContext(), R.drawable.play_button) as VectorDrawable
-        fetchPlayer()
+    override fun subscribe() {
         observeViewModel()
 
-        binding.btnAddToPlaylist.setOnClickListener {
-            bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
-        }
         clickListeners()
-        addingToPlaylistStateObserver(bottomSheetBehavior)
+        addingToPlaylistStateObserver(bottomSheetBehavior!!)
     }
 
     override fun onPause() {
@@ -77,6 +56,26 @@ class PlayerFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         viewModel.pausePlayer()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        bottomSheetBehavior = null
+    }
+
+    private fun getTrack() {
+        val trackJson = arguments?.getString(SearchFragment.TRACK_KEY)
+        val gson = Gson()
+        track = gson.fromJson(trackJson, Track::class.java)
+    }
+
+    private fun initBottomSheet() {
+        val bottomSheetContainer = binding.llStandardBottomSheet
+        bottomSheetBehavior =
+            BottomSheetBehavior.from(bottomSheetContainer).apply {
+                state = BottomSheetBehavior.STATE_HIDDEN
+            }
+        bottomSheetObserver(bottomSheetBehavior!!, binding.overlay)
     }
 
     private fun addingToPlaylistStateObserver(bottomSheetBehavior: BottomSheetBehavior<LinearLayout>) {
@@ -112,46 +111,49 @@ class PlayerFragment : Fragment() {
         })
     }
 
-    private fun clickListeners() {
-        binding.ivArrowBack.setOnClickListener {
-            requireActivity().supportFragmentManager.popBackStack()
-        }
-        binding.ivPlayButton.setOnClickListener {
-            viewModel.playbackControl()
-        }
-        binding.ivLikeButton.setOnClickListener {
-            viewModel.onFavoriteTrackClicked()
-        }
-        binding.btnBottomSheet.setOnClickListener {
-            findNavController().navigate(R.id.action_global_to_newPlaylistFragment)
+    private fun clickListeners() = with(binding) {
+        val listener = onClickListener()
+        ivArrowBack.setOnClickListener(listener)
+        playbackController.setOnClickListener(listener)
+        ivLikeButton.setOnClickListener(listener)
+        btnBottomSheet.setOnClickListener(listener)
+        btnAddToPlaylist.setOnClickListener(listener)
+    }
+
+    private fun onClickListener() = View.OnClickListener {
+        with(binding) {
+            when (it) {
+                ivArrowBack -> requireActivity().supportFragmentManager.popBackStack()
+                playbackController -> viewModel.playbackControl()
+                ivLikeButton -> viewModel.onFavoriteTrackClicked()
+                btnBottomSheet -> findNavController().navigate(R.id.action_global_to_newPlaylistFragment)
+                btnAddToPlaylist -> bottomSheetBehavior?.state = BottomSheetBehavior.STATE_COLLAPSED
+            }
         }
     }
 
-    private fun fetchPlayer() {
-        with(binding) {
-            Glide.with(this@PlayerFragment)
-                .load(track?.getArtwork512())
-                .placeholder(R.drawable.poster_placeholder)
-                .transform(
-                    RoundedCorners(
-                        resources.getDimensionPixelSize(R.dimen.album_cover_corner_radius)
-                    )
+    private fun fetchPlayer() = with(binding) {
+        albumPosterImage.load(track?.getArtwork512()) {
+            placeholder(R.drawable.poster_placeholder)
+            transformations(
+                RoundedCornersTransformation(
+                    resources.getDimensionPixelSize(R.dimen.album_cover_corner_radius).toFloat()
                 )
-                .into(albumPosterImage)
-            trackName.text = track?.trackName
-            trackArtist.text = track?.artistName
-            textDurationValue.text = track?.timeFormater()
-            if (track?.collectionName != null) {
-                textAlbumValue.text = track?.collectionName
-            } else {
-                textAlbumValue.visibility = View.INVISIBLE
-                textAlbum.visibility = View.INVISIBLE
-            }
-            textGenreValue.text = track?.primaryGenreName
-            textCountryValue.text = track?.country
-            textYearValue.text = track?.releaseDate
-            textYearValue.text = track?.yearFormater()
+            )
         }
+        trackName.text = track?.trackName
+        trackArtist.text = track?.artistName
+        textDurationValue.text = track?.timeFormater()
+        if (track?.collectionName != null) {
+            textAlbumValue.text = track?.collectionName
+        } else {
+            textAlbumValue.visibility = View.INVISIBLE
+            textAlbum.visibility = View.INVISIBLE
+        }
+        textGenreValue.text = track?.primaryGenreName
+        textCountryValue.text = track?.country
+        textYearValue.text = track?.releaseDate
+        textYearValue.text = track?.yearFormater()
     }
 
     private fun manageLikeButtonState(isFavorite: Boolean) {
@@ -173,19 +175,19 @@ class PlayerFragment : Fragment() {
     }
 
     private fun observeViewModel() {
-        viewModel.playerState.observe(requireActivity()) {
-            renderState(it)
+        viewModel.playerState.observe(viewLifecycleOwner) {
+            renderPlayerState(it)
         }
 
-        viewModel.timeProgress.observe(requireActivity()) {
+        viewModel.timeProgress.observe(viewLifecycleOwner) {
             binding.textTrackTimeValue.text = it
         }
 
-        viewModel.isFavorite.observe(requireActivity()) {
+        viewModel.isFavorite.observe(viewLifecycleOwner) {
             manageLikeButtonState(it)
         }
 
-        viewModel.playlistState.observe(requireActivity()) {
+        viewModel.playlistState.observe(viewLifecycleOwner) {
             if (it is PlaylistState.Content) {
                 playlistAdapter.playlists.clear()
                 playlistAdapter.playlists.addAll(it.playlists)
@@ -197,53 +199,23 @@ class PlayerFragment : Fragment() {
         binding.recyclerView.adapter = playlistAdapter
     }
 
-    private fun renderState(state: PlayerState) {
+    private fun renderPlayerState(state: PlayerState) = with(binding) {
         when (state) {
-            PlayerState.STATE_PLAYING -> showPauseBtn()
+            PlayerState.STATE_PLAYING -> {
+                playbackController.isClickable = true
+                playbackController.clearBlurEffect()
+            }
+
             PlayerState.STATE_PAUSED, PlayerState.STATE_PREPARED -> {
-                vectorDrawable?.setTint(
-                    ContextCompat.getColor(
-                        requireContext(),
-                        R.color.elements_color
-                    )
-                )
-                showPlayBtn()
+                playbackController.clearBlurEffect()
+                playbackController.isClickable = true
+                playbackController.setStatusPause()
             }
 
             PlayerState.STATE_DEFAULT -> {
-                vectorDrawable?.setTint(
-                    ContextCompat.getColor(
-                        requireContext(),
-                        R.color.prepaing_play_button
-                    )
-                )
-                showOnPrepareMessage()
+                playbackController.applyBlurEffect()
+                playbackController.isClickable = false
             }
         }
-    }
-
-    private fun showOnPrepareMessage() {
-        binding.ivPlayButton.setOnClickListener {
-            Tools.showSnackbar(
-                binding.root,
-                getString(R.string.player_in_progress),
-                requireActivity()
-            )
-        }
-        binding.ivPlayButton.setImageResource(R.drawable.play_button)
-    }
-
-    private fun showPauseBtn() {
-        binding.ivPlayButton.setOnClickListener {
-            viewModel.playbackControl()
-        }
-        binding.ivPlayButton.setImageResource(R.drawable.pause_button)
-    }
-
-    private fun showPlayBtn() {
-        binding.ivPlayButton.setOnClickListener {
-            viewModel.playbackControl()
-        }
-        binding.ivPlayButton.setImageResource(R.drawable.play_button)
     }
 }

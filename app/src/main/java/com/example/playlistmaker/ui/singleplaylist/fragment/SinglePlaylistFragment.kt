@@ -12,9 +12,8 @@ import androidx.annotation.RequiresApi
 import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.bitmap.CenterCrop
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import coil.load
+import coil.transform.RoundedCornersTransformation
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentSinglePlaylistBinding
 import com.example.playlistmaker.domain.media.models.Playlist
@@ -26,6 +25,7 @@ import com.example.playlistmaker.ui.singleplaylist.adapter.TrackAdapter
 import com.example.playlistmaker.utils.Tools
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.gson.Gson
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SinglePlaylistFragment : Fragment() {
@@ -129,22 +129,21 @@ class SinglePlaylistFragment : Fragment() {
 
     private fun fetchPalylist() {
         with(binding) {
-            Glide.with(this@SinglePlaylistFragment)
-                .load(playlist?.imagePath)
-                .placeholder(R.drawable.ic_cover_ph)
-                .transform(CenterCrop())
-                .into(ivCoverPh)
+
+            ivCoverPh.load(playlist?.imagePath) {
+                placeholder(R.drawable.ic_cover_ph)
+                transformations(RoundedCornersTransformation())
+            }
             tvTitle.text = playlist?.title
             tvDescription.text = playlist?.description
 
             val cornerRadius =
                 requireContext().resources.getDimensionPixelSize(R.dimen.dimen_8dp)
 
-            Glide.with(this@SinglePlaylistFragment)
-                .load(playlist?.imagePath)
-                .placeholder(R.drawable.empty_poster)
-                .transform(CenterCrop(), RoundedCorners(cornerRadius))
-                .into(ivPlCover)
+            ivPlCover.load(playlist?.imagePath) {
+                placeholder(R.drawable.empty_poster)
+                transformations(RoundedCornersTransformation(cornerRadius.toFloat()))
+            }
             tvBsMenuTitle.text = getString(R.string.playlist_title_description, playlist?.title, playlist?.description)
         }
     }
@@ -154,8 +153,10 @@ class SinglePlaylistFragment : Fragment() {
             playlist = playlist!!,
             onClickedTrack = { track ->
                 if (viewModel.clickDebounce()) {
+                    val gson = Gson()
+                    val trackJson = gson.toJson(track)
                     val bundle = Bundle().apply {
-                        putParcelable(SearchFragment.TRACK_KEY, track)
+                        putString(SearchFragment.TRACK_KEY, trackJson)
                     }
                     findNavController().navigate(R.id.action_global_to_playerFragment, bundle)
                 }
