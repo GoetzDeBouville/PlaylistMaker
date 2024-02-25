@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.RectF
 import android.util.AttributeSet
+import android.view.MotionEvent
 import android.view.View
 import androidx.annotation.AttrRes
 import androidx.annotation.StyleRes
@@ -12,7 +13,7 @@ import androidx.core.graphics.drawable.toBitmap
 import com.example.playlistmaker.R
 import kotlin.math.min
 
-class PlaybackControlView @JvmOverloads constructor(
+class PlaybackButtonView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     @AttrRes defStyleAttr: Int = 0,
@@ -20,18 +21,21 @@ class PlaybackControlView @JvmOverloads constructor(
 ) : View(context, attrs, defStyleAttr, defStyleAttr) {
     private val minViewSize = resources.getDimensionPixelSize(R.dimen.circularProgressViewMinSize)
 
-    private val imageBitmap: Bitmap?
+    private var imageBitmap: Bitmap?
+    private var playBitmap: Bitmap?
+    private var pauseBitmap: Bitmap?
     private var imageRect = RectF(0f, 0f, 0f, 0f)
+    private var isPlaying = false
 
     init {
         context.theme.obtainStyledAttributes(
             attrs, R.styleable.PlaybackControlView, defStyleAttr, defStyleRes
         ).apply {
             try {
-                val playImg = getDrawable(R.styleable.PlaybackControlView_playButtonId)
-                val pauseImg = getDrawable(R.styleable.PlaybackControlView_pauseButtonId)
-                val isPlaying = getBoolean(R.styleable.PlaybackControlView_isPlaying, false)
-                imageBitmap = if (isPlaying) pauseImg?.toBitmap() else playImg?.toBitmap()
+                playBitmap = getDrawable(R.styleable.PlaybackControlView_playButtonId)?.toBitmap()
+                pauseBitmap = getDrawable(R.styleable.PlaybackControlView_pauseButtonId)?.toBitmap()
+                isPlaying = getBoolean(R.styleable.PlaybackControlView_isPlaying, false)
+                imageBitmap = if (isPlaying) pauseBitmap else playBitmap
             } finally {
                 recycle()
             }
@@ -59,10 +63,46 @@ class PlaybackControlView @JvmOverloads constructor(
         setMeasuredDimension(size, size)
     }
 
+    override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
+        super.onSizeChanged(w, h, oldw, oldh)
+        imageRect = RectF(0f, 0f, measuredWidth.toFloat(), measuredHeight.toFloat())
+    }
+
     override fun onDraw(canvas: Canvas) {
-        if (imageBitmap != null) {
-            val rect = RectF(0f, 0f, measuredWidth.toFloat(), measuredHeight.toFloat())
-            canvas.drawBitmap(imageBitmap, null, rect, null)
+        imageBitmap?.let {
+            canvas.drawBitmap(it, null, imageRect, null)
         }
+    }
+
+    override fun onTouchEvent(event: MotionEvent): Boolean {
+        if (isClickable) {
+            when (event.action) {
+                MotionEvent.ACTION_DOWN -> return true
+                MotionEvent.ACTION_UP -> {
+                    updatePlaybackState()
+                    performClick()
+                    return true
+                }
+            }
+        }
+        return super.onTouchEvent(event)
+    }
+
+    private fun updatePlaybackState() {
+        isPlaying = !isPlaying
+        imageBitmap = if (isPlaying) pauseBitmap else playBitmap
+        invalidate()
+    }
+
+    fun setStatusPlay() {
+        isPlaying = true
+        imageBitmap = if (isPlaying) pauseBitmap else playBitmap
+        invalidate()
+    }
+
+    fun setStatusPause() {
+        isPlaying = false
+        imageBitmap = if (isPlaying) pauseBitmap else playBitmap
+        invalidate()
     }
 }
