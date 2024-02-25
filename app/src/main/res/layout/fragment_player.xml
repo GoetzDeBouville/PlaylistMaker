@@ -97,7 +97,7 @@
             android:id="@+id/playback_controller"
             android:layout_width="@dimen/dimen_88dp"
             android:layout_height="@dimen/dimen_88dp"
-            android:clickable="true"
+            android:clickable="false"
             android:contentDescription="PLay Button"
             app:layout_constraintBottom_toTopOf="@+id/text_track_time_value"
             app:layout_constraintEnd_toStartOf="@+id/iv_like_button"

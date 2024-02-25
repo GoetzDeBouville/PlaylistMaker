@@ -1,17 +1,14 @@
 package com.example.playlistmaker.ui.player.fragment
 
-import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.appcompat.content.res.AppCompatResources
-import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import coil.load
 import coil.transform.RoundedCornersTransformation
 import com.example.playlistmaker.R
+import com.example.playlistmaker.core.ui.BaseFragment
 import com.example.playlistmaker.databinding.FragmentPlayerBinding
 import com.example.playlistmaker.domain.media.models.AddToPlaylist
 import com.example.playlistmaker.domain.media.models.PlaylistState
@@ -28,40 +25,23 @@ import com.google.gson.Gson
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
-class PlayerFragment : Fragment() {
-    private var _binding: FragmentPlayerBinding? = null
-    private val binding get() = _binding!!
-    private val viewModel: PlayerViewModel by viewModel { parametersOf(track) }
+class PlayerFragment :
+    BaseFragment<FragmentPlayerBinding, PlayerViewModel>(FragmentPlayerBinding::inflate) {
+    override val viewModel: PlayerViewModel by viewModel { parametersOf(track) }
     private var track: Track? = null
     private val playlistAdapter = PlaylistAdapter { selectedPlaylist ->
         viewModel.addTrackToPlayList(selectedPlaylist, track!!)
     }
     var bottomSheetBehavior: BottomSheetBehavior<LinearLayout>? = null
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        _binding = FragmentPlayerBinding.inflate(inflater, container, false)
-        return binding.root
+    override fun initViews() {
+        getTrack()
+        fetchPlayer()
+        initBottomSheet()
+        viewModel.getPlaylists()
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        val bottomSheetContainer = binding.llStandardBottomSheet
-        bottomSheetBehavior =
-            BottomSheetBehavior.from(bottomSheetContainer).apply {
-                state = BottomSheetBehavior.STATE_HIDDEN
-            }
-        bottomSheetObserver(bottomSheetBehavior!!, binding.overlay)
-
-        val trackJson = arguments?.getString(SearchFragment.TRACK_KEY)
-        val gson = Gson()
-        track = gson.fromJson(trackJson, Track::class.java)
-        viewModel.getPlaylists()
-
-        fetchPlayer()
+    override fun subscribe() {
         observeViewModel()
 
         clickListeners()
@@ -81,6 +61,21 @@ class PlayerFragment : Fragment() {
     override fun onDestroy() {
         super.onDestroy()
         bottomSheetBehavior = null
+    }
+
+    private fun getTrack() {
+        val trackJson = arguments?.getString(SearchFragment.TRACK_KEY)
+        val gson = Gson()
+        track = gson.fromJson(trackJson, Track::class.java)
+    }
+
+    private fun initBottomSheet() {
+        val bottomSheetContainer = binding.llStandardBottomSheet
+        bottomSheetBehavior =
+            BottomSheetBehavior.from(bottomSheetContainer).apply {
+                state = BottomSheetBehavior.STATE_HIDDEN
+            }
+        bottomSheetObserver(bottomSheetBehavior!!, binding.overlay)
     }
 
     private fun addingToPlaylistStateObserver(bottomSheetBehavior: BottomSheetBehavior<LinearLayout>) {
@@ -180,19 +175,19 @@ class PlayerFragment : Fragment() {
     }
 
     private fun observeViewModel() {
-        viewModel.playerState.observe(requireActivity()) {
+        viewModel.playerState.observe(viewLifecycleOwner) {
             renderPlayerState(it)
         }
 
-        viewModel.timeProgress.observe(requireActivity()) {
+        viewModel.timeProgress.observe(viewLifecycleOwner) {
             binding.textTrackTimeValue.text = it
         }
 
-        viewModel.isFavorite.observe(requireActivity()) {
+        viewModel.isFavorite.observe(viewLifecycleOwner) {
             manageLikeButtonState(it)
         }
 
-        viewModel.playlistState.observe(requireActivity()) {
+        viewModel.playlistState.observe(viewLifecycleOwner) {
             if (it is PlaylistState.Content) {
                 playlistAdapter.playlists.clear()
                 playlistAdapter.playlists.addAll(it.playlists)
