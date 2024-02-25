@@ -98,11 +98,23 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:clickable="true"
+            android:contentDescription="PLay Button"
             android:src="@drawable/play_button"
             app:layout_constraintBottom_toTopOf="@+id/text_track_time_value"
             app:layout_constraintEnd_toStartOf="@+id/iv_like_button"
             app:layout_constraintStart_toEndOf="@id/btn_add_to_playlist"
             app:layout_constraintTop_toBottomOf="@+id/track_artist" />
+
+        <com.example.playlistmaker.utils.views.PlaybackControlView
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:clickable="true"
+            app:isPlaying="false"
+            app:layout_constraintBottom_toTopOf="@+id/iv_play_button"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:pauseButtonId="@drawable/pause_button"
+            app:playButtonId="@drawable/play_button" />
 
         <ImageView
             android:id="@+id/btn_add_to_playlist"
@@ -324,7 +336,8 @@
         android:paddingHorizontal="16dp"
         app:behavior_hideable="true"
         app:behavior_peekHeight="240dp"
-        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
+        tools:visibility="gone">
 
         <View
             android:layout_width="@dimen/dimen_40dp"

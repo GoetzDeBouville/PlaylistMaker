@@ -10,9 +10,8 @@ import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.bitmap.CenterCrop
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import coil.load
+import coil.transform.RoundedCornersTransformation
 import com.example.playlistmaker.R
 import com.example.playlistmaker.domain.media.models.Playlist
 import com.example.playlistmaker.ui.media.editplaylist.viewmodel.EditPlaylistViewModel
@@ -97,11 +96,11 @@ class EditPlaylistFragment : NewPlaylistFragment() {
 
         with(binding) {
             val cornerRadius = resources.getDimensionPixelSize(R.dimen.dimen_8dp)
-            Glide.with(this@EditPlaylistFragment)
-                .load(playlist.imagePath)
-                .placeholder(R.drawable.ic_component_ph)
-                .transform(CenterCrop(), RoundedCorners(cornerRadius))
-                .into(ivPlCover)
+
+            ivPlCover.load(playlist.imagePath) {
+                placeholder(R.drawable.ic_component_ph)
+                transformations(RoundedCornersTransformation(cornerRadius.toFloat()))
+            }
             etTitle.setText(playlist.title)
             etDescription.setText(playlist.description)
         }

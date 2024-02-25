@@ -3,8 +3,8 @@ package com.example.playlistmaker.ui.search.adapters
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import coil.load
+import coil.transform.RoundedCornersTransformation
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ItemTrackBinding
 import com.example.playlistmaker.domain.search.models.Track
@@ -19,11 +19,16 @@ class TrackAdapter(private var onClickedTrack: ((Track) -> Unit)? = null) :
                 trackName.text = model.trackName
                 artistName.text = model.artistName
                 trackTime.text = model.timeFormater()
-                Glide.with(itemView)
-                    .load(model.artworkUrl100)
-                    .placeholder(R.drawable.empty_poster)
-                    .transform(RoundedCorners(itemView.resources.getDimensionPixelSize(R.dimen.dimen_8dp)))
-                    .into(albumPosterImage)
+                albumPosterImage.load(model.artworkUrl100) {
+                    placeholder(R.drawable.empty_poster)
+                    transformations(
+                        RoundedCornersTransformation(
+                            itemView.resources.getDimensionPixelSize(
+                                R.dimen.dimen_8dp
+                            ).toFloat()
+                        )
+                    )
+                }
             }
         }
     }
