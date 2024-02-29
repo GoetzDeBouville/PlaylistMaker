@@ -17,6 +17,7 @@ Implemented options to search tracks, create/edit/delete playlists, change the a
 - DI - Koin
 - File
 - Coil
+- Custom View
 
 ## Screencast 
 
