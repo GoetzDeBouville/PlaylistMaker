@@ -19,7 +19,7 @@ class PlaybackButtonView @JvmOverloads constructor(
     @AttrRes defStyleAttr: Int = 0,
     @StyleRes defStyleRes: Int = 0
 ) : View(context, attrs, defStyleAttr, defStyleAttr) {
-    private val minViewSize = resources.getDimensionPixelSize(R.dimen.circularProgressViewMinSize)
+    private val minViewSize = resources.getDimensionPixelSize(R.dimen.minSize)
 
     private var imageBitmap: Bitmap?
     private var playBitmap: Bitmap?
@@ -96,13 +96,13 @@ class PlaybackButtonView @JvmOverloads constructor(
 
     fun setStatusPlay() {
         isPlaying = true
-        imageBitmap = if (isPlaying) pauseBitmap else playBitmap
+        imageBitmap = pauseBitmap
         invalidate()
     }
 
     fun setStatusPause() {
         isPlaying = false
-        imageBitmap = if (isPlaying) pauseBitmap else playBitmap
+        imageBitmap = playBitmap
         invalidate()
     }
 }
