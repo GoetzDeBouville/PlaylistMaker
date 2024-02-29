@@ -32,5 +32,5 @@
     <dimen name="dimen_120dp">120dp</dimen>
 
 
-    <dimen name="circularProgressViewMinSize">80dp</dimen>
+    <dimen name="minSize">80dp</dimen>
 </resources>

@@ -195,8 +195,10 @@ class PlayerFragment :
             }
         }
 
-        binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        binding.recyclerView.adapter = playlistAdapter
+        with(binding) {
+            recyclerView.layoutManager = LinearLayoutManager(requireContext())
+            recyclerView.adapter = playlistAdapter
+        }
     }
 
     private fun renderPlayerState(state: PlayerState) = with(binding) {
