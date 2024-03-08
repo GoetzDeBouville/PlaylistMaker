@@ -1,8 +1,10 @@
 package com.example.playlistmaker.ui.player.fragment
 
+import android.content.IntentFilter
 import android.view.View
 import android.widget.LinearLayout
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import coil.load
@@ -17,6 +19,7 @@ import com.example.playlistmaker.domain.search.models.Track
 import com.example.playlistmaker.ui.player.adapter.PlaylistAdapter
 import com.example.playlistmaker.ui.player.viewmodel.PlayerViewModel
 import com.example.playlistmaker.ui.search.fragment.SearchFragment
+import com.example.playlistmaker.utils.NetworkStatusReciever
 import com.example.playlistmaker.utils.Tools
 import com.example.playlistmaker.utils.applyBlurEffect
 import com.example.playlistmaker.utils.clearBlurEffect
@@ -32,7 +35,8 @@ class PlayerFragment :
     private val playlistAdapter = PlaylistAdapter { selectedPlaylist ->
         viewModel.addTrackToPlayList(selectedPlaylist, track!!)
     }
-    var bottomSheetBehavior: BottomSheetBehavior<LinearLayout>? = null
+    private var bottomSheetBehavior: BottomSheetBehavior<LinearLayout>? = null
+    private val networkStatusReciever = NetworkStatusReciever()
 
     override fun initViews() {
         getTrack()
@@ -51,11 +55,18 @@ class PlayerFragment :
     override fun onPause() {
         super.onPause()
         viewModel.pausePlayer()
+        requireActivity().unregisterReceiver(networkStatusReciever)
     }
 
     override fun onResume() {
         super.onResume()
         viewModel.pausePlayer()
+        ContextCompat.registerReceiver(
+            requireContext(),
+            networkStatusReciever,
+            IntentFilter(NetworkStatusReciever.ACTION),
+            ContextCompat.RECEIVER_EXPORTED
+        )
     }
 
     override fun onDestroy() {
