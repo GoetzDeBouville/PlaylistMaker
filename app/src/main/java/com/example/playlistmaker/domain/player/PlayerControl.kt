@@ -1,4 +1,4 @@
-package com.example.playlistmaker.ui.player.service
+package com.example.playlistmaker.domain.player
 
 import android.app.Notification
 import com.example.playlistmaker.domain.player.models.PlayerState

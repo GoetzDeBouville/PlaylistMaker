@@ -10,11 +10,13 @@ import com.example.playlistmaker.domain.db.PlaylistInteractor
 import com.example.playlistmaker.domain.media.models.AddToPlaylist
 import com.example.playlistmaker.domain.media.models.Playlist
 import com.example.playlistmaker.domain.media.models.PlaylistState
+import com.example.playlistmaker.domain.player.PlayerControl
 import com.example.playlistmaker.domain.player.models.PlayerState
 import com.example.playlistmaker.domain.search.models.Track
-import com.example.playlistmaker.ui.player.service.PlayerControl
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -24,8 +26,9 @@ class PlayerViewModel(
     private val favoriteTracksInteractor: FavoriteTracksInteractor,
     private val playlistInteractor: PlaylistInteractor
 ) : ViewModel() {
-    private val _playerState = MutableLiveData<PlayerState>()
-    val playerState: LiveData<PlayerState> get() = _playerState
+    private val _playerState = MutableStateFlow(PlayerState.STATE_DEFAULT)
+    val playerState: StateFlow<PlayerState>
+        get() = _playerState
 
     private val _isFavorite = MutableLiveData<Boolean>()
     val isFavorite: LiveData<Boolean>
@@ -40,11 +43,9 @@ class PlayerViewModel(
     private val _selectedPlaylistName = MutableLiveData<String>()
     val selectedPlaylistName: LiveData<String> get() = _selectedPlaylistName
 
-
     private var timerJob: Job? = null
 
-    private val _timer = MutableLiveData<String>(CURRENT_TIME)
-
+    private val _timer = MutableLiveData(CURRENT_TIME)
     val timeProgress: LiveData<String>
         get() = _timer
 
@@ -57,16 +58,25 @@ class PlayerViewModel(
             } catch (e: Exception) {
                 Log.e("Coroutine Exception", e.stackTraceToString())
             }
-
-            playerControl?.getPlayerState()?.collect {
-                _playerState.value = it
-            }
         }
     }
 
     override fun onCleared() {
         super.onCleared()
         timerJob = null
+    }
+
+    fun playerControlManager(playerControl: PlayerControl) {
+        this.playerControl = playerControl
+        viewModelScope.launch {
+            try {
+                playerControl.getPlayerState().collect {
+                    _playerState.value = it
+                }
+            } catch (e: Exception) {
+                Log.e("Coroutine Exception", e.stackTraceToString())
+            }
+        }
     }
 
     fun addTrackToPlayList(playlist: Playlist, track: Track) {
@@ -114,7 +124,6 @@ class PlayerViewModel(
 
     fun pausePlayer() {
         playerControl?.pausePlayer()
-//        playerInteractor.pausePlayer()
     }
 
     fun playbackControl() {
@@ -159,6 +168,17 @@ class PlayerViewModel(
         }
     }
 
+    fun removePlayerControl() {
+        playerControl = null
+    }
+
+    fun showNotification() {
+        playerControl?.showNotification()
+    }
+
+    fun hideNotification() {
+        playerControl?.hideNotification()
+    }
 
     companion object {
         private const val CURRENT_TIME = "00:00"
