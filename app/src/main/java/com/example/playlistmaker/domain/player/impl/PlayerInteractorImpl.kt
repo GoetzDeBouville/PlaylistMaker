@@ -18,8 +18,8 @@ class PlayerInteractorImpl(private val player: Player) : PlayerInteractor {
         player.pausePlayer()
     }
 
-    override fun preparePlayer(track: Track, callback: (Boolean) -> Unit) {
-        player.preparePlayer(track, callback)
+    override fun preparePlayer(track: Track) {
+        player.preparePlayer(track)
     }
 
     override fun releasePlayer() {
