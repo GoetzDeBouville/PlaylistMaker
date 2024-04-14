@@ -14,9 +14,9 @@ class PlayerImpl(track: Track) : Player {
     private var playerState: PlayerState = PlayerState.STATE_DEFAULT
     private val observers = mutableListOf<PlayerStateObserver>()
 
-    init {
-        preparePlayer(track) {}
-    }
+//    init {
+//        preparePlayer(track) {}
+//    }
 
     override fun getCurrentTrackTime(): Long {
         if (playerState == PlayerState.STATE_PLAYING) {
@@ -39,7 +39,7 @@ class PlayerImpl(track: Track) : Player {
         }
     }
 
-    override fun preparePlayer(track: Track, callback: (Boolean) -> Unit) {
+    override fun preparePlayer(track: Track) {
         if (track.previewUrl != null) {
             playerState = PlayerState.STATE_DEFAULT
             notifyPlayerStateChanged(playerState)
@@ -50,20 +50,18 @@ class PlayerImpl(track: Track) : Player {
                 mediaPlayer.setOnPreparedListener {
                     playerState = PlayerState.STATE_PREPARED
                     notifyPlayerStateChanged(playerState)
-                    callback(true)
                 }
                 mediaPlayer.setOnCompletionListener {
                     currentTrackTime = 0L
                     startTime = 0L
                     playerState = PlayerState.STATE_PAUSED
                     notifyPlayerStateChanged(playerState)
-                    callback(false)
                 }
             } catch (e: Exception) {
-                callback(false)
+                playerState = PlayerState.STATE_DEFAULT
             }
         } else {
-            callback(false)
+            playerState = PlayerState.STATE_DEFAULT
         }
     }
 

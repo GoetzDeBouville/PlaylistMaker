@@ -6,7 +6,7 @@ interface Player {
     fun getCurrentTrackTime(): Long
     fun getPlayerState(observer: PlayerStateObserver)
     fun pausePlayer()
-    fun preparePlayer(track: Track, callback: (Boolean) -> Unit)
+    fun preparePlayer(track: Track)
     fun releasePlayer()
     fun setCurrentTrackTime(time: Long)
     fun startPlayer()
