@@ -97,6 +97,7 @@
             android:id="@+id/playback_controller"
             android:layout_width="@dimen/dimen_88dp"
             android:layout_height="@dimen/dimen_88dp"
+            android:clickable="false"
             android:contentDescription="PLay Button"
             app:layout_constraintBottom_toTopOf="@+id/text_track_time_value"
             app:layout_constraintEnd_toStartOf="@+id/iv_like_button"
@@ -305,7 +306,7 @@
             app:layout_constraintBottom_toTopOf="@+id/text_duration"
             app:layout_constraintEnd_toStartOf="@id/right_guideline"
             app:layout_constraintStart_toEndOf="@id/left_guideline"
-            app:layout_constraintTop_toBottomOf="@+id/iv_play_button" />
+            app:layout_constraintTop_toBottomOf="@+id/playback_controller" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
