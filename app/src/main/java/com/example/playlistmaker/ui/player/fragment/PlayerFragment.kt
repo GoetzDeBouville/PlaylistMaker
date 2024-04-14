@@ -1,10 +1,20 @@
 package com.example.playlistmaker.ui.player.fragment
 
+import android.Manifest
+import android.content.ComponentName
+import android.content.Context
+import android.content.Intent
 import android.content.IntentFilter
+import android.content.ServiceConnection
+import android.os.Build
+import android.os.Bundle
+import android.os.IBinder
 import android.view.View
 import android.widget.LinearLayout
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import coil.load
@@ -14,9 +24,11 @@ import com.example.playlistmaker.core.ui.BaseFragment
 import com.example.playlistmaker.databinding.FragmentPlayerBinding
 import com.example.playlistmaker.domain.media.models.AddToPlaylist
 import com.example.playlistmaker.domain.media.models.PlaylistState
+import com.example.playlistmaker.domain.player.PlayerControl
 import com.example.playlistmaker.domain.player.models.PlayerState
 import com.example.playlistmaker.domain.search.models.Track
 import com.example.playlistmaker.ui.player.adapter.PlaylistAdapter
+import com.example.playlistmaker.ui.player.service.PlayerService
 import com.example.playlistmaker.ui.player.viewmodel.PlayerViewModel
 import com.example.playlistmaker.ui.search.fragment.SearchFragment
 import com.example.playlistmaker.utils.NetworkStatusReciever
@@ -25,6 +37,7 @@ import com.example.playlistmaker.utils.applyBlurEffect
 import com.example.playlistmaker.utils.clearBlurEffect
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.gson.Gson
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
@@ -37,6 +50,38 @@ class PlayerFragment :
     }
     private var bottomSheetBehavior: BottomSheetBehavior<LinearLayout>? = null
     private val networkStatusReciever = NetworkStatusReciever()
+
+    private var playerControl: PlayerControl? = null
+    private val serviceConnection = object : ServiceConnection {
+        override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
+            val binder = service as PlayerService.PlayerServiceBinder
+            playerControl = binder.getService()
+            viewModel.playerControlManager(binder.getService())
+        }
+
+        override fun onServiceDisconnected(name: ComponentName?) {
+            viewModel.removePlayerControl()
+        }
+    }
+
+    private val requestPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted: Boolean ->
+        if (isGranted) {
+            bindMusicService()
+        } else {
+            Tools.showSnackbar(binding.root, getString(R.string.no_permission), requireContext())
+        }
+    }
+
+    private fun bindMusicService() {
+        val trackJson = Gson().toJson(track)
+        val intent = Intent(requireContext(), PlayerService::class.java).putExtra(
+            SearchFragment.TRACK_KEY,
+            trackJson
+        )
+        requireContext().bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE)
+    }
 
     override fun initViews() {
         getTrack()
@@ -52,15 +97,28 @@ class PlayerFragment :
         addingToPlaylistStateObserver(bottomSheetBehavior!!)
     }
 
+    override fun onStart() {
+        super.onStart()
+        viewModel.hideNotification()
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        getTrack()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+        } else {
+            bindMusicService()
+        }
+    }
+
     override fun onPause() {
         super.onPause()
-        viewModel.pausePlayer()
         requireActivity().unregisterReceiver(networkStatusReciever)
     }
 
     override fun onResume() {
         super.onResume()
-        viewModel.pausePlayer()
         ContextCompat.registerReceiver(
             requireContext(),
             networkStatusReciever,
@@ -69,9 +127,17 @@ class PlayerFragment :
         )
     }
 
+    override fun onStop() {
+        super.onStop()
+        viewModel.showNotification()
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         bottomSheetBehavior = null
+        viewModel.pausePlayer()
+        viewModel.hideNotification()
+        requireContext().unbindService(serviceConnection)
     }
 
     private fun getTrack() {
@@ -186,9 +252,14 @@ class PlayerFragment :
     }
 
     private fun observeViewModel() {
-        viewModel.playerState.observe(viewLifecycleOwner) {
-            renderPlayerState(it)
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.playerState.collect { state ->
+                renderPlayerState(state)
+            }
         }
+//        viewModel.playerState.observe(viewLifecycleOwner) {
+//            renderPlayerState(it)
+//        }
 
         viewModel.timeProgress.observe(viewLifecycleOwner) {
             binding.textTrackTimeValue.text = it

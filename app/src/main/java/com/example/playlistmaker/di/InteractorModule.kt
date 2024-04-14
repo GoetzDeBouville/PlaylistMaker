@@ -4,18 +4,15 @@ import com.example.playlistmaker.domain.db.FavoriteTracksInteractor
 import com.example.playlistmaker.domain.db.PlaylistInteractor
 import com.example.playlistmaker.domain.db.impl.FavoriteTracksInteractorImpl
 import com.example.playlistmaker.domain.db.impl.PlaylistInteractorImpl
-import com.example.playlistmaker.domain.player.impl.PlayerInteractorImpl
 import com.example.playlistmaker.domain.search.api.HistoryInteractor
 import com.example.playlistmaker.domain.search.api.SearchInteractor
 import com.example.playlistmaker.domain.search.impl.HistoryInteractorImpl
 import com.example.playlistmaker.domain.search.impl.SearchInteractorImpl
-import com.example.playlistmaker.domain.search.models.Track
 import com.example.playlistmaker.domain.settings.SettingsInteractor
 import com.example.playlistmaker.domain.sharing.SharingInteractor
 import com.example.playlistmaker.domain.sharing.impl.SharingInteractorImpl
 import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.singleOf
-import org.koin.core.parameter.parametersOf
 import org.koin.dsl.module
 
 val interactorModule = module {
@@ -25,5 +22,4 @@ val interactorModule = module {
     singleOf(::SharingInteractorImpl) { bind<SharingInteractor>() }
     singleOf(::FavoriteTracksInteractorImpl) { bind<FavoriteTracksInteractor>() }
     singleOf(::PlaylistInteractorImpl) { bind<PlaylistInteractor>() }
-    factory { (track: Track) -> PlayerInteractorImpl(get { parametersOf(track) }) }
 }
