@@ -256,9 +256,6 @@ class PlayerFragment :
                 renderPlayerState(state)
             }
         }
-//        viewModel.playerState.observe(viewLifecycleOwner) {
-//            renderPlayerState(it)
-//        }
 
         viewModel.timeProgress.observe(viewLifecycleOwner) {
             binding.textTrackTimeValue.text = it
