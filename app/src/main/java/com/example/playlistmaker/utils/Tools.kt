@@ -1,10 +1,12 @@
 package com.example.playlistmaker.utils
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
+import android.os.Parcelable
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.os.VibratorManager
@@ -94,5 +96,14 @@ object Tools {
                 (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) ||
                         capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) ||
                         capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET))
+    }
+
+    inline fun <reified T: Parcelable> Intent.getParcelableExtraProvider(identifierParameter: String): T? {
+
+        return if (Build.VERSION.SDK_INT >= 33) {
+            this.getParcelableExtra(identifierParameter, T::class.java)
+        } else {
+            this.getParcelableExtra(identifierParameter)
+        }
     }
 }
