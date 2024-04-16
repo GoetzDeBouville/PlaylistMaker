@@ -5,30 +5,30 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.playlistmaker.core.ui.BaseViewModel
 import com.example.playlistmaker.domain.db.FavoriteTracksInteractor
 import com.example.playlistmaker.domain.db.PlaylistInteractor
 import com.example.playlistmaker.domain.media.models.AddToPlaylist
 import com.example.playlistmaker.domain.media.models.Playlist
 import com.example.playlistmaker.domain.media.models.PlaylistState
-import com.example.playlistmaker.domain.player.PlayerInteractor
-import com.example.playlistmaker.domain.player.PlayerStateObserver
+import com.example.playlistmaker.domain.player.PlayerControl
 import com.example.playlistmaker.domain.player.models.PlayerState
 import com.example.playlistmaker.domain.search.models.Track
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Locale
 
 class PlayerViewModel(
     private val track: Track,
-    private val playerInteractor: PlayerInteractor,
     private val favoriteTracksInteractor: FavoriteTracksInteractor,
     private val playlistInteractor: PlaylistInteractor
 ) : ViewModel() {
-    private val _playerState = MutableLiveData<PlayerState>()
-    val playerState: LiveData<PlayerState> get() = _playerState
+    private val _playerState = MutableStateFlow(PlayerState.STATE_DEFAULT)
+    val playerState: StateFlow<PlayerState>
+        get() = _playerState
 
     private val _isFavorite = MutableLiveData<Boolean>()
     val isFavorite: LiveData<Boolean>
@@ -43,13 +43,13 @@ class PlayerViewModel(
     private val _selectedPlaylistName = MutableLiveData<String>()
     val selectedPlaylistName: LiveData<String> get() = _selectedPlaylistName
 
-
     private var timerJob: Job? = null
 
-    private val _timer = MutableLiveData<String>(CURRENT_TIME)
-
+    private val _timer = MutableLiveData(CURRENT_TIME)
     val timeProgress: LiveData<String>
         get() = _timer
+
+    private var playerControl: PlayerControl? = null
 
     init {
         viewModelScope.launch {
@@ -59,17 +59,24 @@ class PlayerViewModel(
                 Log.e("Coroutine Exception", e.stackTraceToString())
             }
         }
-
-        playerInteractor.getPlayerState(object : PlayerStateObserver {
-            override fun onPlayerStateChanged(state: PlayerState) {
-                _playerState.value = state
-            }
-        })
     }
 
     override fun onCleared() {
         super.onCleared()
-        releasePlayer()
+        timerJob = null
+    }
+
+    fun playerControlManager(playerControl: PlayerControl) {
+        this.playerControl = playerControl
+        viewModelScope.launch {
+            try {
+                playerControl.getPlayerState().collect {
+                    _playerState.value = it
+                }
+            } catch (e: Exception) {
+                Log.e("Coroutine Exception", e.stackTraceToString())
+            }
+        }
     }
 
     fun addTrackToPlayList(playlist: Playlist, track: Track) {
@@ -116,7 +123,7 @@ class PlayerViewModel(
     }
 
     fun pausePlayer() {
-        playerInteractor.pausePlayer()
+        playerControl?.pausePlayer()
     }
 
     fun playbackControl() {
@@ -128,21 +135,19 @@ class PlayerViewModel(
         updateTimer()
     }
 
+    fun setPlayerService(service: PlayerControl) {
+        playerControl = service
+    }
+
     private fun getTimerPosition(): String {
         return SimpleDateFormat(
             "mm:ss",
             Locale.getDefault()
-        ).format(playerInteractor.getCurrentTrackTime())
-    }
-
-    private fun releasePlayer() {
-        playerInteractor.releasePlayer()
-        timerJob = null
-        updateTimer()
+        ).format(playerControl?.getCurrentTrackTime())
     }
 
     private fun startPlayer() {
-        playerInteractor.startPlayer()
+        playerControl?.startPlayer()
     }
 
     private fun updateTimer() {
@@ -163,6 +168,17 @@ class PlayerViewModel(
         }
     }
 
+    fun removePlayerControl() {
+        playerControl = null
+    }
+
+    fun showNotification() {
+        playerControl?.showNotification()
+    }
+
+    fun hideNotification() {
+        playerControl?.hideNotification()
+    }
 
     companion object {
         private const val CURRENT_TIME = "00:00"

@@ -11,7 +11,6 @@ class NetworkStatusReciever : BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
         if (intent?.action == ACTION) {
             val isConnected = intent.getBooleanExtra("state", false)
-            Log.i("MyLog", "CONNECTIVITY_CHANGE = $isConnected")
             if (!isConnected && context?.isConnected() == false) {
                 Toast.makeText(context, "No internet connection", Toast.LENGTH_SHORT).show()
             } else {

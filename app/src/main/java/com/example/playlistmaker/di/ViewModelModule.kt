@@ -1,7 +1,6 @@
 package com.example.playlistmaker.di
 
 import com.example.playlistmaker.domain.player.Player
-import com.example.playlistmaker.domain.player.impl.PlayerInteractorImpl
 import com.example.playlistmaker.domain.search.models.Track
 import com.example.playlistmaker.ui.media.editplaylist.viewmodel.EditPlaylistViewModel
 import com.example.playlistmaker.ui.media.favoritetracks.viewmodel.FavoriteTracksViewModel
@@ -25,7 +24,6 @@ val viewModelModule = module {
     viewModelOf(::SinglePlaylistViewModel)
     viewModelOf(::EditPlaylistViewModel)
     viewModel { (track: Track) ->
-        val player = get<Player> { parametersOf(track) }
-        PlayerViewModel(track, PlayerInteractorImpl(player), get(), get())
+        PlayerViewModel(track, get(), get())
     }
 }

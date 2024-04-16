@@ -12,7 +12,6 @@ import com.example.playlistmaker.data.sharing.impl.ContentProviderImpl
 import com.example.playlistmaker.data.sharing.impl.ExternalNavigatorImpl
 import com.example.playlistmaker.db.AppDatabase
 import com.example.playlistmaker.domain.player.Player
-import com.example.playlistmaker.domain.search.models.Track
 import com.example.playlistmaker.domain.sharing.ContentProvider
 import com.example.playlistmaker.domain.sharing.ExternalNavigator
 import com.google.gson.Gson
@@ -41,7 +40,7 @@ val dataModule = module {
     factoryOf(::SharedPreferencesHistoryStorage) { bind<History>() }
     singleOf(::ContentProviderImpl) { bind<ContentProvider>() }
     singleOf(::ExternalNavigatorImpl) { bind<ExternalNavigator>() }
-    factory<Player> { (track: Track) -> PlayerImpl(track) }
+    factoryOf(::PlayerImpl) { bind<Player>() }
     single {
         Room.databaseBuilder(androidContext(), AppDatabase::class.java, "favorite_tracks.db")
             .build()

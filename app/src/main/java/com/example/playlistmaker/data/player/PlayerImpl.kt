@@ -6,17 +6,13 @@ import com.example.playlistmaker.domain.player.PlayerStateObserver
 import com.example.playlistmaker.domain.player.models.PlayerState
 import com.example.playlistmaker.domain.search.models.Track
 
-class PlayerImpl(track: Track) : Player {
+class PlayerImpl : Player {
 
     private lateinit var mediaPlayer: MediaPlayer
     private var currentTrackTime: Long = 0L
     private var startTime: Long = 0L
     private var playerState: PlayerState = PlayerState.STATE_DEFAULT
     private val observers = mutableListOf<PlayerStateObserver>()
-
-    init {
-        preparePlayer(track) {}
-    }
 
     override fun getCurrentTrackTime(): Long {
         if (playerState == PlayerState.STATE_PLAYING) {
@@ -39,7 +35,7 @@ class PlayerImpl(track: Track) : Player {
         }
     }
 
-    override fun preparePlayer(track: Track, callback: (Boolean) -> Unit) {
+    override fun preparePlayer(track: Track, onCompletion: () -> Unit) {
         if (track.previewUrl != null) {
             playerState = PlayerState.STATE_DEFAULT
             notifyPlayerStateChanged(playerState)
@@ -50,20 +46,19 @@ class PlayerImpl(track: Track) : Player {
                 mediaPlayer.setOnPreparedListener {
                     playerState = PlayerState.STATE_PREPARED
                     notifyPlayerStateChanged(playerState)
-                    callback(true)
                 }
                 mediaPlayer.setOnCompletionListener {
                     currentTrackTime = 0L
                     startTime = 0L
                     playerState = PlayerState.STATE_PAUSED
                     notifyPlayerStateChanged(playerState)
-                    callback(false)
+                    onCompletion()
                 }
             } catch (e: Exception) {
-                callback(false)
+                playerState = PlayerState.STATE_DEFAULT
             }
         } else {
-            callback(false)
+            playerState = PlayerState.STATE_DEFAULT
         }
     }
 
