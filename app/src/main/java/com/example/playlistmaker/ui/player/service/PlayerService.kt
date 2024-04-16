@@ -1,5 +1,6 @@
 package com.example.playlistmaker.ui.player.service
 
+import android.annotation.SuppressLint
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -10,36 +11,39 @@ import android.content.pm.ServiceInfo
 import android.os.Binder
 import android.os.Build
 import android.os.IBinder
+import android.os.Parcelable
 import androidx.core.app.NotificationCompat
 import androidx.core.app.ServiceCompat
 import androidx.core.graphics.drawable.toBitmap
 import com.example.playlistmaker.R
 import com.example.playlistmaker.data.player.PlayerImpl
+import com.example.playlistmaker.domain.player.Player
 import com.example.playlistmaker.domain.player.PlayerControl
 import com.example.playlistmaker.domain.player.models.PlayerState
 import com.example.playlistmaker.domain.search.models.Track
 import com.example.playlistmaker.ui.search.fragment.SearchFragment
-import com.google.gson.Gson
+import com.example.playlistmaker.utils.Tools.getParcelableExtraProvider
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
 class PlayerService : Service(), PlayerControl {
     private val binder = PlayerServiceBinder()
     private var track: Track? = null
-    private var player = PlayerImpl()
+    private var player: Player = PlayerImpl()
 
     private val _mediaPlayerState = MutableStateFlow(PlayerState.STATE_DEFAULT)
     private val mediaPlayerState: StateFlow<PlayerState>
         get() = _mediaPlayerState
 
     override fun onBind(intent: Intent?): IBinder {
-        val trackJson = intent?.getStringExtra(SearchFragment.TRACK_KEY)
-        track = Gson().fromJson(trackJson, Track::class.java)
-        track?.let {
-            player.preparePlayer(track!!) {
-                pausePlayer()
+        if (intent?.getParcelableExtraProvider<Track>(SearchFragment.TRACK_KEY) != null){
+            track = intent.getParcelableExtraProvider<Track>(SearchFragment.TRACK_KEY)
+            track?.let {
+                player.preparePlayer(it) {
+                    pausePlayer()
+                }
+                _mediaPlayerState.value = PlayerState.STATE_PREPARED
             }
-            _mediaPlayerState.value = PlayerState.STATE_PREPARED
         }
         return binder
     }
@@ -49,6 +53,7 @@ class PlayerService : Service(), PlayerControl {
         createNotificationChannel()
     }
 
+    @SuppressLint("ObsoleteSdkInt")
     private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
             return
