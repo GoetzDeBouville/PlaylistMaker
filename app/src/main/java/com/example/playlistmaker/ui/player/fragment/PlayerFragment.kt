@@ -75,10 +75,9 @@ class PlayerFragment :
     }
 
     private fun bindMusicService() {
-        val trackJson = Gson().toJson(track)
         val intent = Intent(requireContext(), PlayerService::class.java).putExtra(
             SearchFragment.TRACK_KEY,
-            trackJson
+            track
         )
         requireContext().bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE)
     }
@@ -294,6 +293,7 @@ class PlayerFragment :
                 playbackController.clearBlurEffect()
                 playbackController.isClickable = true
                 playbackController.setStatusPause()
+                viewModel.hideNotification()
             }
 
             PlayerState.STATE_DEFAULT -> {
