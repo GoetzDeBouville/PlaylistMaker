@@ -14,14 +14,17 @@ class PlaylistsAdapter(private var onClicked: ((Playlist) -> Unit)? = null) :
     RecyclerView.Adapter<PlaylistsAdapter.PlaylistViewHolder>() {
     class PlaylistViewHolder(private val binding: ItemPlaylistGridBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(playlist: Playlist) = with(binding){
+        fun bind(playlist: Playlist) = with(binding) {
             tvTitle.text = playlist.title
             tvAmount.text = Tools.amountTextFormater(playlist.trackAmount)
             ivCover.load(playlist.imagePath) {
                 placeholder(R.drawable.ic_cover_ph)
-                transformations(RoundedCornersTransformation(
-                    radius = itemView.resources.getDimensionPixelSize(R.dimen.dimen_8dp).toFloat()
-                ))
+                transformations(
+                    RoundedCornersTransformation(
+                        radius = itemView.resources.getDimensionPixelSize(R.dimen.dimen_8dp)
+                            .toFloat()
+                    )
+                )
             }
         }
     }
