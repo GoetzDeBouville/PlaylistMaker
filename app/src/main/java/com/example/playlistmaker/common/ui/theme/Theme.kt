@@ -1,6 +1,5 @@
 package com.example.playlistmaker.common.ui.theme
 
-import android.app.Activity
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
@@ -11,26 +10,31 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 
+
 private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
-    secondary = PurpleGrey80,
-    tertiary = Pink80
+    primary = BackgroundNavbar, // background_navbar
+    secondary = White, //  white
+    onTertiary = BlueText, // blue_text
+    tertiary = TextGray, //  text_gray
+    background = BackgroundColorDark, // background_color_dark
+    surface = TransparentOverlay, // transparent_overlay
+    onPrimary = White, // white
+    onSecondary = LightGray, // light_gray
+    onBackground = TextColor, // text_color
+    onSurface = RedColor // red_color
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = Purple40,
-    secondary = PurpleGrey40,
-    tertiary = Pink40
-
-    /* Other default colors to override
-    background = Color(0xFFFFFBFE),
-    surface = Color(0xFFFFFBFE),
-    onPrimary = Color.White,
-    onSecondary = Color.White,
-    onTertiary = Color.White,
-    onBackground = Color(0xFF1C1B1F),
-    onSurface = Color(0xFF1C1B1F),
-    */
+    primary = BackgroundColor, //  background_color
+    secondary = BlackText, //  blue_text
+    onTertiary = BlueText, // blue_text
+    tertiary = LightGray, // light_gray
+    background = White, // white
+    surface = SwitcherOnColor, // switcher_on_color
+    onPrimary = Black, // black
+    onSecondary = ElementsColor, // elements_color
+    onBackground = BlackText, // black_text
+    onSurface = TransparentBackground // transparent_background
 )
 
 @Composable

@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.runtime.Composable
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import androidx.fragment.app.Fragment
 import com.example.playlistmaker.databinding.FragmentSettingsBinding
@@ -26,6 +27,9 @@ class SettingsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        binding.composeView.setContent {
+
+        }
 
         viewModel.themeSettings.observe(viewLifecycleOwner) { isDarkTheme ->
             binding.themeSwitcher.setChecked(isDarkTheme)
@@ -52,4 +56,10 @@ class SettingsFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
+}
+
+
+@Composable
+fun SettingsScreen(viewModel: SettingsViewModel) {
+
 }
