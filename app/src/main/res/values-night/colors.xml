@@ -9,4 +9,6 @@
     <color name="handler_elem">@color/white</color>
     <color name="playlist_amount">@color/white</color>
 
+    <color name="input_text_icon_color">@color/black_text</color>
+
 </resources>

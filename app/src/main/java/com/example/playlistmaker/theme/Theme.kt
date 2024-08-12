@@ -17,11 +17,13 @@ private val LightColorScheme = lightColorScheme(
     onTertiary = BlueText, // blue_text
     tertiary = TextGray, // text_gray
     background = White, // white
-    surface = SwitcherOnColor, // switcher_on_color
+    surface = LightGray, // switcher_on_color
     onPrimary = BlackText, // black_text
     onSecondary = ElementsColor, // elements_color
     onBackground = BlackText, // black_text
-    onSurface = TextGray // transparent_background
+    onSurface = TextGray,
+    surfaceVariant = LightGray,
+    onSurfaceVariant = TextGray
 )
 
 private val DarkColorScheme = darkColorScheme(
@@ -30,11 +32,13 @@ private val DarkColorScheme = darkColorScheme(
     onTertiary = BlueText, // blue_text
     tertiary = Color(0xfff6d54f), //  white
     background = BlackText, // background_color_dark
-    surface = TransparentOverlay, // transparent_overlay
+    surface = White,
     onPrimary = White, // white
     onSecondary = LightGray, // light_gray
     onBackground = White, // text_color
-    onSurface = White // red_color
+    onSurface = White,
+    surfaceVariant = White,
+    onSurfaceVariant = BlackText
 )
 
 @Composable
@@ -45,11 +49,6 @@ fun AppTheme(
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {
-        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-            val context = LocalContext.current
-            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
-        }
-
         darkTheme -> DarkColorScheme
         else -> LightColorScheme
     }

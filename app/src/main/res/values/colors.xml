@@ -27,5 +27,6 @@
     <color name="snack_text">@color/white</color>
     <color name="handler_elem">@color/light_gray</color>
     <color name="playlist_amount">@color/text_gray</color>
+    <color name="input_text_icon_color">@color/text_gray</color>
 
 </resources>

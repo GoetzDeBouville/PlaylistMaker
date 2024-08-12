@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
+import androidx.compose.ui.Modifier
 import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -18,8 +19,10 @@ import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentSearchBinding
 import com.example.playlistmaker.domain.search.models.SearchState
 import com.example.playlistmaker.domain.search.models.Track
+import com.example.playlistmaker.theme.AppTheme
 import com.example.playlistmaker.ui.search.adapters.TrackAdapter
 import com.example.playlistmaker.ui.search.viewmodel.SearchViewModel
+import com.example.playlistmaker.ui.settings.fragment.SettingsScreen
 import com.example.playlistmaker.utils.NetworkStatusReciever
 import com.google.gson.Gson
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -65,6 +68,12 @@ class SearchFragment : Fragment() {
         setupBtnClearHistoryClickListener()
         viewModel.state.observe(viewLifecycleOwner) {
             renderState(it)
+        }
+
+        binding.composeView.setContent {
+            AppTheme {
+                SearchScreen(Modifier)
+            }
         }
     }
 

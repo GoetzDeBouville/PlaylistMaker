@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/ActivitiesBackgroundStyle"
     android:paddingTop="@dimen/dimen_16dp"
+    android:layout_marginHorizontal="@dimen/dimen_16dp"
     tools:context=".ui.search.fragment.SearchFragment">
 
     <LinearLayout
@@ -177,4 +178,9 @@
         </androidx.core.widget.NestedScrollView>
 
     </LinearLayout>
+
+    <androidx.compose.ui.platform.ComposeView
+        android:id="@+id/compose_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 </LinearLayout>
