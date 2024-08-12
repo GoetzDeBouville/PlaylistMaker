@@ -24,7 +24,7 @@ import com.example.playlistmaker.core.uikit.SearchTextField
 import com.example.playlistmaker.theme.AppTheme
 
 @Composable
-fun SearchScreen(modifier: Modifier) {
+fun SearchScreen(modifier: Modifier = Modifier) {
     val context = LocalContext.current
     var text by remember { mutableStateOf("") }
     Column(
@@ -50,7 +50,7 @@ fun SearchScreen(modifier: Modifier) {
                 Icon(
                     painter = painterResource(id = R.drawable.search),
                     contentDescription = "",
-                    tint = MaterialTheme.colorScheme.surfaceContainer
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
         )

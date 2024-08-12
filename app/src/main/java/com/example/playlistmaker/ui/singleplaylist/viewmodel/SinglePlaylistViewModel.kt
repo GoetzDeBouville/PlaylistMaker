@@ -11,10 +11,9 @@ import com.example.playlistmaker.domain.media.models.PlaylistTracksState
 import com.example.playlistmaker.domain.search.models.Track
 import com.example.playlistmaker.domain.sharing.SharingInteractor
 import com.example.playlistmaker.utils.Tools
+import com.example.playlistmaker.utils.extensions.toMinutes
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
-import java.util.Locale
 
 class SinglePlaylistViewModel(
     private val playlistInteractor: PlaylistInteractor,
@@ -108,10 +107,12 @@ class SinglePlaylistViewModel(
             "${playlist.title} ${playlist.description}\n${Tools.amountTextFormater(tracks.size)}\n"
         val stringBuilder = StringBuilder()
         tracks.forEachIndexed { index, track ->
-            stringBuilder.append("${index + 1}. ").append("${track.artistName} - ")
-                .append("${track.trackName} ").append(
-                    SimpleDateFormat("mm:ss", Locale.getDefault()).format(track.trackTimeMillis)
-                ).append("\n")
+            stringBuilder
+                .append("${index + 1}. ")
+                .append("${track.artistName} - ")
+                .append("${track.trackName} ")
+                .append(track.trackTimeMillis?.toMinutes())
+                .append("\n")
         }
         text += stringBuilder
         sharingInteractor.sharePlaylist(text)

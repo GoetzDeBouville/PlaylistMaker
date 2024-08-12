@@ -32,6 +32,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.playlistmaker.R
 import com.example.playlistmaker.theme.AppTheme
+import com.example.playlistmaker.theme.BlackText
 import com.example.playlistmaker.theme.BlueText
 
 
@@ -52,6 +53,9 @@ fun SearchTextField(
             onValueChange = onTextChange,
             singleLine = true,
             cursorBrush = SolidColor(BlueText),
+            textStyle = MaterialTheme.typography.titleSmall.copy(
+                color = BlackText
+            ),
             decorationBox = { innerTextField ->
                 Row(
                     modifier = modifier
@@ -82,7 +86,7 @@ fun SearchTextField(
                         Icon(
                             painter = painterResource(id = R.drawable.ic_baseline_clear),
                             contentDescription = "Clear Icon",
-                            tint = MaterialTheme.colorScheme.surfaceContainer,
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
                             modifier = Modifier.clickable { onTextChange("") }
                         )
                     }

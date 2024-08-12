@@ -5,6 +5,7 @@ import android.content.IntentFilter
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -70,11 +71,11 @@ class SearchFragment : Fragment() {
             renderState(it)
         }
 
-        binding.composeView.setContent {
-            AppTheme {
-                SearchScreen(Modifier)
-            }
-        }
+//        binding.composeView.setContent {
+//            AppTheme {
+//                SearchScreen()
+//            }
+//        }
     }
 
     override fun onDestroyView() {
@@ -102,6 +103,7 @@ class SearchFragment : Fragment() {
             if (viewModel.clickDebounce()) {
                 viewModel.saveTrack(it)
                 val gson = Gson()
+                Log.v(TAG, "track = $it")
                 val trackJson = gson.toJson(it)
                 val bundle = Bundle().apply {
                     putString(TRACK_KEY, trackJson)
@@ -277,5 +279,6 @@ class SearchFragment : Fragment() {
     }
     companion object {
         const val TRACK_KEY = "track"
+        private val TAG = SearchFragment::class.simpleName
     }
 }

@@ -39,6 +39,13 @@ val Typography = Typography(
         fontSize = 16.sp,
         letterSpacing = 0.sp,
         color = Color.Unspecified
+    ),
+    bodySmall = TextStyle(
+        fontFamily = ysDisplayFontFamily,
+        fontWeight = FontWeight.Light,
+        fontSize = 11.sp,
+        letterSpacing = 0.sp,
+        color = Color.Unspecified
     )
 )
 
