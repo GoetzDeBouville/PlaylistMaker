@@ -1,4 +1,4 @@
-package com.example.playlistmaker.common.ui.theme
+package com.example.playlistmaker.theme
 
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -8,37 +8,37 @@ import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-
-
-private val DarkColorScheme = darkColorScheme(
-    primary = BackgroundNavbar, // background_navbar
-    secondary = White, //  white
-    onTertiary = BlueText, // blue_text
-    tertiary = TextGray, //  text_gray
-    background = BackgroundColorDark, // background_color_dark
-    surface = TransparentOverlay, // transparent_overlay
-    onPrimary = White, // white
-    onSecondary = LightGray, // light_gray
-    onBackground = TextColor, // text_color
-    onSurface = RedColor // red_color
-)
 
 private val LightColorScheme = lightColorScheme(
     primary = BackgroundColor, //  background_color
     secondary = BlackText, //  blue_text
     onTertiary = BlueText, // blue_text
-    tertiary = LightGray, // light_gray
+    tertiary = TextGray, // text_gray
     background = White, // white
     surface = SwitcherOnColor, // switcher_on_color
-    onPrimary = Black, // black
+    onPrimary = BlackText, // black_text
     onSecondary = ElementsColor, // elements_color
     onBackground = BlackText, // black_text
-    onSurface = TransparentBackground // transparent_background
+    onSurface = TextGray // transparent_background
+)
+
+private val DarkColorScheme = darkColorScheme(
+    primary = BackgroundNavbar, // background_navbar
+    secondary = White, //  white
+    onTertiary = BlueText, // blue_text
+    tertiary = Color(0xfff6d54f), //  white
+    background = BlackText, // background_color_dark
+    surface = TransparentOverlay, // transparent_overlay
+    onPrimary = White, // white
+    onSecondary = LightGray, // light_gray
+    onBackground = White, // text_color
+    onSurface = White // red_color
 )
 
 @Composable
-fun ComposeNavigationXmplTheme(
+fun AppTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
     dynamicColor: Boolean = true,

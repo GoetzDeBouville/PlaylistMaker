@@ -23,6 +23,7 @@
     <color name="transparent">#00FFFFFF</color>
     <color name="transparent_overlay">#99000000</color>
     <color name="transparent_constraint_overlay">#33000000</color>
+
     <color name="snack_text">@color/white</color>
     <color name="handler_elem">@color/light_gray</color>
     <color name="playlist_amount">@color/text_gray</color>

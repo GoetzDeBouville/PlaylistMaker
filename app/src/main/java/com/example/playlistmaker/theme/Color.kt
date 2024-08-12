@@ -1,4 +1,4 @@
-package com.example.playlistmaker.common.ui.theme
+package com.example.playlistmaker.theme
 
 import androidx.compose.ui.graphics.Color
 
@@ -23,6 +23,7 @@ val BackgroundColor = Color(0xFF3772E7) // background_color
 val BackgroundColorDark = Color(0xFF1A1B22) // background_color_dark
 val LightGray = Color(0xFFE6E8EB) // light_gray
 val BlueText = Color(0xFF3772E7) // blue_text
+val BlueLight = Color(0xFF9FBBF3) // blue_light
 val SwitcherOnColor = Color(0xFF48EA8B) // switcher_on_color
 val RedColor = Color(0xFF94DA352F) // red_color
 val TransparentOverlay = Color(0x99000000) // transparent_overlay
