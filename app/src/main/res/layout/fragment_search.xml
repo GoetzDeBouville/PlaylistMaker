@@ -42,10 +42,6 @@
             android:textColor="@color/black_text"
             tools:ignore="Autofill,RtlSymmetry,TouchTargetSizeCheck" />
 
-        <androidx.compose.ui.platform.ComposeView
-            android:id="@+id/compose_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
         <ImageView
             android:id="@+id/search_icon"
             style="@style/SearchEditextIconStyle"
@@ -70,8 +66,12 @@
             tools:ignore="ContentDescription,ObsoleteLayoutParam,RtlSymmetry" />
     </FrameLayout>
 
+    <androidx.compose.ui.platform.ComposeView
+        android:id="@+id/compose_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
     <LinearLayout
-
+        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"

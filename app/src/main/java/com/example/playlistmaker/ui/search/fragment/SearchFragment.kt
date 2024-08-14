@@ -12,6 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.ui.Modifier
 import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.findNavController
@@ -71,11 +72,11 @@ class SearchFragment : Fragment() {
             renderState(it)
         }
 
-//        binding.composeView.setContent {
-//            AppTheme {
-//                SearchScreen()
-//            }
-//        }
+        binding.composeView.setContent {
+            AppTheme(darkTheme = isSystemInDarkTheme()) {
+                SearchScreen()
+            }
+        }
     }
 
     override fun onDestroyView() {
