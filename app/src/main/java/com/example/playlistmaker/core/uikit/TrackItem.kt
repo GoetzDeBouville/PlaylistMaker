@@ -5,9 +5,8 @@ import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -17,14 +16,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.imageLoader
 import coil.request.ImageRequest
 import com.example.playlistmaker.R
+import com.example.playlistmaker.core.uikit.icons.ArrowForwardImg
 import com.example.playlistmaker.domain.search.models.Track
 import com.example.playlistmaker.theme.AppTheme
 import com.example.playlistmaker.utils.extensions.toMinutes
@@ -53,8 +51,7 @@ fun TrackItem(
             imageLoader = imageLoader,
 
             modifier = modifier
-                .height(45.dp)
-                .width(45.dp)
+                .size(45.dp)
                 .padding(vertical = 8.dp)
                 .clip(RoundedCornerShape(2.dp))
         )
@@ -80,7 +77,7 @@ fun TrackItem(
         }
 
         Icon(
-            painter = painterResource(id = R.drawable.arrow_forward),
+            imageVector = ArrowForwardImg,
             contentDescription = "",
             tint = MaterialTheme.colorScheme.onSurface
         )
