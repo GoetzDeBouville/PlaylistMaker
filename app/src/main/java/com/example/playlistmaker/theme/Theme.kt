@@ -23,7 +23,8 @@ private val LightColorScheme = lightColorScheme(
     onBackground = BlackText, // black_text
     onSurface = TextGray,
     surfaceVariant = LightGray,
-    onSurfaceVariant = TextGray
+    onSurfaceVariant = TextGray,
+    surfaceTint = White
 )
 
 private val DarkColorScheme = darkColorScheme(
@@ -38,14 +39,13 @@ private val DarkColorScheme = darkColorScheme(
     onBackground = White, // text_color
     onSurface = White,
     surfaceVariant = White,
-    onSurfaceVariant = BlackText
+    onSurfaceVariant = BlackText,
+    surfaceTint = BlackText
 )
 
 @Composable
 fun AppTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {

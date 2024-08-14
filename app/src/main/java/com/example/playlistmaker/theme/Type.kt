@@ -22,14 +22,12 @@ val Typography = Typography(
         fontFamily = FontFamily.Default,
         fontWeight = FontWeight.Medium,
         fontSize = 11.sp,
-        lineHeight = 16.sp,
         letterSpacing = 0.5.sp
     ),
     titleLarge = TextStyle(
         fontFamily = ysDisplayFontFamily,
         fontWeight = FontWeight.Medium,
         fontSize = 22.sp,
-        lineHeight = 28.sp,
         letterSpacing = 0.sp,
         color = Color.Unspecified
     ),
@@ -44,6 +42,20 @@ val Typography = Typography(
         fontFamily = ysDisplayFontFamily,
         fontWeight = FontWeight.Light,
         fontSize = 11.sp,
+        letterSpacing = 0.sp,
+        color = Color.Unspecified
+    ),
+    displayMedium = TextStyle(
+        fontFamily = ysDisplayFontFamily,
+        fontWeight = FontWeight.Medium,
+        fontSize = 19.sp,
+        letterSpacing = 0.sp,
+        color = Color.Unspecified
+    ),
+    bodyMedium = TextStyle(
+        fontFamily = ysDisplayFontFamily,
+        fontWeight = FontWeight.Medium,
+        fontSize = 14.sp,
         letterSpacing = 0.sp,
         color = Color.Unspecified
     )
