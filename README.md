@@ -48,12 +48,6 @@ Implemented options to search tracks, create/edit/delete playlists, change the a
 
 5. Build and run the project.
 
-
-## Contributing :writing_hand:
-
-Contributions are welcome! If you find any issues or have suggestions for improvements, please open an issue or submit a pull request.
-
-
 ## Contributors 📢
 
 <a href="https://github.com/GoetzDeBouville/PlaylistMaker/graphs/contributors">
